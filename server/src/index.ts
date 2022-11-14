@@ -1,5 +1,4 @@
 import path from "path";
-import { fileURLToPath } from "url";
 import dotenv from "dotenv";
 import express from "express";
 import cookieParser from "cookie-parser";
