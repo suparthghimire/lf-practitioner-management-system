@@ -36,23 +36,21 @@ const UserSchema = z
       .min(8, {
         message: "Password must be at least 8 characters",
       }),
-    confirmPassword: z
-      .string({
-        errorMap: (err) => {
-          return {
-            message: "Confirm Password is required",
-          };
-        },
-      })
-      .min(8),
+    confirmPassword: z.string({
+      errorMap: (err) => {
+        return {
+          message: "Confirm Password is required",
+        };
+      },
+    }),
   })
-  .superRefine((data) => {
+  .superRefine((data, ctx) => {
     if (data.password !== data.confirmPassword) {
-      return {
-        code: "password_mismatch",
+      ctx.addIssue({
+        code: "custom",
         path: ["confirmPassword"],
         message: "Passwords do not match",
-      };
+      });
     }
     return null;
   });

@@ -11,11 +11,13 @@ const AuthController = {
     try {
       const body = req.body;
       const user: User = body;
+      console.log(user);
       ValidateUser(user);
       await UserService.createUser(user);
       return res.status(201).json({ message: "SignUp Successful!", user });
     } catch (error) {
-      const { handledError, status } = ErrorService.handleError(error);
+      console.log(error);
+      const { handledError, status } = ErrorService.handleError(error, "User");
       return res
         .status(status || 500)
         .json({ status: false, message: "SignUp Failed!", data: handledError });
