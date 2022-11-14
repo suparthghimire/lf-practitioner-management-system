@@ -83,5 +83,16 @@ const TokenService = {
       throw error;
     }
   },
+  removeUserToken: async function (userId: number) {
+    try {
+      await prismaClient.refreshToken.deleteMany({
+        where: {
+          userId,
+        },
+      });
+    } catch (error) {
+      throw error;
+    }
+  },
 };
 export default TokenService;

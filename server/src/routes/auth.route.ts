@@ -5,9 +5,9 @@ import AuthController from "../controllers/Auth.Controller";
 import { IsLoggedIn, IsLoggedOut } from "../middleware/Auth.Middleware";
 
 router.get("/", IsLoggedIn, AuthController.index); // User Data
+router.delete("/signout", IsLoggedIn, AuthController.signOut); //Logout
 
-router.post("/signin", IsLoggedOut, AuthController.signIn); //Login
+router.post("/signin", AuthController.signIn); //Login
 router.post("/signup", IsLoggedOut, AuthController.signUp); //Register
-router.delete("/signout", IsLoggedOut, AuthController.signOut); //Logout
 
 export default router;

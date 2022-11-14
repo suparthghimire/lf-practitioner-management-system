@@ -89,10 +89,18 @@ const AuthController = {
     }
   },
 
-  signOut: (req: Request, res: Response) =>
-    res.status(201).json({
+  signOut: (req: Request, res: Response) => {
+    const { userId } = req.body;
+    if (!userId) throw new CustomError("Invalid Token", 401);
+    TokenService.removeUserToken(userId);
+    res.cookie(REFRESH_TOKEN_COOKIE_NAME, "", {
+      httpOnly: true,
+      maxAge: 1,
+    });
+    return res.status(201).json({
       status: true,
-      message: "SignOut Endpoint",
-    }),
+      message: "User Signed Out",
+    });
+  },
 };
 export default AuthController;
