@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { access } from "fs";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
 import { User, UserLogin, ValidateLogin, ValidateUser } from "../models/User";
-import ErrorService from "../service/Error.Service";
+import ErrorService, { CustomError } from "../service/Error.Service";
 import TokenService from "../service/Token.Service";
 import UserService from "../service/User.Service";
 import {
@@ -12,10 +12,15 @@ import {
 import { JWTPayload } from "../utils/interfaces";
 const AuthController = {
   index: async function (req: Request, res: Response) {
-    const { userId } = req.body;
-    return res.json({
-      userId,
-    });
+    try {
+      const { userId } = req.body;
+      if (!userId) throw new CustomError("Invalid Token", 401);
+      const user = await UserService.getUserByID(userId);
+      return res.json({
+        status: true,
+        data: user,
+      });
+    } catch (error) {}
   },
   signIn: async function (req: Request, res: Response) {
     try {
