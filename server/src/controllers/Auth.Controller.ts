@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { User, ValidateUser } from "../models/User";
+import ErrorService from "../service/Error.Service";
 import UserService from "../service/User.Service";
 const AuthController = {
   index: (req: Request, res: Response) =>
@@ -14,11 +15,10 @@ const AuthController = {
       await UserService.createUser(user);
       return res.status(201).json({ message: "SignUp Successful!", user });
     } catch (error) {
-      return res.status(401).json({
-        status: false,
-        message: "Error",
-        error: error,
-      });
+      const { handledError, status } = ErrorService.handleError(error);
+      return res
+        .status(status || 500)
+        .json({ status: false, message: "SignUp Failed!", data: handledError });
     }
   },
   signOut: (req: Request, res: Response) =>
