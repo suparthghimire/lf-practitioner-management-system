@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { access } from "fs";
 import { User, UserLogin, ValidateLogin, ValidateUser } from "../models/User";
 import ErrorService from "../service/Error.Service";
 import TokenService from "../service/Token.Service";
@@ -10,8 +11,12 @@ import {
 } from "../utils/helpers";
 import { JWTPayload } from "../utils/interfaces";
 const AuthController = {
-  index: (req: Request, res: Response) =>
-    res.status(200).json({ message: "Index Endpoint" }),
+  index: async function (req: Request, res: Response) {
+    const { userId } = req.body;
+    return res.json({
+      userId,
+    });
+  },
   signIn: async function (req: Request, res: Response) {
     try {
       const body = req.body;
@@ -34,7 +39,7 @@ const AuthController = {
         REFRESH_TOKEN_EXPIRY
       );
       TokenService.saveUserToken(refreshToken, userId, REFRESH_TOKEN_EXPIRY);
-      res.cookie(REFRESH_TOKEN_COOKIE_NAME, refreshToken, {
+      res.cookie(REFRESH_TOKEN_COOKIE_NAME, `Bearer ${refreshToken}`, {
         httpOnly: true,
         maxAge: REFRESH_TOKEN_EXPIRY * 1000,
       });
@@ -42,7 +47,10 @@ const AuthController = {
       return res.status(201).json({
         status: true,
         message: "SignIn Successful",
-        data: { accessToken, refreshToken },
+        data: {
+          accessToken: "Bearer " + accessToken,
+          refreshToken: "Bearer " + refreshToken,
+        },
       });
     } catch (error) {
       console.error(error);

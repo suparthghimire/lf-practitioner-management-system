@@ -14,6 +14,13 @@ const userSelectFields = {
 };
 
 const UserService = {
+  getUserByID: async function (id: number) {
+    const user = await prismaClient.user.findUnique({
+      where: { id },
+      select: userSelectFields,
+    });
+    return user;
+  },
   getUserIDByEmailPwd: async function (email: string, password: string) {
     const user = await prismaClient.user.findUnique({
       where: {
