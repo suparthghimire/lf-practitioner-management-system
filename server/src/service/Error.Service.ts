@@ -1,18 +1,34 @@
 import { ZodError } from "zod";
-import {
-  PrismaClientInitializationError,
-  PrismaClientKnownRequestError,
-} from "@prisma/client/runtime";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
+
+export class CustomError extends Error {
+  constructor(message: string, private m_status: number) {
+    super(message);
+    this.name = "CustomError";
+  }
+  get status() {
+    return this.m_status;
+  }
+}
+
 const ErrorService = {
   handleError: function (error: any, entityName: string) {
     if (error instanceof ZodError) {
       const { handledError, status } = HandleZodError(error);
       return {
         status,
-        handledError,
+        message: "Validation Failed",
+        data: handledError,
       };
     } else if (error instanceof PrismaClientKnownRequestError) {
-      return HandlePrismaError(error, entityName);
+      const { status, message } = HandlePrismaError(error, entityName);
+      return { status, message, data: null };
+    } else if (error instanceof CustomError) {
+      return {
+        status: error.status,
+        message: error.message,
+        data: null,
+      };
     }
     return {
       status: 500,
@@ -32,24 +48,24 @@ function HandlePrismaError(
     case "P2002":
       return {
         status: 409,
-        handledError: `${entityName} already exists`,
+        message: `${entityName} already exists`,
       };
 
     case "2007":
       return {
         status: 422,
-        handledError: `Validation Failed`,
+        message: `Validation Failed`,
       };
     case "2015":
       return {
         status: 404,
-        handledError: `Validation Failed`,
+        message: `${entityName} not found`,
       };
 
     default:
       return {
         status: 409,
-        handledError: "Unknown Error Occured while processing request",
+        message: "Unknown Error Occured while processing request",
       };
   }
 }

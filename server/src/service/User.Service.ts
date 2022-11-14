@@ -1,7 +1,33 @@
 import { User } from "../models/User";
 import { prismaClient } from "../index";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
 import bcrypt from "bcrypt";
+import { CustomError } from "./Error.Service";
+
+const userSelectFields = {
+  id: true,
+  name: true,
+  email: true,
+  password: false,
+  createdAt: true,
+  updatedAt: true,
+};
+
 const UserService = {
+  getUserIDByEmailPwd: async function (email: string, password: string) {
+    const user = await prismaClient.user.findUnique({
+      where: {
+        email,
+      },
+    });
+    if (!user) throw new CustomError("Invalid Email or Password", 401);
+    const storedPwd = user.password;
+    const isPwdMatch = await bcrypt.compare(password, storedPwd);
+    if (!isPwdMatch) throw new CustomError("Invalid Email or Password", 401);
+
+    return user.id;
+  },
+
   createUser: async function (user: User) {
     try {
       const { name, email, password } = user;
@@ -13,6 +39,7 @@ const UserService = {
           email,
           password: hashedPassword,
         },
+        select: userSelectFields,
       });
       return newUser;
     } catch (error) {

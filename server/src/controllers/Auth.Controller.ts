@@ -1,29 +1,85 @@
 import { Request, Response } from "express";
-import { User, ValidateUser } from "../models/User";
+import { User, UserLogin, ValidateLogin, ValidateUser } from "../models/User";
 import ErrorService from "../service/Error.Service";
+import TokenService from "../service/Token.Service";
 import UserService from "../service/User.Service";
+import {
+  ACCESS_TOKEN_EXPIRY,
+  REFRESH_TOKEN_COOKIE_NAME,
+  REFRESH_TOKEN_EXPIRY,
+} from "../utils/helpers";
+import { JWTPayload } from "../utils/interfaces";
 const AuthController = {
   index: (req: Request, res: Response) =>
     res.status(200).json({ message: "Index Endpoint" }),
-  signIn: (req: Request, res: Response) =>
-    res.status(201).json({ message: "SignIn Endpoint" }),
+  signIn: async function (req: Request, res: Response) {
+    try {
+      const body = req.body;
+      const loginData: UserLogin = body;
+      ValidateLogin(loginData);
+      const userId = await UserService.getUserIDByEmailPwd(
+        loginData.email,
+        loginData.password
+      );
+
+      const tokenPayload: JWTPayload = {
+        id: userId,
+      };
+      const accessToken = TokenService.createToken(
+        tokenPayload,
+        ACCESS_TOKEN_EXPIRY
+      );
+      const refreshToken = TokenService.createToken(
+        tokenPayload,
+        REFRESH_TOKEN_EXPIRY
+      );
+      TokenService.saveUserToken(refreshToken, userId, REFRESH_TOKEN_EXPIRY);
+      res.cookie(REFRESH_TOKEN_COOKIE_NAME, refreshToken, {
+        httpOnly: true,
+        maxAge: REFRESH_TOKEN_EXPIRY * 1000,
+      });
+
+      return res.status(201).json({
+        status: true,
+        message: "SignIn Successful",
+        data: { accessToken, refreshToken },
+      });
+    } catch (error) {
+      console.error(error);
+      const { message, data, status } = ErrorService.handleError(error, "User");
+      return res.status(status || 500).json({
+        status: false,
+        message: message || "SignIn Failed",
+        data: data == null ? undefined : data,
+      });
+    }
+  },
   signUp: async function (req: Request, res: Response) {
     try {
       const body = req.body;
       const user: User = body;
-      console.log(user);
       ValidateUser(user);
-      await UserService.createUser(user);
-      return res.status(201).json({ message: "SignUp Successful!", user });
+      const createdUser = await UserService.createUser(user);
+      return res.status(201).json({
+        status: true,
+        message: "SignUp Successful!",
+        user: createdUser,
+      });
     } catch (error) {
-      console.log(error);
-      const { handledError, status } = ErrorService.handleError(error, "User");
-      return res
-        .status(status || 500)
-        .json({ status: false, message: "SignUp Failed!", data: handledError });
+      console.error(error);
+      const { message, data, status } = ErrorService.handleError(error, "User");
+      return res.status(status || 500).json({
+        status: false,
+        message: message || "Signup Failed",
+        data: data == null ? undefined : data,
+      });
     }
   },
+
   signOut: (req: Request, res: Response) =>
-    res.status(201).json({ message: "SignOut Endpoint" }),
+    res.status(201).json({
+      status: true,
+      message: "SignOut Endpoint",
+    }),
 };
 export default AuthController;

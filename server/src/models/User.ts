@@ -1,4 +1,29 @@
 import { z, ZodError } from "zod";
+const PWD_SIZE = 8;
+const UserLoginSchema = z.object({
+  email: z
+    .string({
+      errorMap: (err) => {
+        return {
+          message: "Email is required",
+        };
+      },
+    })
+    .email({
+      message: "Enter valid email",
+    }),
+  password: z
+    .string({
+      errorMap: (err) => {
+        return {
+          message: "Password is required",
+        };
+      },
+    })
+    .min(PWD_SIZE, {
+      message: `Password must be at least ${PWD_SIZE} characters`,
+    }),
+});
 
 const UserSchema = z
   .object({
@@ -33,8 +58,8 @@ const UserSchema = z
           };
         },
       })
-      .min(8, {
-        message: "Password must be at least 8 characters",
+      .min(PWD_SIZE, {
+        message: `Password must be at least ${PWD_SIZE} characters`,
       }),
     confirmPassword: z.string({
       errorMap: (err) => {
@@ -56,13 +81,19 @@ const UserSchema = z
   });
 
 export type User = z.infer<typeof UserSchema>;
-
+export type UserLogin = z.infer<typeof UserLoginSchema>;
 export const ValidateUser = (user: User) => {
   try {
     UserSchema.parse(user);
   } catch (error) {
-    if (error instanceof ZodError) {
-      throw error;
-    }
+    throw error;
+  }
+};
+
+export const ValidateLogin = (user: UserLogin) => {
+  try {
+    UserLoginSchema.parse(user);
+  } catch (error) {
+    throw error;
   }
 };
