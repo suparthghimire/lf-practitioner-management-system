@@ -29,3 +29,57 @@ model RefreshToken {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 }
+
+model Practitioner {
+  id              Int              @id @default(autoincrement())
+  fullname        String
+  email           String           @unique
+  contact         BigInt           @unique
+  dob             DateTime
+  address         String
+  image           String           @unique
+  ICUSpecialist   Boolean
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  startTime       DateTime
+  endTime         DateTime
+  WorkingDays     Day[]
+  Attendances     Attendance[]
+  Specializations Specialization[]
+}
+
+enum DayName {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
+}
+
+model Day {
+  id             Int          @id @default(autoincrement())
+  day            DayName
+  practitionerId Int
+  practitioner   Practitioner @relation(fields: [practitionerId], references: [id])
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+}
+
+model Attendance {
+  id             Int           @id @default(autoincrement())
+  startTime      DateTime
+  endTime        DateTime
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  Practitioner   Practitioner? @relation(fields: [practitionerId], references: [id])
+  practitionerId Int?
+}
+
+model Specialization {
+  id             Int           @id @default(autoincrement())
+  name           String
+  Practitioner   Practitioner? @relation(fields: [practitionerId], references: [id])
+  practitionerId Int?
+}
