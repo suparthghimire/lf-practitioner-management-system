@@ -17,6 +17,17 @@ const SpecializationSchema = z.object({
   }),
 });
 
+const WorkingDaysSchema = z.object({
+  id: z.number().optional(),
+  name: z.enum(dayEnum, {
+    errorMap: (err) => {
+      return {
+        message: "Please select a valid day",
+      };
+    },
+  }),
+});
+
 const PractitionerSchema = z.object({
   id: z.number().optional(),
   fullname: z.string().min(1, {
@@ -64,19 +75,9 @@ const PractitionerSchema = z.object({
       };
     },
   }),
-  WorkingDays: z
-    .array(
-      z.enum(dayEnum, {
-        errorMap: (err) => {
-          return {
-            message: "Please select a valid day",
-          };
-        },
-      })
-    )
-    .nonempty({
-      message: "Please select at least one day",
-    }),
+  WorkingDays: z.array(WorkingDaysSchema).nonempty({
+    message: "Please select at least one day",
+  }),
   Specializations: z.array(SpecializationSchema).optional(),
 });
 

@@ -4,11 +4,8 @@ import { User, UserLogin, ValidateLogin, ValidateUser } from "../models/User";
 import ErrorService, { CustomError } from "../service/Error.Service";
 import TokenService from "../service/Token.Service";
 import UserService from "../service/User.Service";
-import {
-  ACCESS_TOKEN_EXPIRY,
-  REFRESH_TOKEN_COOKIE_NAME,
-  REFRESH_TOKEN_EXPIRY,
-} from "../utils/helpers";
+
+import CONFIG from "../utils/config";
 import { JWTPayload } from "../utils/interfaces";
 const AuthController = {
   index: async function (req: Request, res: Response) {
@@ -20,7 +17,15 @@ const AuthController = {
         status: true,
         data: user,
       });
-    } catch (error) {}
+    } catch (error) {
+      console.error(error);
+      const { message, data, status } = ErrorService.handleError(error, "User");
+      return res.status(status || 500).json({
+        status: false,
+        message: message || "SignIn Failed",
+        data: data == null ? undefined : data,
+      });
+    }
   },
   signIn: async function (req: Request, res: Response) {
     try {
@@ -37,16 +42,20 @@ const AuthController = {
       };
       const accessToken = TokenService.createToken(
         tokenPayload,
-        ACCESS_TOKEN_EXPIRY
+        CONFIG.ACCESS_TOKEN_EXPIRY
       );
       const refreshToken = TokenService.createToken(
         tokenPayload,
-        REFRESH_TOKEN_EXPIRY
+        CONFIG.REFRESH_TOKEN_EXPIRY
       );
-      TokenService.saveUserToken(refreshToken, userId, REFRESH_TOKEN_EXPIRY);
-      res.cookie(REFRESH_TOKEN_COOKIE_NAME, `Bearer ${refreshToken}`, {
+      TokenService.saveUserToken(
+        refreshToken,
+        userId,
+        CONFIG.REFRESH_TOKEN_EXPIRY
+      );
+      res.cookie(CONFIG.REFRESH_TOKEN_COOKIE_NAME, `Bearer ${refreshToken}`, {
         httpOnly: true,
-        maxAge: REFRESH_TOKEN_EXPIRY * 1000,
+        maxAge: CONFIG.REFRESH_TOKEN_EXPIRY * 1000,
       });
 
       return res.status(201).json({
@@ -93,7 +102,7 @@ const AuthController = {
     const { userId } = req.body;
     if (!userId) throw new CustomError("Invalid Token", 401);
     TokenService.removeUserToken(userId);
-    res.cookie(REFRESH_TOKEN_COOKIE_NAME, "", {
+    res.cookie(CONFIG.REFRESH_TOKEN_COOKIE_NAME, "", {
       httpOnly: true,
       maxAge: 1,
     });

@@ -1,11 +1,11 @@
 import { Request, Response, NextFunction } from "express";
 import TokenService from "../service/Token.Service";
-import { REFRESH_TOKEN_COOKIE_NAME } from "../utils/helpers";
+import CONFIG from "../utils/config";
 import { JWTPayload } from "../utils/interfaces";
 
 const IsLoggedIn = (req: Request, res: Response, next: NextFunction) => {
   const bearerToken = req.headers["authorization"] as string;
-  const refreshToken = req.cookies[REFRESH_TOKEN_COOKIE_NAME] as string;
+  const refreshToken = req.cookies[CONFIG.REFRESH_TOKEN_COOKIE_NAME] as string;
   if (!bearerToken)
     return res.status(401).json({
       status: false,
@@ -33,7 +33,7 @@ const IsLoggedIn = (req: Request, res: Response, next: NextFunction) => {
 const IsLoggedOut = (req: Request, res: Response, next: NextFunction) => {
   const bearerToken =
     (req.headers["authorization"] as string) ||
-    (req.cookies[REFRESH_TOKEN_COOKIE_NAME] as string);
+    (req.cookies[CONFIG.REFRESH_TOKEN_COOKIE_NAME] as string);
   if (bearerToken) {
     const token = bearerToken.split(" ")[1];
     try {

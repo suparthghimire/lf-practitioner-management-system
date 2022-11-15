@@ -1,19 +1,19 @@
 import jwt from "jsonwebtoken";
-import { JWT_SECRET } from "../utils/helpers";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
 import moment from "moment";
 import { prismaClient } from "../index";
 import { CustomError } from "./Error.Service";
 import { JWTPayload } from "../utils/interfaces";
+import CONFIG from "../utils/config";
 const TokenService = {
   createToken: (payload: JWTPayload, expirationTime: number) => {
-    return jwt.sign(payload, JWT_SECRET, {
+    return jwt.sign(payload, CONFIG.JWT_SECRET, {
       expiresIn: expirationTime,
     });
   },
   validateJwtToken: (token: string) => {
     try {
-      return jwt.verify(token, JWT_SECRET);
+      return jwt.verify(token, CONFIG.JWT_SECRET);
     } catch (error) {
       throw new CustomError("Invalid Token", 401);
     }

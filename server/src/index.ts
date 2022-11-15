@@ -7,6 +7,7 @@ import { PrismaClient, DayName } from "@prisma/client";
 import IndexRoute from "./routes/auth.route";
 import PractitionerRoutes from "./routes/practitioner.route";
 import PractitionerController from "./controllers/Practitioner.Controller";
+import CONFIG from "./utils/config";
 
 dotenv.config();
 const app = express();
@@ -30,7 +31,7 @@ app.use("/practitioner", PractitionerRoutes);
  */
 
 app.delete("/patient/:practitioner_id", PractitionerController.delete);
-const PORT = process.env.PORT || 3000;
+const PORT = CONFIG.PORT || 3000;
 app.listen(PORT, () => console.log(`Server Started at ${PORT}`));
 
 export const prismaClient = new PrismaClient();
