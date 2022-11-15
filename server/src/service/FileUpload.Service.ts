@@ -28,10 +28,10 @@ const FileUploadService = {
       throw error;
     }
   },
-  delete: async function (name: string) {
+  delete: async function (url: string) {
     try {
       const storage = getStorage();
-      const storageRef = ref(storage, `${PARENT_DIR}/${name}`);
+      const storageRef = ref(storage, `${url}`);
       await deleteObject(storageRef);
     } catch (error) {
       console.log(error);

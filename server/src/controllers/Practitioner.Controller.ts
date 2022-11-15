@@ -6,12 +6,15 @@ import {
   ValidateImage,
   ValidatePractitioner,
 } from "../models/Practitioner";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
+
 import ErrorService from "../service/Error.Service";
 import FileUploadService from "../service/FileUpload.Service";
 import { v4 as uuidv4 } from "uuid";
 
 import PractitionerService from "../service/Practitioner.Service";
 import CONFIG from "../utils/app_config";
+import { PrismaClient } from "prisma/prisma-client";
 const PractitionerController = {
   index: async function (req: Request, res: Response) {
     try {
@@ -53,7 +56,7 @@ const PractitionerController = {
       });
     }
   },
-  post: async (req: Request, res: Response) => {
+  post: async function (req: Request, res: Response) {
     const imageName = uuidv4() + "--" + Date.now();
     try {
       const body = req.body;
@@ -109,7 +112,7 @@ const PractitionerController = {
       );
       return res.status(status || 500).json({
         status: false,
-        message: message || "Failed to Create Practitioners",
+        message: message || "Failed to create practitioner",
         data: data == null ? undefined : data,
       });
     }
@@ -118,7 +121,44 @@ const PractitionerController = {
     res.status(200).json({ message: "Show Endpoint" }),
   update: (req: Request, res: Response) =>
     res.status(201).json({ message: "Update Endpoint" }),
-  delete: (req: Request, res: Response) =>
-    res.status(201).json({ message: "Delete Endpoint" }),
+  delete: async function (req: Request, res: Response) {
+    try {
+      const { practitioner_id } = req.params;
+      if (!practitioner_id)
+        throw new ZodError([
+          {
+            path: ["id"],
+            message: "Id is required",
+            code: "custom",
+          },
+        ]);
+      const practitioner = await PractitionerService.getPractitionerById(
+        parseInt(practitioner_id)
+      );
+      if (!practitioner)
+        throw new PrismaClientKnownRequestError("", "2015", "");
+
+      const imageUrl = decodeURI(practitioner.image);
+      const deleteImageFromBucket = await FileUploadService.delete(imageUrl);
+      const deletePractitioner = await PractitionerService.deletePractitioner(
+        parseInt(practitioner_id)
+      );
+
+      return res
+        .status(201)
+        .json({ message: "Practitioner deleted successfully" });
+    } catch (error) {
+      console.error(error);
+      const { message, data, status } = ErrorService.handleError(
+        error,
+        "Practitioner"
+      );
+      return res.status(status || 500).json({
+        status: false,
+        message: message || "Failed to delete practitioner",
+        data: data == null ? undefined : data,
+      });
+    }
+  },
 };
 export default PractitionerController;
