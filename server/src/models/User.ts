@@ -1,4 +1,4 @@
-import { z, ZodError } from "zod";
+import { z } from "zod";
 const PWD_SIZE = 8;
 const UserLoginSchema = z.object({
   email: z
