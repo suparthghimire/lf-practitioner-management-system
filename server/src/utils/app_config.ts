@@ -16,6 +16,7 @@ const CONFIG = {
   REFRESH_TOKEN_COOKIE_NAME:
     process.env.REFRESH_TOKEN_COOKIE_NAME ||
     "X-REFRESH-TOKEN-PRACTITIONER-MGMT-LF",
+  MAX_IMG_SIZE: 1024 * 1024 * 5, //5mb
 };
 
 export default CONFIG;

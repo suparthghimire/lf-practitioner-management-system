@@ -4,7 +4,7 @@ import moment from "moment";
 import { prismaClient } from "../index";
 import { CustomError } from "./Error.Service";
 import { JWTPayload } from "../utils/interfaces";
-import CONFIG from "../utils/config";
+import CONFIG from "../utils/app_config";
 const TokenService = {
   createToken: (payload: JWTPayload, expirationTime: number) => {
     return jwt.sign(payload, CONFIG.JWT_SECRET, {

@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import TokenService from "../service/Token.Service";
-import CONFIG from "../utils/config";
+import CONFIG from "../utils/app_config";
 import { JWTPayload } from "../utils/interfaces";
 
 const IsLoggedIn = (req: Request, res: Response, next: NextFunction) => {

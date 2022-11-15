@@ -2,8 +2,34 @@ import { Practitioner } from "../models/Practitioner";
 import { prismaClient } from "../index";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
 import { GetPagination } from "../utils/helpers";
+import { DayName } from "prisma/prisma-client";
 
 const PractitionerService = {
+  getPractitionerByEmail: async (email: string) => {
+    try {
+      const practitioner = await prismaClient.practitioner.findUnique({
+        where: {
+          email: email,
+        },
+      });
+      return practitioner;
+    } catch (error) {
+      throw error;
+    }
+  },
+  getPractitionerByContact: async (contact: string) => {
+    try {
+      const practitioner = await prismaClient.practitioner.findUnique({
+        where: {
+          contact: contact,
+        },
+      });
+      return practitioner;
+    } catch (error) {
+      throw error;
+    }
+  },
+
   getAllPractitioners: async function (limit: number, page: number) {
     try {
       const offset = (page - 1) * limit;
@@ -61,6 +87,7 @@ const PractitionerService = {
   },
   createPractitioner: async function (practitioner: Practitioner) {
     try {
+      console.log(practitioner.email);
       return await prismaClient.practitioner.create({
         data: {
           fullname: practitioner.fullname,

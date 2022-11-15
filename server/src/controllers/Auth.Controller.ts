@@ -5,7 +5,7 @@ import ErrorService, { CustomError } from "../service/Error.Service";
 import TokenService from "../service/Token.Service";
 import UserService from "../service/User.Service";
 
-import CONFIG from "../utils/config";
+import CONFIG from "../utils/app_config";
 import { JWTPayload } from "../utils/interfaces";
 const AuthController = {
   index: async function (req: Request, res: Response) {

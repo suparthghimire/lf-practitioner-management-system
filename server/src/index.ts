@@ -2,18 +2,23 @@ import path from "path";
 import dotenv from "dotenv";
 import express from "express";
 import cookieParser from "cookie-parser";
-import { PrismaClient, DayName } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
+import fileUpload from "express-fileupload";
 /* Route Imports */
 import IndexRoute from "./routes/auth.route";
 import PractitionerRoutes from "./routes/practitioner.route";
 import PractitionerController from "./controllers/Practitioner.Controller";
-import CONFIG from "./utils/config";
+import CONFIG from "./utils/app_config";
 
 dotenv.config();
 const app = express();
-
+app.use(
+  fileUpload({
+    parseNested: true,
+  })
+);
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(cookieParser());
 

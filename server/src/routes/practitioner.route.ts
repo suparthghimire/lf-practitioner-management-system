@@ -1,7 +1,6 @@
 import express from "express";
-const router = express.Router();
-
 import PractitionerController from "../controllers/Practitioner.Controller";
+const router = express.Router();
 
 router.get("/", PractitionerController.index);
 router.post("/", PractitionerController.post);
