@@ -2,7 +2,6 @@ import { Practitioner } from "../models/Practitioner";
 import { prismaClient } from "../index";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
 import { GetPagination } from "../utils/helpers";
-import { DayName } from "prisma/prisma-client";
 
 const PractitionerService = {
   getPractitionerByEmail: async (email: string) => {
@@ -87,7 +86,6 @@ const PractitionerService = {
   },
   createPractitioner: async function (practitioner: Practitioner) {
     try {
-      console.log(practitioner.email);
       return await prismaClient.practitioner.create({
         data: {
           fullname: practitioner.fullname,
@@ -105,7 +103,7 @@ const PractitionerService = {
                 id: day.id,
               },
               create: {
-                day: day.name,
+                day: day.day,
               },
             })),
           },
@@ -123,41 +121,45 @@ const PractitionerService = {
       throw error;
     }
   },
-  updatePractitioner: async function (practitioner: Practitioner) {
+  updatePractitioner: async function (
+    currWorkingDaysIdList: number[],
+    currSpecializationsIdList: number[],
+    newPractitioner: Practitioner
+  ) {
     try {
       return await prismaClient.practitioner.update({
         where: {
-          id: practitioner.id,
+          id: newPractitioner.id,
         },
         data: {
-          fullname: practitioner.fullname,
-          address: practitioner.address,
-          contact: practitioner.contact,
-          dob: practitioner.dob,
-          email: practitioner.email,
-          startTime: practitioner.startTime,
-          endTime: practitioner.endTime,
-          ICUSpecialist: practitioner.ICUSpecialist,
-          image: practitioner.image,
+          fullname: newPractitioner.fullname,
+          address: newPractitioner.address,
+          contact: newPractitioner.contact,
+          dob: newPractitioner.dob,
+          email: newPractitioner.email,
+          startTime: newPractitioner.startTime,
+          endTime: newPractitioner.endTime,
+          ICUSpecialist: newPractitioner.ICUSpecialist,
+          image: newPractitioner.image,
           WorkingDays: {
-            disconnect: practitioner.WorkingDays.map((day) => ({
-              id: day.id,
+            disconnect: currWorkingDaysIdList.map((id) => ({
+              id: id,
             })),
-            connectOrCreate: practitioner.WorkingDays.map((day) => ({
+            connectOrCreate: newPractitioner.WorkingDays.map((day) => ({
               where: {
                 id: day.id,
               },
               create: {
-                day: day.name,
+                day: day.day,
               },
             })),
           },
-          ...(practitioner.Specializations && {
+          ...(newPractitioner.Specializations && {
             Specializations: {
-              disconnect: practitioner.Specializations.map((spec) => ({
-                id: spec.id,
+              disconnect: currSpecializationsIdList.map((id) => ({
+                id: id,
               })),
-              connectOrCreate: practitioner.Specializations.map((spec) => ({
+              connectOrCreate: newPractitioner.Specializations.map((spec) => ({
                 where: { id: spec.id },
                 create: { name: spec.name },
               })),

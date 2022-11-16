@@ -14,7 +14,15 @@ const dayEnum = [
 ] as const;
 
 const SpecializationSchema = z.object({
-  id: z.number().optional(),
+  id: z
+    .number({
+      errorMap: (err) => {
+        return {
+          message: "Enter a Valid Specialization id",
+        };
+      },
+    })
+    .optional(),
   name: z.string().min(1, {
     message: "Specialization name is required",
   }),
@@ -28,7 +36,7 @@ const WorkingDaysSchema = z.object({
       }),
     })
     .optional(),
-  name: z.enum(dayEnum, {
+  day: z.enum(dayEnum, {
     errorMap: (err) => {
       return {
         message: "Please select a valid day",
@@ -152,23 +160,32 @@ const PractitionerSchema = z
       );
       const unresolvedContactExist =
         PractitionerService.getPractitionerByContact(practitioner.contact);
+
       const [emailExist, contactExist] = await Promise.all([
         unresolvedEmailExist,
         unresolvedContactExist,
       ]);
-      if (emailExist && practitioner.id !== emailExist.id) {
+
+      if (
+        emailExist &&
+        (practitioner.id !== emailExist.id || !practitioner.id)
+      ) {
         ctx.addIssue({
           code: "custom",
           message: "Practitioner email already exist",
           path: ["email"],
         });
       }
-      if (contactExist && practitioner.id !== contactExist.id) {
+      if (
+        contactExist &&
+        (practitioner.id !== contactExist.id || !practitioner.id)
+      ) {
         ctx.addIssue({
           code: "custom",
           message: "Practitioner contact already exist",
           path: ["contact"],
         });
+        return null;
       }
     } catch (error) {
       throw error;
