@@ -3,7 +3,7 @@
  * MAP OF PRISMA ERROR CODES
  * Error Codes can be found at: https://www.prisma.io/docs/reference/api-reference/error-reference#common
  */
-export const PRISMA_ERROR_CODES_QUERY = {
+export const PRISMA_ERROR_CODES = {
   TOO_LONG_VALUE: "2000",
   WHERE_CONDITION_DOESNT_EXIST: "2001",
   UNIQUE_CONSTRAINT_FAIL: "2002",

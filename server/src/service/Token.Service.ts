@@ -7,11 +7,13 @@ import { JWTPayload } from "../utils/interfaces";
 import CONFIG from "../utils/app_config";
 import { PRISMA_ERROR_CODES } from "../utils/prisma_error_codes";
 const TokenService = {
+  // creates new jwt token with payload and expiry time
   createToken: (payload: JWTPayload, expirationTime: number) => {
     return jwt.sign(payload, CONFIG.JWT_SECRET, {
       expiresIn: expirationTime,
     });
   },
+  // validates the token and returns the payload
   validateJwtToken: (token: string) => {
     try {
       return jwt.verify(token, CONFIG.JWT_SECRET);
@@ -19,6 +21,7 @@ const TokenService = {
       throw new CustomError("Invalid Token", 401);
     }
   },
+  // gets token of user that is saved in database
   getUserToken: async (token: string) => {
     try {
       const userToken = await prismaClient.refreshToken.findUnique({
@@ -34,6 +37,7 @@ const TokenService = {
       throw error;
     }
   },
+  // Verifies if the token belongs to the user
   verifyUserToken: async (token: string) => {
     try {
       const decoded = TokenService.validateJwtToken(token);
@@ -53,13 +57,14 @@ const TokenService = {
       throw error;
     }
   },
+  // saves the token of that user in database
   saveUserToken: async function (
     token: string,
     userId: number,
     expireTimeInSec: number
   ) {
     try {
-      // remove all token for the user
+      // remove all previous tokens for the user
       const delPromise = prismaClient.refreshToken.deleteMany({
         where: {
           userId,
@@ -94,6 +99,7 @@ const TokenService = {
       throw error;
     }
   },
+  // removes the token of that user from database
   removeUserToken: async function (userId: number) {
     try {
       await prismaClient.refreshToken.deleteMany({

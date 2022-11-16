@@ -10,20 +10,25 @@ import PractitionerRoutes from "./routes/practitioner.route";
 import PractitionerController from "./controllers/Practitioner.Controller";
 import CONFIG from "./utils/app_config";
 
+// configure .env files
 dotenv.config();
 const app = express();
 app.use(
   fileUpload({
-    parseNested: true,
+    parseNested: true, // allow nested objects from form-data
   })
 );
+// configure express to use json
 app.use(express.json());
+// configure express to use cookie parser
+// Externded true allows to parse nested objects
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(cookieParser());
-
+/**
+ * Routes
+ */
 app.use("/", IndexRoute);
-
 app.use("/practitioner", PractitionerRoutes);
 
 /*
@@ -39,4 +44,8 @@ app.delete("/patient/:practitioner_id", PractitionerController.delete);
 const PORT = CONFIG.PORT || 3000;
 app.listen(PORT, () => console.log(`Server Started at ${PORT}`));
 
+// configure prisma client
+/**
+ * Prisma Docs suggests to create a new instance of PrismaClient once and use it everywhere
+ */
 export const prismaClient = new PrismaClient();

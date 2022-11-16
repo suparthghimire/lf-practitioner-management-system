@@ -1,5 +1,6 @@
 import { ConvertTimeToSec } from "./helpers";
 
+// Config variables for the app
 const CONFIG = {
   APP_URL: process.env.APP_URL || "http://localhost:3000",
   PORT: parseInt(process.env.PORT as string) || 3000,

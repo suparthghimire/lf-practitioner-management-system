@@ -2,6 +2,7 @@ import { Practitioner } from "../models/Practitioner";
 import { prismaClient } from "../index";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
 import { GetPagination } from "../utils/helpers";
+import { PRISMA_ERROR_CODES } from "../utils/prisma_error_codes";
 
 const PractitionerService = {
   getPractitionerByEmail: async (email: string) => {
@@ -31,10 +32,12 @@ const PractitionerService = {
 
   getAllPractitioners: async function (limit: number, page: number) {
     try {
+      // set offset for pagination based on limit and page
       const offset = (page - 1) * limit;
-
+      // take and limit are used for pagination in Prisma ORM, where Take is total records to be fetched and skip is the offset
       const take = limit;
       const skip = offset;
+      // get all practitioners from database with pagination and ordered by descending order of creation date
       const unresolvedPractitioners = prismaClient.practitioner.findMany({
         include: {
           Specializations: true,
@@ -46,16 +49,20 @@ const PractitionerService = {
         take,
         skip,
       });
+      // get total count of practitioners in database
       const unresolvedTotalData = prismaClient.practitioner.count();
 
+      // resolve both promises in parallel as they are mutually exclusive to each other
       const [practitioners, totalData] = await Promise.all([
         unresolvedPractitioners,
         unresolvedTotalData,
       ]);
 
+      // get pagination data
       const { nextPage, prevPage } = GetPagination(totalData, limit, page);
       const totalPages = Math.ceil(totalData / limit);
 
+      // return fetched data along with pagination data
       return {
         nextPageNo: nextPage,
         prevPageNo: prevPage,
@@ -88,6 +95,7 @@ const PractitionerService = {
       throw error;
     }
   },
+  // Create new practitioner
   createPractitioner: async function (practitioner: Practitioner) {
     try {
       return await prismaClient.practitioner.create({
@@ -102,6 +110,10 @@ const PractitionerService = {
           ICUSpecialist: practitioner.ICUSpecialist,
           image: practitioner.image,
           WorkingDays: {
+            /**
+             * connect or create tries to connect the relation model with the current model
+             * if the relation model does not exist, it creates a new one and maintains the relation
+             */
             connectOrCreate: practitioner.WorkingDays.map((day) => ({
               where: {
                 id: day.id,
@@ -111,7 +123,9 @@ const PractitionerService = {
               },
             })),
           },
+          // Specializations is an optional field, so we need to check if it is present or not
           ...(practitioner.Specializations && {
+            // if present, then connect or create the relation
             Specializations: {
               connectOrCreate: practitioner.Specializations.map((spec) => ({
                 where: { id: spec.id },
@@ -146,9 +160,11 @@ const PractitionerService = {
           ICUSpecialist: newPractitioner.ICUSpecialist,
           image: newPractitioner.image,
           WorkingDays: {
+            // whilt updating, we need to delete the old relations and create new ones
             disconnect: currWorkingDaysIdList.map((id) => ({
               id: id,
             })),
+            // Connect or create relationship with the new relation model
             connectOrCreate: newPractitioner.WorkingDays.map((day) => ({
               where: {
                 id: day.id,
@@ -158,11 +174,14 @@ const PractitionerService = {
               },
             })),
           },
+          // Specializations is an optional field, so we need to check if it is present or not
           ...(newPractitioner.Specializations && {
             Specializations: {
+              // whilt updating, we need to delete the old relations and create new ones
               disconnect: currSpecializationsIdList.map((id) => ({
                 id: id,
               })),
+              // if present, then connect or create relationship with the new relation model
               connectOrCreate: newPractitioner.Specializations.map((spec) => ({
                 where: { id: spec.id },
                 create: { name: spec.name },
@@ -175,6 +194,7 @@ const PractitionerService = {
       throw error;
     }
   },
+  // Delete practitioner by id
   deletePractitioner: async function (id: number) {
     try {
       await prismaClient.practitioner.delete({
