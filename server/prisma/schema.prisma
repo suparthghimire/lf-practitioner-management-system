@@ -44,7 +44,6 @@ model Practitioner {
   startTime       DateTime
   endTime         DateTime
   WorkingDays     Day[]
-  Attendances     Attendance[]
   Specializations Specialization[]
 }
 
@@ -62,16 +61,6 @@ model Day {
   id            Int            @id @default(autoincrement())
   day           DayName        @unique
   Practitioners Practitioner[]
-}
-
-model Attendance {
-  id             Int           @id @default(autoincrement())
-  startTime      DateTime
-  endTime        DateTime
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
-  Practitioner   Practitioner? @relation(fields: [practitionerId], references: [id], onDelete: Cascade)
-  practitionerId Int?
 }
 
 model Specialization {
