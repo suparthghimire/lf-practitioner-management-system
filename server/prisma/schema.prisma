@@ -37,7 +37,7 @@ model Practitioner {
   contact         String           @unique
   dob             DateTime
   address         String
-  image           String           @unique
+  image           String           @db.LongText
   ICUSpecialist   Boolean          @default(false)
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
