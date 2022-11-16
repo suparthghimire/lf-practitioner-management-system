@@ -114,19 +114,19 @@ Creates New Practitioner
 | :-------------- | :------- | :--------------------------------- |
 | `authorization` | `string` | **Required**. Access Token of User |
 
-| Body              | Type       | Description                                         |
-| :---------------- | :--------- | :-------------------------------------------------- |
-| `fullname`        | `string`   | **Required**. Name of Practitioner                  |
-| `email`           | `string`   | **Required**. Email of Practitioner                 |
-| `contact`         | `string`   | **Required**. Contact of Practitioner               |
-| `dob`             | `DateTime` | **Required**. Date of Birth of Practitioner         |
-| `address`         | `string`   | **Required**. Address of Practitioner               |
-| `image`           | `File`     | **Required**. Display Picture of Practitioner       |
-| `icuSpecialist`   | `boolean`  | **Optional**. Yes if Practitioner is ICU Specialist |
-| `startTime`       | `DateTime` | **Required**. Start time for Practitioner           |
-| `endTime`         | `DateTime` | **Required**. End time for Practitioner             |
-| `WorkingDays`     | `Object`   | **Required**. Working Days of Practitioner          |
-| `Specializations` | `Object`   | **Required**. Specializations of Practitioner       |
+| Body              | Type       | Description                                                         |
+| :---------------- | :--------- | :------------------------------------------------------------------ |
+| `fullname`        | `string`   | **Required**. Name of Practitioner                                  |
+| `email`           | `string`   | **Required**. Email of Practitioner                                 |
+| `contact`         | `string`   | **Required**. Contact of Practitioner                               |
+| `dob`             | `DateTime` | **Required**. Date of Birth of Practitioner                         |
+| `address`         | `string`   | **Required**. Address of Practitioner                               |
+| `image`           | `File`     | **Required**. Display Picture of Practitioner                       |
+| `icuSpecialist`   | `boolean`  | **Optional**. Yes if Practitioner is ICU Specialist                 |
+| `startTime`       | `DateTime` | **Required**. Start time for Practitioner                           |
+| `endTime`         | `DateTime` | **Required**. End time for Practitioner                             |
+| `WorkingDays`     | `Array`    | **Required**. Array of Working Day of Practitioner (id and name)    |
+| `Specializations` | `Array`    | **Required**. Array of Specialization of Practitioner (id and name) |
 
 #### Update
 
