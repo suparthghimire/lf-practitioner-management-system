@@ -144,7 +144,7 @@ const AuthController = {
     }
   },
 
-  signOut: (req: Request, res: Response) => {
+  signOut: function (req: Request, res: Response) {
     const { userId } = req.body;
     if (!userId) throw new CustomError("Invalid Token", 401);
     /**
@@ -163,6 +163,62 @@ const AuthController = {
       status: true,
       message: "User Signed Out",
     });
+  },
+  refreshToken: async function (req: Request, res: Response) {
+    try {
+      // Get Refresh Token from Cookie
+      let bearerToken =
+        req.cookies[CONFIG.REFRESH_TOKEN_COOKIE_NAME] ||
+        req.headers["authorization"];
+
+      // If Refresh Token is not present, throw error of Invalid Token
+      if (!bearerToken) throw new CustomError("Invalid Token", 401);
+
+      const refreshToken = bearerToken.split(" ")[1];
+      // Verify Refresh Token
+      const { id } = TokenService.validateJwtToken(refreshToken) as JWTPayload;
+
+      // Get Refresh Token from database
+      const token = await TokenService.getUserToken(refreshToken);
+
+      // If Refresh Token is not present in database, throw error of Invalid Token
+      if (!token) throw new CustomError("Invalid Token", 401);
+
+      // check if roken has expired
+      if (token.expireTime < new Date())
+        throw new CustomError("Invalid Token", 401);
+
+      // Create Payload for JWT Token
+      const tokenPayload: JWTPayload = {
+        id,
+      };
+
+      // Generate Token for access token with some expiration time (Set in Config File)
+      const accessToken = TokenService.createToken(
+        tokenPayload,
+        CONFIG.ACCESS_TOKEN_EXPIRY
+      );
+
+      // return success
+      return res.status(201).json({
+        status: true,
+        message: "Refresh Token Successful",
+        data: {
+          accessToken: "Bearer " + accessToken,
+          bearerToken,
+        },
+      });
+    } catch (error) {
+      console.error(error);
+      // Handle Error
+      const { message, data, status } = ErrorService.handleError(error, "User");
+      // return failuer
+      return res.status(status || 500).json({
+        status: false,
+        message: message || "Signup Failed",
+        data: data == null ? undefined : data,
+      });
+    }
   },
 };
 export default AuthController;
