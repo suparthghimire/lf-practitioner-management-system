@@ -12,8 +12,8 @@ The technology stack for the project is listed below
 
 - <img src="https://raw.githubusercontent.com/github/explore/80688e429a7d4ef2fca1e82350fe8e3517d3494d/topics/typescript/typescript.png" width="15px"/> Typescript
 - <img src="https://www.freepnglogos.com/uploads/logo-mysql-png/logo-mysql-mysql-logo-png-images-are-download-crazypng-21.png" width="15px"/> MySQL
-- <img src="https://seeklogo.com/images/P/prisma-logo-3805665B69-seeklogo.com.png" width="15px"/> Prisma
-- <img src="https://cdn.icon-icons.com/icons2/2699/PNG/512/expressjs_logo_icon_169185.png" width="15px"/> ExpressJS
+- <img src="https://media-exp1.licdn.com/dms/image/C4E0BAQFvJ18o25FL5A/company-logo_200_200/0/1657210097411?e=2147483647&v=beta&t=C2Jt_JbPWofX7Gxxs6JLQLk525ISOBPd_3lwLMk15bI" width="15px"/> Prisma
+- <img src="https://assets.website-files.com/61ca3f775a79ec5f87fcf937/6202fcdee5ee8636a145a41b_1234.png" width="15px"/> ExpressJS
 
 ---
 
@@ -59,9 +59,19 @@ Creates new user
 
 Clears refresh token from database and browser cookie
 
-| Header          | Type     | Description                        |
-| :-------------- | :------- | :--------------------------------- |
-| `authorization` | `string` | **Required**. Access Token of User |
+| Header          | Type     | Description                                       |
+| :-------------- | :------- | :------------------------------------------------ |
+| `authorization` | `string` | **Required**. Bearer Token of User (Access Token) |
+
+```http
+  Post /refresh
+```
+
+Generates new Access Token
+
+| Header          | Type     | Description                                        |
+| :-------------- | :------- | :------------------------------------------------- |
+| `authorization` | `string` | **Required**. Bearer Token of User (Refresh Token) |
 
 ---
 
