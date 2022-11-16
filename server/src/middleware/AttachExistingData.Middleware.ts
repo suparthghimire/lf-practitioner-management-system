@@ -17,10 +17,10 @@ export default async function AttachExistingData(
     const { Specializations, WorkingDays } = req.body;
     if (!Specializations) req.body.Specializations = [];
 
-    // variable that will store final attacked data of specializations
+    // variable that will store final attached data of specializations
     let newSpecialization: Specialization[] = [];
 
-    // variable that will store final attacked data of workingDays
+    // variable that will store final attached data of workingDays
     let newWorkingDays: Day[] = [];
 
     type SpecsPromise = Promise<Specialization[] | undefined>;
