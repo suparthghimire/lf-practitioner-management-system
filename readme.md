@@ -122,7 +122,7 @@ Creates New Practitioner
 | `dob`             | `DateTime` | **Required**. Date of Birth of Practitioner         |
 | `address`         | `string`   | **Required**. Address of Practitioner               |
 | `image`           | `File`     | **Required**. Display Picture of Practitioner       |
-| `ICUSpecialist`   | `boolean`  | **Optional**. Yes if Practitioner is ICU Specialist |
+| `icuSpecialist`   | `boolean`  | **Optional**. Yes if Practitioner is ICU Specialist |
 | `startTime`       | `DateTime` | **Required**. Start time for Practitioner           |
 | `endTime`         | `DateTime` | **Required**. End time for Practitioner             |
 | `WorkingDays`     | `Object`   | **Required**. Working Days of Practitioner          |
