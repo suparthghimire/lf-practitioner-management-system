@@ -1,5 +1,6 @@
 import { ZodError } from "zod";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
+import { PRISMA_ERROR_CODES } from "../utils/prisma_error_codes";
 
 export class CustomError extends Error {
   constructor(message: string, private m_status: number) {
@@ -45,18 +46,18 @@ function HandlePrismaError(
   entityName: string
 ) {
   switch (error.code) {
-    case "P2002":
+    case PRISMA_ERROR_CODES.UNIQUE_CONSTRAINT_FAIL:
       return {
         status: 409,
         message: `${entityName} already exists`,
       };
 
-    case "2007":
+    case PRISMA_ERROR_CODES.DATA_VALIDATION_ERROR:
       return {
         status: 422,
         message: `Validation Failed`,
       };
-    case "2015":
+    case PRISMA_ERROR_CODES.RECORD_NOT_FOUND:
       return {
         status: 404,
         message: `${entityName} not found`,
@@ -65,7 +66,9 @@ function HandlePrismaError(
     default:
       return {
         status: 409,
-        message: "Unknown Error Occured while processing request",
+        message:
+          "Database Error Occured while processing request. Error Code: " +
+          error.code,
       };
   }
 }

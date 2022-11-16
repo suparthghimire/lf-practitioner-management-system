@@ -78,7 +78,11 @@ const PractitionerService = {
         },
       });
       if (!practitioner)
-        throw new PrismaClientKnownRequestError("", "2015", "");
+        throw new PrismaClientKnownRequestError(
+          "",
+          PRISMA_ERROR_CODES.RECORD_NOT_FOUND,
+          ""
+        );
       return practitioner;
     } catch (error) {
       throw error;

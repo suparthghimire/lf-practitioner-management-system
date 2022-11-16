@@ -5,6 +5,7 @@ import { prismaClient } from "../index";
 import { CustomError } from "./Error.Service";
 import { JWTPayload } from "../utils/interfaces";
 import CONFIG from "../utils/app_config";
+import { PRISMA_ERROR_CODES } from "../utils/prisma_error_codes";
 const TokenService = {
   createToken: (payload: JWTPayload, expirationTime: number) => {
     return jwt.sign(payload, CONFIG.JWT_SECRET, {
@@ -41,7 +42,12 @@ const TokenService = {
           id: (decoded as JWTPayload).id,
         },
       });
-      if (!user) throw new PrismaClientKnownRequestError("", "2015", "");
+      if (!user)
+        throw new PrismaClientKnownRequestError(
+          "",
+          PRISMA_ERROR_CODES.RECORD_NOT_FOUND,
+          ""
+        );
       return user;
     } catch (error) {
       throw error;
@@ -66,7 +72,12 @@ const TokenService = {
       });
 
       const [_, user] = await Promise.all([delPromise, userPromise]);
-      if (!user) throw new PrismaClientKnownRequestError("", "2015", "");
+      if (!user)
+        throw new PrismaClientKnownRequestError(
+          "",
+          PRISMA_ERROR_CODES.RECORD_NOT_FOUND,
+          ""
+        );
       const expureTime = moment().add(expireTimeInSec, "seconds").toDate();
       await prismaClient.refreshToken.create({
         data: {

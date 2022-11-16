@@ -14,31 +14,43 @@ import { v4 as uuidv4 } from "uuid";
 
 import PractitionerService from "../service/Practitioner.Service";
 import CONFIG from "../utils/app_config";
-import { PrismaClient, Specialization } from "prisma/prisma-client";
-import SpecializationService from "../service/Specialization.Service";
-import WorkingDayService from "../service/WorkingDay.Service";
+import { PRISMA_ERROR_CODES } from "../utils/prisma_error_codes";
 const PractitionerController = {
   index: async function (req: Request, res: Response) {
     try {
+      // Query Params for Offset Pagination
       let { pageStr, limitStr } = req.query;
+
+      // Assign Default Values if query is empty
       if (!pageStr) pageStr = "1";
       if (!limitStr) limitStr = "10";
 
       const page = parseInt(pageStr as string);
       const limit = parseInt(limitStr as string);
 
+      /*
+       * PractitionerService is responsible for Handeling Database operations on Practitioner Entity
+       * Gets all practitioners based on pagination provided
+       */
       const { nextPageNo, prevPageNo, totalPages, data } =
         await PractitionerService.getAllPractitioners(limit, page);
 
+      /**
+       * If next page or previous page isnt available, URL isnt created and it isnt returned in response
+       */
+
+      // Create URL for next page
       const nextPageUrl =
         nextPageNo !== null
           ? `${CONFIG.APP_URL}/practitioners?page=${nextPageNo}&limit=${limit}`
           : undefined;
+      // Create URL for Previous page
       const prevPageUrl =
         prevPageNo !== null
           ? `${CONFIG.APP_URL}/practitioners?page=${prevPageNo}&limit=${limit}`
           : undefined;
 
+      // Return success
       return res.status(200).json({
         nextPageUrl,
         prevPageUrl,
@@ -47,10 +59,14 @@ const PractitionerController = {
       });
     } catch (error) {
       console.error(error);
+
+      // Error Service handles Error based on Error Instance (ZodError, PrismaClientError, etc)
       const { message, data, status } = ErrorService.handleError(
         error,
         "Practitioner"
       );
+
+      // Return Failure
       return res.status(status || 500).json({
         status: false,
         message: message || "Failed to Get Practitioners",
@@ -59,17 +75,18 @@ const PractitionerController = {
     }
   },
   post: async function (req: Request, res: Response) {
-    const imageName = uuidv4() + "--" + Date.now();
     try {
       const body = req.body;
       const practitioner: Practitioner = body;
-
+      // Sanitize Body content to match validation
       practitioner.dob = new Date(body.dob as string);
       practitioner.startTime = new Date(body.startTime as string);
       practitioner.endTime = new Date(body.endTime as string);
 
+      // Check if image exist
       const image = req.files?.image;
       if (!image)
+        // If not, throw Validation Error (Image is Required)
         throw new ZodError([
           {
             path: ["image"],
@@ -78,19 +95,33 @@ const PractitionerController = {
           },
         ]);
 
+      //Set image as emopty to satisfy validation as it will be set later on after file is saved to firebase bucket
       practitioner.image = "";
 
+      // Validation checks for Input Sanitization and If unique constraint fails; throws ZodError if validation fails
       await ValidatePractitioner(practitioner);
 
+      // Validation for Image Size and Mimietype; throws ZodError if validation fails
       ValidateImage(image as UploadedFile);
+
+      // Generate unique name for image
+      const imageName =
+        uuidv4() + "--" + Date.now() + "--" + (image as UploadedFile).name;
+
+      // FileUpload Service is responsible for firebase bucked file handling
       const imageUrl = await FileUploadService.upload(
         image as UploadedFile,
         imageName
       );
+
+      // set image url returned from upload function
       practitioner.image = imageUrl;
+
+      //PractitionerService is responsible for Handeling Database operations on Practitioner Entity
       const createdPractitioner = await PractitionerService.createPractitioner(
         practitioner
       );
+      // return success
       return res.status(201).json({
         status: true,
         message: "Practitioner Created Successfully",
@@ -98,10 +129,13 @@ const PractitionerController = {
       });
     } catch (error) {
       console.error(error);
+
+      // Error Service handles Error based on Error Instance (ZodError, PrismaClientError, etc)
       const { message, data, status } = ErrorService.handleError(
         error,
         "Practitioner"
       );
+      // return failure
       return res.status(status || 500).json({
         status: false,
         message: message || "Failed to create practitioner",
@@ -126,7 +160,11 @@ const PractitionerController = {
         parseInt(practitioner_id)
       );
       if (!practitioner)
-        throw new PrismaClientKnownRequestError("", "2015", "");
+        throw new PrismaClientKnownRequestError(
+          "",
+          PRISMA_ERROR_CODES.RECORD_NOT_FOUND,
+          ""
+        );
 
       const body = req.body;
       let newPractitioner: Practitioner = body;
@@ -204,20 +242,30 @@ const PractitionerController = {
   },
   delete: async function (req: Request, res: Response) {
     try {
+      // get practitioner id from request parameter
       const { practitioner_id } = req.params;
+
+      // if practitioner id is not present, throw Validation Error (id is required)
       if (!practitioner_id)
         throw new ZodError([
           {
             path: ["id"],
-            message: "Id is required",
+            message: "Practitioner id is required",
             code: "custom",
           },
         ]);
+
+      // Get practitioner from database
       const practitioner = await PractitionerService.getPractitionerById(
         parseInt(practitioner_id)
       );
+      // if practitioner is not found, throw Not found error to client
       if (!practitioner)
-        throw new PrismaClientKnownRequestError("", "2015", "");
+        throw new PrismaClientKnownRequestError(
+          "",
+          PRISMA_ERROR_CODES.RECORD_NOT_FOUND,
+          ""
+        );
 
       const imageUrl = decodeURI(practitioner.image);
       const deleteImageFromBucket = await FileUploadService.delete(imageUrl);
