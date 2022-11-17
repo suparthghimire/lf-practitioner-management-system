@@ -162,6 +162,7 @@ const PractitionerController = {
             code: "custom",
           },
         ]);
+      // check if id is a number. If not, throw error
       if (isNaN(parseInt(practitioner_id)))
         throw new ZodError([
           {
@@ -210,6 +211,7 @@ const PractitionerController = {
             path: ["practitioner_id"],
           },
         ]);
+      // check if id is a number. If not, throw error
       if (isNaN(parseInt(practitioner_id)))
         throw new ZodError([
           {
@@ -233,6 +235,7 @@ const PractitionerController = {
       const { userId } = body;
 
       let newPractitioner: Practitioner = body;
+
       // Sanitize Body content to match validation
       newPractitioner.dob = body.dob
         ? new Date(body.dob as string)
@@ -258,7 +261,7 @@ const PractitionerController = {
 
       newPractitioner.createdBy = parseInt(userId);
 
-      // Copy old practioner data to new practitioner to get all data that is not updated
+      // Copy old practioner data to new practitioner to get all data that  does not need to be updated
       newPractitioner = {
         ...practitioner,
         ...newPractitioner,
