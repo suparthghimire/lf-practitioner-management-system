@@ -69,9 +69,9 @@ describe("Testing User", () => {
       const res = await request(app).get("/").set("authorization", "");
       expect(res.status).toBe(401);
     });
-    it("Should Not Be able to Signout", async () => {
+    it("Should Be able to Signout", async () => {
       const res = await request(app).delete("/signout");
-      expect(res.status).toBe(401);
+      expect(res.status).toBe(201);
     });
     it("Should Not Be able to Refresh Token", async () => {
       const res = await request(app).post("/refresh");

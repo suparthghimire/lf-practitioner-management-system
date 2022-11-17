@@ -161,19 +161,11 @@ const PractitionerController = {
             code: "custom",
           },
         ]);
-<<<<<<< HEAD
-=======
-
->>>>>>> 053ba69 (Practitioner Endpoint Tests)
       if (isNaN(parseInt(practitioner_id)))
         throw new ZodError([
           {
             path: ["id"],
-<<<<<<< HEAD
-            message: "Invalid Practitioner id",
-=======
             message: "Practitioner id must be a number",
->>>>>>> 053ba69 (Practitioner Endpoint Tests)
             code: "custom",
           },
         ]);
@@ -217,16 +209,6 @@ const PractitionerController = {
             path: ["practitioner_id"],
           },
         ]);
-<<<<<<< HEAD
-      if (isNaN(parseInt(practitioner_id)))
-        throw new ZodError([
-          {
-            path: ["id"],
-            message: "Invalid Practitioner id",
-            code: "custom",
-          },
-        ]);
-=======
 
       if (isNaN(parseInt(practitioner_id)))
         throw new ZodError([
@@ -237,7 +219,6 @@ const PractitionerController = {
           },
         ]);
 
->>>>>>> 053ba69 (Practitioner Endpoint Tests)
       const practitioner = await PractitionerService.getPractitionerById(
         parseInt(practitioner_id)
       );

@@ -30,6 +30,7 @@ describe("Testing Practitioner", () => {
   let practitionerIdToDelete = -1;
   let practitionerIdNotToDelete = -1;
 
+  let otherUserToken = "";
   async function CreatePractitioner(token: string) {
     const practitioner = mockData.practitioner;
     practitioner.email += Date.now();
@@ -76,12 +77,22 @@ describe("Testing Practitioner", () => {
         password: "suparth123",
       })
       .set("Accept", "application/json");
+
+    const authResponse2 = await request(app)
+      .post("/signin")
+      .send({
+        email: "suparthnarayan212121@ghimire.com",
+        password: "suparth123",
+      })
+      .set("Accept", "application/json");
+
     token = authResponse.body.data.accessToken;
+    otherUserToken = authResponse2.body.data.accessToken;
     const practitioner = await CreatePractitioner(token);
     practitionerIdNotToDelete = practitioner.id;
   });
   describe("Given User is Authenticated", () => {
-    describe("When Request Body and URL Params are Valiod", () => {
+    describe("When Request Body and URL Params are Valid", () => {
       it("Should Get Practitioner Data", async () => {
         const res = await request(app)
           .get("/practitioner")
@@ -205,6 +216,22 @@ describe("Testing Practitioner", () => {
           .delete(`/practitioner/100000000000`)
           .set("authorization", token);
         expect(res.status).toBe(404);
+      });
+    });
+    describe("When User Deletes Practitioner that was created by Other User", () => {
+      it("Should Not Delete Practitioner and Return Forbidden Error", async () => {
+        const res = await request(app)
+          .delete(`/practitioner/${practitionerIdNotToDelete}`)
+          .set("authorization", otherUserToken);
+        expect(res.status).toBe(403);
+      });
+    });
+    describe("When User Updates Practitioner that was created by Other User", () => {
+      it("Should Not Update Practitioner and Return Forbidden Error", async () => {
+        const res = await request(app)
+          .put(`/practitioner/${practitionerIdNotToDelete}`)
+          .set("authorization", otherUserToken);
+        expect(res.status).toBe(403);
       });
     });
   });
