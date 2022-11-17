@@ -236,11 +236,33 @@ Deletes Existing Practitioner
   yarn prisma migrate dev --name InitialMigration
 ```
 
-6. Start the Development server
+---
+
+### Development
+
+1. Start the Development server
 
 ```
   yarn dev
 ```
+
+---
+
+### Build
+
+1. Build the project
+
+```bash
+  yarn build
+```
+
+2. Start
+
+```bash
+  yarn start
+```
+
+---
 
 ### Tests
 
