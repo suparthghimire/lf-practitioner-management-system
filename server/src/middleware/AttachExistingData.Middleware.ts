@@ -17,6 +17,7 @@ export default async function AttachExistingData(
     const { Specializations, WorkingDays } = req.body;
 
     if (req.method === "PUT") {
+      // Update Requests have optional keys thus if these keys are not in put request, they can be skipped
       if (!WorkingDays && !Specializations) return next();
     }
 
