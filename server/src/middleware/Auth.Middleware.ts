@@ -34,7 +34,7 @@ const IsLoggedOut = (req: Request, res: Response, next: NextFunction) => {
     const token = bearerToken.split(" ")[1];
     try {
       const payload = TokenService.validateJwtToken(token) as JWTPayload;
-      return res.status(401).json({
+      return res.status(403).json({
         status: false,
         message: "Already Logged In",
       });
