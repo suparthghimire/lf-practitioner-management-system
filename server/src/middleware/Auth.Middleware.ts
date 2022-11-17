@@ -5,19 +5,15 @@ import { JWTPayload } from "../utils/interfaces";
 
 const IsLoggedIn = (req: Request, res: Response, next: NextFunction) => {
   const bearerToken = req.headers["authorization"] as string;
-  const refreshToken = req.cookies[CONFIG.REFRESH_TOKEN_COOKIE_NAME] as string;
+
   if (!bearerToken)
     return res.status(401).json({
       status: false,
-      message: "Invalid Token",
-    });
-  if (!refreshToken)
-    return res.status(401).json({
-      status: false,
-      message: "Invalid Token",
+      message: "Token No Invalid Token",
     });
 
   const token = bearerToken.split(" ")[1];
+
   try {
     const payload = TokenService.validateJwtToken(token) as JWTPayload;
     req.body.userId = payload.id;

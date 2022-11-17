@@ -135,7 +135,6 @@ const PractitionerController = {
       });
     } catch (error) {
       console.error(error);
-
       // Error Service handles Error based on Error Instance (ZodError, PrismaClientError, etc)
       const { message, data, status } = ErrorService.handleError(
         error,
@@ -162,11 +161,19 @@ const PractitionerController = {
             code: "custom",
           },
         ]);
+<<<<<<< HEAD
+=======
+
+>>>>>>> 053ba69 (Practitioner Endpoint Tests)
       if (isNaN(parseInt(practitioner_id)))
         throw new ZodError([
           {
             path: ["id"],
+<<<<<<< HEAD
             message: "Invalid Practitioner id",
+=======
+            message: "Practitioner id must be a number",
+>>>>>>> 053ba69 (Practitioner Endpoint Tests)
             code: "custom",
           },
         ]);
@@ -210,6 +217,7 @@ const PractitionerController = {
             path: ["practitioner_id"],
           },
         ]);
+<<<<<<< HEAD
       if (isNaN(parseInt(practitioner_id)))
         throw new ZodError([
           {
@@ -218,6 +226,18 @@ const PractitionerController = {
             code: "custom",
           },
         ]);
+=======
+
+      if (isNaN(parseInt(practitioner_id)))
+        throw new ZodError([
+          {
+            code: "custom",
+            message: "Practitioner Id must be a number",
+            path: ["practitioner_id"],
+          },
+        ]);
+
+>>>>>>> 053ba69 (Practitioner Endpoint Tests)
       const practitioner = await PractitionerService.getPractitionerById(
         parseInt(practitioner_id)
       );
@@ -326,6 +346,14 @@ const PractitionerController = {
             path: ["id"],
             message: "Practitioner id is required",
             code: "custom",
+          },
+        ]);
+      if (isNaN(parseInt(practitioner_id)))
+        throw new ZodError([
+          {
+            code: "custom",
+            message: "Practitioner Id must be a number",
+            path: ["practitioner_id"],
           },
         ]);
 
