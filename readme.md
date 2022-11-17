@@ -17,6 +17,12 @@ The technology stack for the project is listed below
 
 ---
 
+## Tests
+
+Unit Tests are present in `testing` branch
+
+---
+
 ## API Reference
 
 ### User
@@ -186,7 +192,7 @@ Deletes Existing Practitioner
 
 ---
 
-## Run
+## Local Development
 
 1. Clone the repository
 
@@ -201,6 +207,8 @@ Deletes Existing Practitioner
 ```bash
   git clone https://github.com/suparthghimire/lf-practitioner-management-system.git
 ```
+
+## Run
 
 ### Server
 
@@ -233,6 +241,10 @@ Deletes Existing Practitioner
 ```
   yarn dev
 ```
+
+### Tests
+
+1. Checkout to Testing Branch
 
 ---
 
