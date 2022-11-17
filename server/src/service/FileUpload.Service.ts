@@ -48,7 +48,6 @@ const FileUploadService = {
     } catch (error) {
       console.log(error);
       // error handling is done in controller
-      throw error;
     }
   },
 };

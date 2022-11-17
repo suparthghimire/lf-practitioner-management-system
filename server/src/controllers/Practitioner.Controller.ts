@@ -8,7 +8,7 @@ import {
 } from "../models/Practitioner";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
 
-import ErrorService from "../service/Error.Service";
+import ErrorService, { CustomError } from "../service/Error.Service";
 import FileUploadService from "../service/FileUpload.Service";
 import { v4 as uuidv4 } from "uuid";
 
@@ -78,11 +78,17 @@ const PractitionerController = {
     try {
       const body = req.body;
       const practitioner: Practitioner = body;
+
+      if (!body.userId) throw new CustomError("Please Login to Continue", 401);
+      if (isNaN(parseInt(body.userId)))
+        throw new CustomError("Invalid User", 401);
+
       // Sanitize Body content to match validation
       practitioner.dob = new Date(body.dob as string);
       practitioner.startTime = new Date(body.startTime as string);
       practitioner.endTime = new Date(body.endTime as string);
-
+      practitioner.icuSpecialist = Boolean(body.icuSpecialist || false);
+      practitioner.createdBy = parseInt(body.userId);
       // Check if image exist
       const image = req.files?.image;
       if (!image)
@@ -156,7 +162,14 @@ const PractitionerController = {
             code: "custom",
           },
         ]);
-
+      if (isNaN(parseInt(practitioner_id)))
+        throw new ZodError([
+          {
+            path: ["id"],
+            message: "Invalid Practitioner id",
+            code: "custom",
+          },
+        ]);
       // Get practitioner from database
       const practitioner = await PractitionerService.getPractitionerById(
         parseInt(practitioner_id)
@@ -170,7 +183,7 @@ const PractitionerController = {
           ""
         );
       // return success
-      return res.status(200).json({ message: "Show Endpoint" });
+      return res.status(200).json({ status: true, data: practitioner });
     } catch (error) {
       console.error(error);
       // Handle Error
@@ -197,6 +210,14 @@ const PractitionerController = {
             path: ["practitioner_id"],
           },
         ]);
+      if (isNaN(parseInt(practitioner_id)))
+        throw new ZodError([
+          {
+            path: ["id"],
+            message: "Invalid Practitioner id",
+            code: "custom",
+          },
+        ]);
       const practitioner = await PractitionerService.getPractitionerById(
         parseInt(practitioner_id)
       );
@@ -209,6 +230,7 @@ const PractitionerController = {
         );
 
       const body = req.body;
+      const { userId } = body;
 
       let newPractitioner: Practitioner = body;
 
@@ -217,7 +239,9 @@ const PractitionerController = {
       newPractitioner.startTime = new Date(body.startTime as string);
       newPractitioner.endTime = new Date(body.endTime as string);
       newPractitioner.Specializations = body.Specializations;
+      newPractitioner.icuSpecialist = Boolean(body.icuSpecialist || false);
       newPractitioner.WorkingDays = body.WorkingDays;
+      newPractitioner.createdBy = parseInt(userId);
 
       // Copy old practioner data to new practitioner to get all data that is not updated
       newPractitioner = {
@@ -231,19 +255,14 @@ const PractitionerController = {
         ValidateImage(image as UploadedFile);
         const imageName = uuidv4() + "--" + Date.now();
 
-        // delete image
-        const unresolvedDel = FileUploadService.delete(practitioner.image);
+        // Since we dont care about the previous image, we can delete it without waiting for it to finish
+        FileUploadService.delete(practitioner.image);
+
         // upliad iumage
-        const unresolvedImgUpload = FileUploadService.upload(
+        const imageUrl = await FileUploadService.upload(
           image as UploadedFile,
           imageName
         );
-        // Since both operations are async and mutually exclusive, Resolve them in parallel
-        const [_, imageUrl] = await Promise.all([
-          unresolvedDel,
-          unresolvedImgUpload,
-        ]);
-
         // set image url returned from upload function to newPractitioner image
         newPractitioner.image = imageUrl;
       }
@@ -292,7 +311,14 @@ const PractitionerController = {
     try {
       // get practitioner id from request parameter
       const { practitioner_id } = req.params;
-
+      if (isNaN(parseInt(practitioner_id)))
+        throw new ZodError([
+          {
+            path: ["id"],
+            message: "Invalid Practitioner id",
+            code: "custom",
+          },
+        ]);
       // if practitioner id is not present, throw Validation Error (id is required)
       if (!practitioner_id)
         throw new ZodError([

@@ -145,24 +145,41 @@ const AuthController = {
   },
 
   signOut: function (req: Request, res: Response) {
-    const { userId } = req.body;
-    if (!userId) throw new CustomError("Invalid Token", 401);
-    /**
-     * Delete Refresh Token from database of the user
-     * The function doesnt return anything,
-     * so it is not awaited
-     */
-    TokenService.removeUserToken(userId);
-    // Clear Refresh Token Cookie
-    res.cookie(CONFIG.REFRESH_TOKEN_COOKIE_NAME, "", {
-      httpOnly: true,
-      maxAge: 1,
-    });
-    // return success
-    return res.status(201).json({
-      status: true,
-      message: "User Signed Out",
-    });
+    try {
+      res.cookie(CONFIG.REFRESH_TOKEN_COOKIE_NAME, "", {
+        httpOnly: true,
+        maxAge: 1,
+      });
+
+      const { userId } = req.body;
+      if (!userId)
+        return res.status(201).json({
+          status: true,
+          message: "User Signed Out",
+        });
+      /**
+       * Delete Refresh Token from database of the user
+       * The function doesnt return anything,
+       * so it is not awaited
+       */
+      TokenService.removeUserToken(userId);
+      // Clear Refresh Token Cookie
+      // return success
+      return res.status(201).json({
+        status: true,
+        message: "User Signed Out",
+      });
+    } catch (error) {
+      console.error(error);
+      // Handle Error
+      const { message, data, status } = ErrorService.handleError(error, "User");
+      // return failuer
+      return res.status(status || 500).json({
+        status: false,
+        message: message || "Signup Failed",
+        data: data == null ? undefined : data,
+      });
+    }
   },
   refreshToken: async function (req: Request, res: Response) {
     try {

@@ -9,6 +9,8 @@ import IndexRoute from "./routes/auth.route";
 import PractitionerRoutes from "./routes/practitioner.route";
 import PractitionerController from "./controllers/Practitioner.Controller";
 import CONFIG from "./utils/app_config";
+import { IsLoggedIn } from "./middleware/Auth.Middleware";
+import { HasWritePermission } from "./middleware/Authorization.Middleware";
 
 // configure .env files
 dotenv.config();
@@ -40,7 +42,11 @@ app.use("/practitioner", PractitionerRoutes);
  * Nevertheless, I have implemented both
  */
 
-app.delete("/patient/:practitioner_id", PractitionerController.delete);
+app.delete(
+  "/patient/:practitioner_id",
+  [IsLoggedIn, HasWritePermission],
+  PractitionerController.delete
+);
 const PORT = CONFIG.PORT || 3000;
 app.listen(PORT, () => console.log(`Server Started at ${PORT}`));
 

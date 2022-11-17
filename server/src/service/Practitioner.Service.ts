@@ -42,6 +42,9 @@ const PractitionerService = {
         include: {
           Specializations: true,
           WorkingDays: true,
+          createdBy: {
+            select: { id: true, name: true },
+          },
         },
         orderBy: {
           createdAt: "desc",
@@ -82,6 +85,15 @@ const PractitionerService = {
         include: {
           WorkingDays: true,
           Specializations: true,
+          createdBy: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              createdAt: true,
+              updatedAt: true,
+            },
+          },
         },
       });
       if (!practitioner)
@@ -107,8 +119,9 @@ const PractitionerService = {
           email: practitioner.email,
           startTime: practitioner.startTime,
           endTime: practitioner.endTime,
-          ICUSpecialist: practitioner.ICUSpecialist,
+          icuSpecialist: practitioner.icuSpecialist,
           image: practitioner.image,
+          createdByUserId: practitioner.createdBy,
           WorkingDays: {
             /**
              * connect or create tries to connect the relation model with the current model
@@ -157,7 +170,7 @@ const PractitionerService = {
           email: newPractitioner.email,
           startTime: newPractitioner.startTime,
           endTime: newPractitioner.endTime,
-          ICUSpecialist: newPractitioner.ICUSpecialist,
+          icuSpecialist: newPractitioner.icuSpecialist,
           image: newPractitioner.image,
           WorkingDays: {
             // whilt updating, we need to delete the old relations and create new ones

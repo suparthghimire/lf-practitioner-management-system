@@ -18,6 +18,7 @@ model User {
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
   RefreshToken RefreshToken[]
+  Practitioner Practitioner[]
 }
 
 model RefreshToken {
@@ -38,7 +39,9 @@ model Practitioner {
   dob             DateTime
   address         String
   image           String           @db.LongText
-  ICUSpecialist   Boolean          @default(false)
+  createdBy       User             @relation(fields: [createdByUserId], references: [id])
+  createdByUserId Int
+  icuSpecialist   Boolean          @default(false)
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
   startTime       DateTime

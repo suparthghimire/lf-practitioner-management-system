@@ -54,6 +54,11 @@ const PractitionerSchema = z
         }),
       })
       .optional(),
+    createdBy: z.number({
+      errorMap: (err) => ({
+        message: "Created by must be a number",
+      }),
+    }),
     fullname: z
       .string({
         errorMap: (err) => {
@@ -117,7 +122,7 @@ const PractitionerSchema = z
         message: "Practitioner address is required",
       }),
     image: z.string().min(0),
-    ICUSpecialist: z
+    icuSpecialist: z
       .boolean({
         errorMap: (err) => {
           return {

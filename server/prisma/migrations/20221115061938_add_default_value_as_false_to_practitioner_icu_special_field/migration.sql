@@ -1,2 +1,2 @@
 -- AlterTable
-ALTER TABLE `Practitioner` MODIFY `ICUSpecialist` BOOLEAN NOT NULL DEFAULT false;
+ALTER TABLE `Practitioner` MODIFY `icuSpecialist` BOOLEAN NOT NULL DEFAULT false;
