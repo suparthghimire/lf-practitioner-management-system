@@ -246,6 +246,28 @@ Deletes Existing Practitioner
 
 1. Checkout to Testing Branch
 
+```
+  git checkout testing
+```
+
+2. Run Tests Without Logs
+
+```
+  yarn test
+```
+
+3. Run Tests With Logs
+
+```
+  yarn test:log
+```
+
+4. Run Tests with Coverage
+
+```
+  yarn test:coverage
+```
+
 ---
 
 ## Author
