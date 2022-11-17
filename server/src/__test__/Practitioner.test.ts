@@ -1,10 +1,9 @@
 import request from "supertest";
 import { app } from "../index";
-import { log } from "console";
 import mockData from "./mockData/index.json";
 import path from "path";
 
-describe("Practitioner Controller", () => {
+describe("Testing Practitioner", () => {
   describe("Given User is not Authenticated", () => {
     it("Should not Get Practitioner Data", async () => {
       const res = await request(app).get("/practitioner");
@@ -52,10 +51,10 @@ describe("Practitioner Controller", () => {
       .field("icuSpecialist", practitioner.icuSpecialist)
       .field("startTime", practitioner.startTime)
       .field("endTime", practitioner.endTime)
-      .field("Specialization[0][id]", practitioner.Specializations[0].id)
-      .field("Specialization[0][name]", practitioner.Specializations[0].name)
-      .field("Specialization[1][id]", practitioner.Specializations[1].id)
-      .field("Specialization[1][name]", practitioner.Specializations[1].name)
+      .field("Specializations[0][id]", practitioner.Specializations[0].id)
+      .field("Specializations[0][name]", practitioner.Specializations[0].name)
+      .field("Specializations[1][id]", practitioner.Specializations[1].id)
+      .field("Specializations[1][name]", practitioner.Specializations[1].name)
       .field("WorkingDays[0][id]", practitioner.WorkingDays[0].id)
       .field("WorkingDays[0][day]", practitioner.WorkingDays[0].day)
       .field("WorkingDays[1][id]", practitioner.WorkingDays[1].id)

@@ -29,5 +29,11 @@
         "day": "Tuesday"
       }
     ]
+  },
+  "user": {
+    "email": "testuser@test.com",
+    "password": "password",
+    "confirmPassword": "password",
+    "name": "Test User"
   }
 }
