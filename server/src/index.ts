@@ -14,7 +14,7 @@ import { HasWritePermission } from "./middleware/Authorization.Middleware";
 
 // configure .env files
 dotenv.config();
-const app = express();
+export const app = express();
 app.use(
   fileUpload({
     parseNested: true, // allow nested objects from form-data
@@ -48,8 +48,10 @@ app.delete(
   PractitionerController.delete
 );
 const PORT = CONFIG.PORT || 3000;
-app.listen(PORT, () => console.log(`Server Started at ${PORT}`));
 
+if (process.env.NODE_ENV !== "test") {
+  app.listen(PORT, () => console.log(`Server Started at ${PORT}`));
+}
 // configure prisma client
 /**
  * Prisma Docs suggests to create a new instance of PrismaClient once and use it everywhere
