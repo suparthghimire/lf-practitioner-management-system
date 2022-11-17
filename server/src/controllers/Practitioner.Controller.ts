@@ -233,14 +233,29 @@ const PractitionerController = {
       const { userId } = body;
 
       let newPractitioner: Practitioner = body;
-
       // Sanitize Body content to match validation
-      newPractitioner.dob = new Date(body.dob as string);
-      newPractitioner.startTime = new Date(body.startTime as string);
-      newPractitioner.endTime = new Date(body.endTime as string);
-      newPractitioner.Specializations = body.Specializations;
-      newPractitioner.icuSpecialist = Boolean(body.icuSpecialist || false);
-      newPractitioner.WorkingDays = body.WorkingDays;
+      newPractitioner.dob = body.dob
+        ? new Date(body.dob as string)
+        : practitioner.dob;
+      newPractitioner.startTime = body.startTime
+        ? new Date(body.startTime as string)
+        : practitioner.startTime;
+      newPractitioner.endTime = body.endTime
+        ? new Date(body.endTime as string)
+        : practitioner.endTime;
+      newPractitioner.Specializations = body.Specializations
+        ? body.Specializations
+        : practitioner.Specializations;
+      newPractitioner.icuSpecialist = body.icuSpecialist
+        ? body.icuSpecialist == "true"
+          ? true
+          : false
+        : practitioner.icuSpecialist;
+
+      newPractitioner.WorkingDays = body.WorkingDays
+        ? body.WorkingDays
+        : practitioner.WorkingDays;
+
       newPractitioner.createdBy = parseInt(userId);
 
       // Copy old practioner data to new practitioner to get all data that is not updated
