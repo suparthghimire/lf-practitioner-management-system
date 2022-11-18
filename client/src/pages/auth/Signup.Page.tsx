@@ -20,7 +20,6 @@ export default function SignupPage() {
     },
     validate: zodResolver(UserSchema),
   });
-
   return (
     <AuthPageLayout title="Sign Up">
       <form
@@ -56,7 +55,6 @@ export default function SignupPage() {
             {...form.getInputProps("confirmPassword")}
           />
         </SimpleGrid>
-
         <Text mt="xl" size="sm" italic color="dimmed">
           By Signing Up, you agree to our Terms and Conditions and Privacy
           Policy
