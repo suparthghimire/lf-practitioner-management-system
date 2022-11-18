@@ -173,7 +173,7 @@ const PractitionerSchema = z
 
       if (
         emailExist &&
-        (practitioner.id !== emailExist.id || !practitioner.id)
+        (!practitioner.id || practitioner.id !== emailExist.id)
       ) {
         ctx.addIssue({
           code: "custom",
@@ -183,7 +183,7 @@ const PractitionerSchema = z
       }
       if (
         contactExist &&
-        (practitioner.id !== contactExist.id || !practitioner.id)
+        (!practitioner.id || practitioner.id !== contactExist.id)
       ) {
         ctx.addIssue({
           code: "custom",

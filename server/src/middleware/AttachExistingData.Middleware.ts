@@ -15,8 +15,16 @@ export default async function AttachExistingData(
 ) {
   try {
     const { Specializations, WorkingDays } = req.body;
+
+    if (req.method === "PUT") {
+      // Update Requests have optional keys thus if these keys are not in put request, they can be skipped
+      if (!WorkingDays && !Specializations) return next();
+    }
+
     if (!Specializations) req.body.Specializations = [];
     if (!WorkingDays) req.body.WorkingDays = [];
+
+    console.log("HERE", req.method);
 
     // If there are no specializations and workingDays, then we don't need to do anything. Just move on to next middleware
     if (
