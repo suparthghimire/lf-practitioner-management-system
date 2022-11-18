@@ -1,6 +1,7 @@
-import { AppShell, ColorScheme } from "@mantine/core";
+import { AppShell, ColorScheme, Container, Navbar } from "@mantine/core";
 import HeaderPartial from "../partials/Header.Partial";
 import { useState } from "react";
+import FooterPartial from "../partials/Footer.Partial";
 
 interface Props {
   children: React.ReactNode;
@@ -19,6 +20,7 @@ export default function GlobalLayout(props: Props) {
           setBurgerOpen={setToggleNavbar}
         />
       }
+      footer={<FooterPartial />}
       styles={(theme) => ({
         main: {
           backgroundColor:
@@ -28,8 +30,7 @@ export default function GlobalLayout(props: Props) {
         },
       })}
     >
-      {props.children}
-      {/* Your application here */}
+      <Container px={0}>{props.children}</Container>
     </AppShell>
   );
 }
