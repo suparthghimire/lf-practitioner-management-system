@@ -10,6 +10,7 @@ import {
   Flex,
 } from "@mantine/core";
 import { Link } from "react-router-dom";
+import ServerErrorPartial from "../../components/partials/ServerError.Partial";
 export default function SignupPage() {
   const form = useForm<User>({
     initialValues: {
@@ -22,6 +23,7 @@ export default function SignupPage() {
   });
   return (
     <AuthPageLayout title="Sign Up">
+      <ServerErrorPartial />
       <form
         onSubmit={form.onSubmit((values) => {
           console.log(values);

@@ -3,6 +3,7 @@ import { useForm, zodResolver } from "@mantine/form";
 import { UserLogin, UserLoginSchema } from "../../models/User";
 import { Button, Text, TextInput, PasswordInput, Flex } from "@mantine/core";
 import { Link } from "react-router-dom";
+import ServerErrorPartial from "../../components/partials/ServerError.Partial";
 export default function SigninPage() {
   const form = useForm<UserLogin>({
     initialValues: {
@@ -13,6 +14,7 @@ export default function SigninPage() {
   });
   return (
     <AuthPageLayout title="Sign In">
+      <ServerErrorPartial />
       <form
         onSubmit={form.onSubmit((values) => {
           console.log(values);
