@@ -22,8 +22,11 @@ import { useNavigate } from "react-router-dom";
 import CustomLoader from "../../components/common/Loader";
 export default function SigninPage() {
   const navigate = useNavigate();
-  const [signin, { isSuccess, isLoading, isError, data, error }] =
-    useSigninMutation();
+  const [
+    signin,
+    { isSuccess, isLoading: signUpLoading, isError, data, error },
+  ] = useSigninMutation();
+
   const dispatch = useAppDispatch();
 
   const form = useForm<UserLogin>({
@@ -34,24 +37,27 @@ export default function SigninPage() {
     validate: zodResolver(UserLoginSchema),
   });
 
-  const { isAuthenticated, isLoading: userLoading } = useAppSelector(
-    (state) => state.authReducer
-  );
+  const {
+    user,
+    isAuthenticated,
+    isLoading: userLoading,
+  } = useAppSelector((state) => state.authReducer);
 
   async function handleSubmit(values: UserLogin) {
     try {
-      const data = await signin(values);
+      await signin(values);
     } catch (error) {
       console.error(error);
+    } finally {
+      form.reset();
     }
-    form.reset();
   }
 
   useEffect(() => {
     if (!userLoading && isAuthenticated) {
       navigate("/");
     }
-  }, [isLoading, isAuthenticated]);
+  }, [userLoading, isAuthenticated]);
 
   useEffect(() => {
     if (isSuccess) {
@@ -70,7 +76,6 @@ export default function SigninPage() {
           refreshToken: data.data.refreshToken,
         })
       );
-      // navigate("/");
     } else if (isError) {
       updateNotification({
         id: "signin-notification",
@@ -80,7 +85,7 @@ export default function SigninPage() {
         icon: <IconX />,
         autoClose: 2000,
       });
-    } else if (isLoading) {
+    } else if (signUpLoading) {
       showNotification({
         id: "signin-notification",
         title: "Attempting to Sign in",
@@ -91,50 +96,51 @@ export default function SigninPage() {
         disallowClose: true,
       });
     }
-  }, [isSuccess, isError, isLoading]);
+  }, [isSuccess, isError, signUpLoading]);
 
-  if (!isLoading && !isAuthenticated)
-    return (
-      <AuthPageLayout title="Sign In">
-        <ServerErrorPartial errors={(error as any)?.data as ServerError} />
-        <form onSubmit={form.onSubmit((values) => handleSubmit(values))}>
-          <TextInput
-            withAsterisk
-            label="Enter Your Email"
-            placeholder="jhondoe@email.com"
-            {...form.getInputProps("email")}
-          />
-          <PasswordInput
+  if (isAuthenticated || (userLoading && !signUpLoading))
+    return <CustomLoader />;
+
+  return (
+    <AuthPageLayout title="Sign In">
+      <ServerErrorPartial errors={(error as any)?.data as ServerError} />
+      <form onSubmit={form.onSubmit((values) => handleSubmit(values))}>
+        <TextInput
+          withAsterisk
+          label="Enter Your Email"
+          placeholder="jhondoe@email.com"
+          {...form.getInputProps("email")}
+        />
+        <PasswordInput
+          mt="xl"
+          withAsterisk
+          label="Enter Your Password"
+          placeholder="********"
+          {...form.getInputProps("password")}
+        />
+
+        <Flex align="flex-end" gap="xl">
+          <Button
+            loading={signUpLoading}
+            type="submit"
+            variant="filled"
+            color="green"
             mt="xl"
-            withAsterisk
-            label="Enter Your Password"
-            placeholder="********"
-            {...form.getInputProps("password")}
-          />
-
-          <Flex align="flex-end" gap="xl">
-            <Button
-              loading={isLoading}
-              type="submit"
-              variant="filled"
-              color="green"
-              mt="xl"
-            >
-              Sign In
-            </Button>
-            <Flex gap="xs">
+          >
+            Sign In
+          </Button>
+          <Flex gap="xs">
+            <Text size="sm" italic color="dimmed">
+              Dont Have an Account?{" "}
+            </Text>
+            <Link to="/signup">
               <Text size="sm" italic color="dimmed">
-                Dont Have an Account?{" "}
+                Signup Instead
               </Text>
-              <Link to="/signup">
-                <Text size="sm" italic color="dimmed">
-                  Signup Instead
-                </Text>
-              </Link>
-            </Flex>
+            </Link>
           </Flex>
-        </form>
-      </AuthPageLayout>
-    );
-  else return <CustomLoader />;
+        </Flex>
+      </form>
+    </AuthPageLayout>
+  );
 }

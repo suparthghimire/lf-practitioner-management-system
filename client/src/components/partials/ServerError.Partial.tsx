@@ -10,6 +10,7 @@ export default function ServerErrorPartial({
   return errors ? (
     <Box mb="xl">
       <Alert
+        pt="lg"
         icon={<IconAlertCircle size={16} />}
         title={errors.message}
         color="red"

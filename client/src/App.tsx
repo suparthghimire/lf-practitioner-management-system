@@ -17,7 +17,7 @@ import { NotificationsProvider } from "@mantine/notifications";
 
 import { useAppDispatch, useAppSelector } from "./redux/hooks";
 import { useMyDataQuery } from "./redux/auth/auth.query";
-import { setLoading, setUser } from "./redux/auth/auth.slice";
+import { resetUser, setLoading, setUser } from "./redux/auth/auth.slice";
 
 function App() {
   const [colorScheme, setColorScheme] = useState<ColorScheme>("light");
@@ -28,12 +28,15 @@ function App() {
 
   const dispatch = useAppDispatch();
 
-  const { isSuccess, isLoading, data, isError } = useMyDataQuery(
-    accessToken ?? ""
-  );
+  const { isSuccess, data, isError } = useMyDataQuery(accessToken ?? "");
   useEffect(() => {
-    if (isSuccess) dispatch(setUser(data?.data));
-    else if (isError) dispatch(setLoading(false));
+    if (isSuccess) {
+      dispatch(resetUser());
+      dispatch(setUser(data?.data));
+    } else if (isError) {
+      dispatch(setLoading(false));
+      dispatch(resetUser());
+    }
   }, [isSuccess]);
 
   return (

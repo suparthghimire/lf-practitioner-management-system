@@ -37,6 +37,8 @@ export default function SignupPage() {
       await signup(values);
     } catch (error) {
       console.error(error);
+    } finally {
+      form.reset();
     }
   }
   const [
@@ -60,14 +62,16 @@ export default function SignupPage() {
         id: "signup-notification",
         title: "Signup Success",
         message: "Signup successful. Please signin to continue",
+        color: "green",
         icon: <IconCheck />,
       });
-      navigate("/login");
+      navigate("/signin");
     } else if (isError) {
       updateNotification({
         id: "signup-notification",
         title: "Signup Failed",
         message: "Failed to Signup user",
+        color: "red",
         icon: <IconX />,
       });
     } else if (signUpLoading) {
@@ -80,60 +84,67 @@ export default function SignupPage() {
     }
   }, [signUpLoading, isSuccess, isError]);
 
-  if (!isAuthenticated && !userLoading)
-    return (
-      <AuthPageLayout title="Sign Up">
-        <ServerErrorPartial errors={(error as any)?.data as ServerError} />
-        <form onSubmit={form.onSubmit((values) => handleSubmit(values))}>
-          <SimpleGrid>
-            <TextInput
-              withAsterisk
-              label="Enter Your Name"
-              placeholder="John Doe"
-              {...form.getInputProps("name")}
-            />
-            <TextInput
-              withAsterisk
-              label="Enter Your Email"
-              placeholder="jhondoe@email.com"
-              {...form.getInputProps("email")}
-            />
-          </SimpleGrid>
-          <SimpleGrid mt="xl">
-            <PasswordInput
-              withAsterisk
-              label="Enter Your Password"
-              placeholder="********"
-              {...form.getInputProps("password")}
-            />
-            <PasswordInput
-              withAsterisk
-              label="Confirm Password"
-              placeholder="********"
-              {...form.getInputProps("confirmPassword")}
-            />
-          </SimpleGrid>
-          <Text mt="xl" size="sm" italic color="dimmed">
-            By Signing Up, you agree to our Terms and Conditions and Privacy
-            Policy
-          </Text>
-          <Flex align="flex-end" gap="xl">
-            <Button type="submit" variant="filled" color="blue" mt="xl">
-              Sign Up
-            </Button>
-            <Flex gap="xs">
+  if (isAuthenticated || (!signUpLoading && userLoading))
+    return <CustomLoader />;
+
+  return (
+    <AuthPageLayout title="Sign Up">
+      <ServerErrorPartial errors={(error as any)?.data as ServerError} />
+      <form onSubmit={form.onSubmit((values) => handleSubmit(values))}>
+        <SimpleGrid>
+          <TextInput
+            withAsterisk
+            label="Enter Your Name"
+            placeholder="John Doe"
+            {...form.getInputProps("name")}
+          />
+          <TextInput
+            withAsterisk
+            label="Enter Your Email"
+            placeholder="jhondoe@email.com"
+            {...form.getInputProps("email")}
+          />
+        </SimpleGrid>
+        <SimpleGrid mt="xl">
+          <PasswordInput
+            withAsterisk
+            label="Enter Your Password"
+            placeholder="********"
+            {...form.getInputProps("password")}
+          />
+          <PasswordInput
+            withAsterisk
+            label="Confirm Password"
+            placeholder="********"
+            {...form.getInputProps("confirmPassword")}
+          />
+        </SimpleGrid>
+        <Text mt="xl" size="sm" italic color="dimmed">
+          By Signing Up, you agree to our Terms and Conditions and Privacy
+          Policy
+        </Text>
+        <Flex align="flex-end" gap="xl">
+          <Button
+            loading={signUpLoading}
+            type="submit"
+            variant="filled"
+            color="blue"
+            mt="xl"
+          >
+            Sign Up
+          </Button>
+          <Flex gap="xs">
+            <Text size="sm" italic color="dimmed">
+              Already Have an Account?{" "}
+            </Text>
+            <Link to="/signin">
               <Text size="sm" italic color="dimmed">
-                Already Have an Account?{" "}
+                Signin Instead
               </Text>
-              <Link to="/signin">
-                <Text size="sm" italic color="dimmed">
-                  Signin Instead
-                </Text>
-              </Link>
-            </Flex>
+            </Link>
           </Flex>
-        </form>
-      </AuthPageLayout>
-    );
-  return <CustomLoader />;
+        </Flex>
+      </form>
+    </AuthPageLayout>
+  );
 }
