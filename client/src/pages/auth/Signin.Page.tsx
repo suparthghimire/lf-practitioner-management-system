@@ -19,6 +19,7 @@ import { showNotification, updateNotification } from "@mantine/notifications";
 import { ServerError } from "../../models/Error";
 import { IconCheck, IconX } from "@tabler/icons";
 import { useNavigate } from "react-router-dom";
+import CustomLoader from "../../components/common/Loader";
 export default function SigninPage() {
   const navigate = useNavigate();
   const [signin, { isSuccess, isLoading, isError, data, error }] =
@@ -32,21 +33,28 @@ export default function SigninPage() {
     },
     validate: zodResolver(UserLoginSchema),
   });
-  const isAuthenticated = useAppSelector(
-    (state) => state.authReducer.isAuthenticated
+
+  const { isAuthenticated, isLoading: userLoading } = useAppSelector(
+    (state) => state.authReducer
   );
 
+  async function handleSubmit(values: UserLogin) {
+    try {
+      const data = await signin(values);
+    } catch (error) {
+      console.error(error);
+    }
+    form.reset();
+  }
+
   useEffect(() => {
-    if (isAuthenticated) {
-      console.log("OK");
+    if (!userLoading && isAuthenticated) {
       navigate("/");
     }
-  }, [isAuthenticated]);
+  }, [isLoading, isAuthenticated]);
 
   useEffect(() => {
     if (isSuccess) {
-      dispatch(setTokens(data?.data));
-      dispatch(setUser(data?.data.user));
       updateNotification({
         id: "signin-notification",
         title: "Sign in Successful",
@@ -55,9 +63,16 @@ export default function SigninPage() {
         icon: <IconCheck />,
         autoClose: 2000,
       });
-      navigate("/");
+      // dispatch(setUser(data.user));
+      dispatch(setUser(data.data.user));
+      dispatch(
+        setTokens({
+          accessToken: data.data.accessToken,
+          refreshToken: data.data.refreshToken,
+        })
+      );
+      // navigate("/");
     } else if (isError) {
-      console.log((error as any).status);
       updateNotification({
         id: "signin-notification",
         title: "Sign in Failed",
@@ -79,56 +94,48 @@ export default function SigninPage() {
     }
   }, [isSuccess, isError, isLoading]);
 
-  if (isAuthenticated) return <Center>Already Signedin</Center>;
-  return (
-    <AuthPageLayout title="Sign In">
-      <ServerErrorPartial errors={(error as any)?.data as ServerError} />
-      <form
-        onSubmit={form.onSubmit(async (values) => {
-          try {
-            await signin(values);
-          } catch (error) {
-            console.error(error);
-          }
-          form.reset();
-        })}
-      >
-        <TextInput
-          withAsterisk
-          label="Enter Your Email"
-          placeholder="jhondoe@email.com"
-          {...form.getInputProps("email")}
-        />
-        <PasswordInput
-          mt="xl"
-          withAsterisk
-          label="Enter Your Password"
-          placeholder="********"
-          {...form.getInputProps("password")}
-        />
-
-        <Flex align="flex-end" gap="xl">
-          <Button
-            loading={isLoading}
-            type="submit"
-            variant="filled"
-            color="green"
+  if (!isLoading && !isAuthenticated)
+    return (
+      <AuthPageLayout title="Sign In">
+        <ServerErrorPartial errors={(error as any)?.data as ServerError} />
+        <form onSubmit={form.onSubmit((values) => handleSubmit(values))}>
+          <TextInput
+            withAsterisk
+            label="Enter Your Email"
+            placeholder="jhondoe@email.com"
+            {...form.getInputProps("email")}
+          />
+          <PasswordInput
             mt="xl"
-          >
-            Sign In
-          </Button>
-          <Flex gap="xs">
-            <Text size="sm" italic color="dimmed">
-              Dont Have an Account?{" "}
-            </Text>
-            <Link to="/signup">
+            withAsterisk
+            label="Enter Your Password"
+            placeholder="********"
+            {...form.getInputProps("password")}
+          />
+
+          <Flex align="flex-end" gap="xl">
+            <Button
+              loading={isLoading}
+              type="submit"
+              variant="filled"
+              color="green"
+              mt="xl"
+            >
+              Sign In
+            </Button>
+            <Flex gap="xs">
               <Text size="sm" italic color="dimmed">
-                Signup Instead
+                Dont Have an Account?{" "}
               </Text>
-            </Link>
+              <Link to="/signup">
+                <Text size="sm" italic color="dimmed">
+                  Signup Instead
+                </Text>
+              </Link>
+            </Flex>
           </Flex>
-        </Flex>
-      </form>
-    </AuthPageLayout>
-  );
+        </form>
+      </AuthPageLayout>
+    );
+  else return <CustomLoader />;
 }

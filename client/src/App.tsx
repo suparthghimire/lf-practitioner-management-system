@@ -3,7 +3,7 @@ import {
   ColorSchemeProvider,
   MantineProvider,
 } from "@mantine/core";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import GlobalLayout from "./components/Layouts/GlobalLayout";
 
@@ -15,39 +15,50 @@ import DashboardPage from "./pages/user/Dashboard.Page";
 import NotFoundPage from "./pages/error/404";
 import { NotificationsProvider } from "@mantine/notifications";
 
-import store from "./redux/store";
-import { Provider } from "react-redux";
-import { ApiProvider } from "@reduxjs/toolkit/query/react";
+import { useAppDispatch, useAppSelector } from "./redux/hooks";
+import { useMyDataQuery } from "./redux/auth/auth.query";
+import { setLoading, setUser } from "./redux/auth/auth.slice";
 
-function WrappedApp() {
+function App() {
   const [colorScheme, setColorScheme] = useState<ColorScheme>("light");
   const toggleColorScheme = (value?: ColorScheme) =>
     setColorScheme(value || (colorScheme === "dark" ? "light" : "dark"));
+
+  const accessToken = useAppSelector((state) => state.authReducer.accessToken);
+
+  const dispatch = useAppDispatch();
+
+  const { isSuccess, isLoading, data, isError } = useMyDataQuery(
+    accessToken ?? ""
+  );
+  useEffect(() => {
+    if (isSuccess) dispatch(setUser(data?.data));
+    else if (isError) dispatch(setLoading(false));
+  }, [isSuccess]);
+
   return (
     <BrowserRouter>
-      <Provider store={store}>
-        <ColorSchemeProvider
-          colorScheme={colorScheme}
-          toggleColorScheme={toggleColorScheme}
+      <ColorSchemeProvider
+        colorScheme={colorScheme}
+        toggleColorScheme={toggleColorScheme}
+      >
+        <MantineProvider
+          theme={{ colorScheme }}
+          withGlobalStyles
+          withNormalizeCSS
         >
-          <MantineProvider
-            theme={{ colorScheme }}
-            withGlobalStyles
-            withNormalizeCSS
-          >
-            <GlobalLayout>
-              <NotificationsProvider position="top-right">
-                <App />
-              </NotificationsProvider>
-            </GlobalLayout>
-          </MantineProvider>
-        </ColorSchemeProvider>
-      </Provider>
+          <GlobalLayout>
+            <NotificationsProvider position="bottom-right">
+              <Router />
+            </NotificationsProvider>
+          </GlobalLayout>
+        </MantineProvider>
+      </ColorSchemeProvider>
     </BrowserRouter>
   );
 }
 
-function App() {
+function Router() {
   return (
     <Routes>
       <Route path="/" element={<DashboardPage />} />
@@ -58,4 +69,4 @@ function App() {
   );
 }
 
-export default WrappedApp;
+export default App;

@@ -1,38 +1,34 @@
-import { useNavigate, Link } from "react-router-dom";
 import { useAppSelector } from "../../redux/hooks";
-import { Text, Button, Center } from "@mantine/core";
-import { useEffect } from "react";
-export default function DashboardPage() {
-  const navigate = useNavigate();
+import { Center, Text } from "@mantine/core";
+import { useEffect, useLayoutEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import CustomLoader from "../../components/common/Loader";
 
-  const user = useAppSelector((state) => state.authReducer.user);
-  const isAuthenticated = useAppSelector(
-    (state) => state.authReducer.isAuthenticated
+export default function DashboardPage() {
+  const { user, isLoading, isAuthenticated } = useAppSelector(
+    (state) => state.authReducer
   );
+  const navigate = useNavigate();
   useEffect(() => {
-    if (!isAuthenticated) {
-      navigate("/signin");
+    console.log("isAuthenticated", isAuthenticated);
+    if (!isLoading && !isAuthenticated) {
+      navigate("/signin", { replace: true });
     }
-  }, [isAuthenticated]);
-  if (!isAuthenticated) return <Center>Not Signed In</Center>;
-  return (
-    <div>
-      <Text size="xl" weight="bolder">
-        Welcome Back
-      </Text>
-      <Text size="lg" weight="bold">
-        {user?.name}
-      </Text>
-      {/* <Link to="/signin">
-        <Button variant="light" color="teal">
-          Sign In
-        </Button>
-      </Link>
-      <Link to="/signup">
-        <Button variant="light" color="blue">
-          Sign Up
-        </Button>
-      </Link> */}
-    </div>
-  );
+  }, [isLoading, isAuthenticated]);
+
+  // if (isLoading) return <CustomLoader />;
+
+  // if (!isAuthenticated) return <Center>Not Signed In</Center>;
+  if (!isLoading && isAuthenticated)
+    return (
+      <div>
+        <Text size="xl" weight="bolder">
+          Welcome Back
+        </Text>
+        <Text size="lg" weight="bold">
+          {user?.name}
+        </Text>
+      </div>
+    );
+  return <CustomLoader />;
 }

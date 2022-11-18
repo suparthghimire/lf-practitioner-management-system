@@ -10,13 +10,21 @@ import {
   Container,
   Menu,
 } from "@mantine/core";
-import { IconDoorExit, IconMoonStars, IconSun, IconUser } from "@tabler/icons";
-import { Link } from "react-router-dom";
+import {
+  IconCheck,
+  IconDoorExit,
+  IconMoonStars,
+  IconSun,
+  IconUser,
+} from "@tabler/icons";
+import { Link, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { resetUser } from "../../redux/auth/auth.slice";
 
 import Logo from "../common/Logo";
 import { useSignoutMutation } from "../../redux/auth/auth.query";
+import { useEffect } from "react";
+import { showNotification, updateNotification } from "@mantine/notifications";
 
 interface Props {
   burgerOpen: boolean;
@@ -119,36 +127,22 @@ export default function HeaderPartial(props: Props) {
 
 function UserMenu() {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
-  const [signout, { isLoading, isError, isSuccess, error }] =
-    useSignoutMutation();
+  const [signout, { isSuccess }] = useSignoutMutation();
+
+  useEffect(() => {
+    if (isSuccess) {
+      dispatch(resetUser());
+    }
+  }, [isSuccess]);
   return (
     <Menu.Dropdown>
-      {/* <Menu.Label>User Menu</Menu.Label>
-      <Menu.Item icon={<IconSettings size={14} />}>Settings</Menu.Item>
-      <Menu.Item icon={<IconMessageCircle size={14} />}>Messages</Menu.Item>
-      <Menu.Item icon={<IconPhoto size={14} />}>Gallery</Menu.Item>
-      <Menu.Item
-        icon={<IconSearch size={14} />}
-        rightSection={
-          <Text size="xs" color="dimmed">
-            ⌘K
-          </Text>
-        }
-      >
-        Search
-      </Menu.Item>
-
-      <Menu.Divider />
-
-      <Menu.Label>Danger zone</Menu.Label>
-      */}
       <Menu.Item icon={<IconUser size={14} />}>View Profile</Menu.Item>
       <Menu.Item
         color="red"
         icon={<IconDoorExit size={14} />}
         onClick={async () => {
-          dispatch(resetUser());
           await signout("");
         }}
       >
