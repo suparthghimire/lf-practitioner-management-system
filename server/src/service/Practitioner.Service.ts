@@ -46,9 +46,14 @@ const PractitionerService = {
             select: { id: true, name: true },
           },
         },
-        orderBy: {
-          createdAt: "desc",
-        },
+        orderBy: [
+          {
+            icuSpecialist: "desc",
+          },
+          {
+            createdAt: "desc",
+          },
+        ],
         take,
         skip,
       });
