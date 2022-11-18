@@ -1,100 +1,76 @@
-import { Footer } from "@mantine/core";
 import {
-  createStyles,
-  Text,
-  Container,
-  ActionIcon,
-  Group,
   Image,
+  createStyles,
+  Container,
+  Group,
+  ActionIcon,
+  Text,
+  Tooltip,
 } from "@mantine/core";
 import {
   IconBrandTwitter,
   IconBrandYoutube,
   IconBrandInstagram,
+  IconBrandGithub,
+  IconWorld,
 } from "@tabler/icons";
-
-// export default function FooterPartial() {
-//   return (
-//     <Footer height={75} p="lg">
-//       <div>Project Description</div>
-//     </Footer>
-//   );
-// }
+import Logo from "../common/Logo";
 
 const useStyles = createStyles((theme) => ({
   footer: {
-    paddingTop: theme.spacing.xl * 2,
-    paddingBottom: theme.spacing.xl * 2,
-    backgroundColor:
-      theme.colorScheme === "dark"
-        ? theme.colors.dark[6]
-        : theme.colors.gray[0],
+    // marginTop: 120,
     borderTop: `1px solid ${
       theme.colorScheme === "dark" ? theme.colors.dark[5] : theme.colors.gray[2]
     }`,
   },
 
-  logo: {
-    maxWidth: 200,
-    [theme.fn.smallerThan("sm")]: {
-      display: "flex",
+  inner: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingTop: theme.spacing.xl,
+    paddingBottom: theme.spacing.xl,
+
+    [theme.fn.smallerThan("xs")]: {
       flexDirection: "column",
-      alignItems: "center",
     },
   },
 
-  link: {
-    display: "block",
-    color:
-      theme.colorScheme === "dark"
-        ? theme.colors.dark[1]
-        : theme.colors.gray[6],
-    fontSize: theme.fontSizes.sm,
-    paddingTop: 3,
-    paddingBottom: 3,
-
-    "&:hover": {
-      textDecoration: "underline",
-    },
-  },
-
-  social: {
-    [theme.fn.smallerThan("sm")]: {
-      marginTop: theme.spacing.xs,
+  links: {
+    [theme.fn.smallerThan("xs")]: {
+      marginTop: theme.spacing.md,
     },
   },
 }));
 
 export default function FooterPartial() {
   const { classes } = useStyles();
-
   return (
-    <footer className={classes.footer}>
-      <Container px={0}>
-        <div className={classes.logo}>
-          <Image src="/logo.svg" />
+    <div className={classes.footer}>
+      <Container className={classes.inner}>
+        <Logo size={50} />
+        <div>
+          <Text color="dimmed">
+            Assignment Submission from{" "}
+            <a href="https://lfttechnology.com">Leapfrog Technology</a>
+          </Text>
           <Text size="xs" color="dimmed">
-            Build fully functional accessible web applications faster than ever
+            © 2022 Leapfrog Technology. All rights reserved.
           </Text>
         </div>
-      </Container>
-      <Container px={0}>
-        <Text color="dimmed" size="sm">
-          © 2020 mantine.dev. All rights reserved.
-        </Text>
-
-        <Group spacing={0} className={classes.social} position="right" noWrap>
-          <ActionIcon size="lg">
-            <IconBrandTwitter size={18} stroke={1.5} />
-          </ActionIcon>
-          <ActionIcon size="lg">
-            <IconBrandYoutube size={18} stroke={1.5} />
-          </ActionIcon>
-          <ActionIcon size="lg">
-            <IconBrandInstagram size={18} stroke={1.5} />
-          </ActionIcon>
+        <Group spacing={0} className={classes.links} position="right" noWrap>
+          <Tooltip label="Github Repository">
+            <ActionIcon size="lg">
+              <IconBrandGithub size={18} stroke={1.5} />
+            </ActionIcon>
+          </Tooltip>
+          <Tooltip label="Developer Info">
+            <ActionIcon size="lg">
+              <IconWorld size={18} stroke={1.5} />
+            </ActionIcon>
+          </Tooltip>
         </Group>
       </Container>
-    </footer>
+    </div>
   );
 }

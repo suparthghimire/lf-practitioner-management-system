@@ -12,29 +12,15 @@ import {
   Container,
   Menu,
 } from "@mantine/core";
-import {
-  IconDoorExit,
-  IconMoonStars,
-  IconSignRight,
-  IconStepOut,
-  IconSun,
-  IconUser,
-  IconUserCheck,
-} from "@tabler/icons";
+import { IconDoorExit, IconMoonStars, IconSun, IconUser } from "@tabler/icons";
 import { Link } from "react-router-dom";
-import {
-  IconSettings,
-  IconSearch,
-  IconPhoto,
-  IconMessageCircle,
-  IconTrash,
-  IconArrowsLeftRight,
-} from "@tabler/icons";
+import Logo from "../common/Logo";
 
 interface Props {
   burgerOpen: boolean;
   setBurgerOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
+
 export default function HeaderPartial(props: Props) {
   const theme = useMantineTheme();
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
@@ -63,20 +49,23 @@ export default function HeaderPartial(props: Props) {
                 color: dark ? theme.colors.dark[0] : theme.colors.dark[8],
               }}
             >
-              <Text
-                styles={(theme) => ({
-                  main: {
-                    color:
-                      theme.colorScheme === "dark"
-                        ? theme.colors.dark[8]
-                        : theme.colors.gray[0],
-                  },
-                })}
-                weight="bolder"
-                size="xl"
-              >
-                Practitioner Management System
-              </Text>
+              <Flex gap="md" align="center">
+                <Logo size={50} />
+                <Text
+                  styles={(theme) => ({
+                    main: {
+                      color:
+                        theme.colorScheme === "dark"
+                          ? theme.colors.dark[8]
+                          : theme.colors.gray[0],
+                    },
+                  })}
+                  weight="bolder"
+                  size="xl"
+                >
+                  Practitioner Management System
+                </Text>
+              </Flex>
             </Link>
           </div>
           <Flex gap="lg" align="center">
