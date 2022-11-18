@@ -1,24 +1,20 @@
-import CustomLoader from "../../components/common/Loader";
-import { useMyDataQuery } from "../../redux/auth/auth.query";
 import { useNavigate, Link } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../../redux/hooks";
-import { setUser } from "../../redux/auth/auth.slice";
-import { Text, Button } from "@mantine/core";
+import { useAppSelector } from "../../redux/hooks";
+import { Text, Button, Center } from "@mantine/core";
+import { useEffect } from "react";
 export default function DashboardPage() {
   const navigate = useNavigate();
-  const accessToken = useAppSelector((state) => state.authReducer.accessToken);
 
   const user = useAppSelector((state) => state.authReducer.user);
-
-  const dispatch = useAppDispatch();
-
-  const { isSuccess, isLoading, data, isError } = useMyDataQuery(
-    accessToken ?? ""
+  const isAuthenticated = useAppSelector(
+    (state) => state.authReducer.isAuthenticated
   );
-
-  if (isError) navigate("/signin");
-  if (isLoading) return <CustomLoader />;
-  if (isSuccess) dispatch(setUser(data?.data));
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate("/signin");
+    }
+  }, [isAuthenticated]);
+  if (!isAuthenticated) return <Center>Not Signed In</Center>;
   return (
     <div>
       <Text size="xl" weight="bolder">

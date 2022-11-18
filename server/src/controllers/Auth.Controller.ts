@@ -46,14 +46,14 @@ const AuthController = {
        * If user is not found, throws error of Invalid Credentials
        * else returns userid
        */
-      const userId = await UserService.getUserIDByEmailPwd(
+      const user = await UserService.getUserByEmailPwd(
         loginData.email,
         loginData.password
       );
 
       // Create Payload for JWT Token
       const tokenPayload: JWTPayload = {
-        id: userId,
+        id: user.id,
       };
 
       // Generate Token for access token with some expiration time (Set in Config File)
@@ -75,7 +75,7 @@ const AuthController = {
        */
       TokenService.saveUserToken(
         refreshToken,
-        userId,
+        user.id,
         CONFIG.REFRESH_TOKEN_EXPIRY
       );
 
@@ -95,6 +95,7 @@ const AuthController = {
         status: true,
         message: "SignIn Successful",
         data: {
+          user: user,
           accessToken: "Bearer " + accessToken,
           refreshToken: "Bearer " + refreshToken,
         },

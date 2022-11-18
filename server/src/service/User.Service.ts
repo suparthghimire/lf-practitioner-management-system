@@ -29,7 +29,7 @@ const UserService = {
     }
   },
   // gets user by email and password
-  getUserIDByEmailPwd: async function (email: string, password: string) {
+  getUserByEmailPwd: async function (email: string, password: string) {
     try {
       const user = await prismaClient.user.findUnique({
         where: {
@@ -46,7 +46,7 @@ const UserService = {
 
       if (!isPwdMatch) throw new CustomError("Invalid Email or Password", 401);
       // return user id
-      return user.id;
+      return user;
     } catch (error) {
       // error handeling is done in the controller
       throw error;

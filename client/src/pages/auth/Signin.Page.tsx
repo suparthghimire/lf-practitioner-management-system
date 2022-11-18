@@ -14,7 +14,7 @@ import ServerErrorPartial from "../../components/partials/ServerError.Partial";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { useSigninMutation } from "../../redux/auth/auth.query";
 import { useEffect } from "react";
-import { setTokens } from "../../redux/auth/auth.slice";
+import { setTokens, setUser } from "../../redux/auth/auth.slice";
 import { showNotification, updateNotification } from "@mantine/notifications";
 import { ServerError } from "../../models/Error";
 import { IconCheck, IconX } from "@tabler/icons";
@@ -46,6 +46,7 @@ export default function SigninPage() {
   useEffect(() => {
     if (isSuccess) {
       dispatch(setTokens(data?.data));
+      dispatch(setUser(data?.data.user));
       updateNotification({
         id: "signin-notification",
         title: "Sign in Successful",
