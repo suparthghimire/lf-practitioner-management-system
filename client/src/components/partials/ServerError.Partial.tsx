@@ -1,18 +1,20 @@
 import { Alert, Box, List, Text, useMantineColorScheme } from "@mantine/core";
 import { IconAlertCircle } from "@tabler/icons";
+import { ServerError } from "../../models/Error";
 
-const errors: string[] = [];
-
-export default function ServerErrorPartial() {
-  return errors.length > 0 ? (
+export default function ServerErrorPartial({
+  errors,
+}: {
+  errors: ServerError | undefined;
+}) {
+  return errors ? (
     <Box mb="xl">
-      <Alert icon={<IconAlertCircle size={16} />} title="Bummer!" color="red">
-        Opps! Something Went Wrong. Please Fix the Issues Listed Below
-        <List mt="sm">
-          {errors.map((error) => (
-            <SingleError error={error} />
-          ))}
-        </List>
+      <Alert
+        icon={<IconAlertCircle size={16} />}
+        title={errors.message}
+        color="red"
+      >
+        <div></div>
       </Alert>
     </Box>
   ) : (

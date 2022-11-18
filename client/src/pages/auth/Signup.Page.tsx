@@ -8,9 +8,13 @@ import {
   TextInput,
   PasswordInput,
   Flex,
+  Center,
 } from "@mantine/core";
 import { Link } from "react-router-dom";
 import ServerErrorPartial from "../../components/partials/ServerError.Partial";
+import { useAppSelector } from "../../redux/hooks";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 export default function SignupPage() {
   const form = useForm<User>({
     initialValues: {
@@ -21,9 +25,22 @@ export default function SignupPage() {
     },
     validate: zodResolver(UserSchema),
   });
+  const navigate = useNavigate();
+
+  const isAuthenticated = useAppSelector(
+    (state) => state.authReducer.isAuthenticated
+  );
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/");
+    }
+  }, [isAuthenticated]);
+
+  if (isAuthenticated) return <Center>Already Signedin</Center>;
   return (
     <AuthPageLayout title="Sign Up">
-      <ServerErrorPartial />
+      {/* <ServerErrorPartial /> */}
       <form
         onSubmit={form.onSubmit((values) => {
           console.log(values);

@@ -84,4 +84,9 @@ export const UserSchema = z
 
 export type User = z.infer<typeof UserSchema>;
 
+export type DisplayUser = Omit<User, "password" | "confirmPassword"> & {
+  createdAt: Date;
+  updatedAt: Date;
+};
+
 export type UserLogin = z.infer<typeof UserLoginSchema>;

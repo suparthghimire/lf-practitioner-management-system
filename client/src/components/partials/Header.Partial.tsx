@@ -12,6 +12,7 @@ import {
 } from "@mantine/core";
 import { IconDoorExit, IconMoonStars, IconSun, IconUser } from "@tabler/icons";
 import { Link } from "react-router-dom";
+import { useAppSelector } from "../../redux/hooks";
 import Logo from "../common/Logo";
 
 interface Props {
@@ -24,6 +25,9 @@ export default function HeaderPartial(props: Props) {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   const dark = colorScheme === "dark";
   const oppositeColorScheme = dark ? "light" : "dark";
+  const isAuthenticated = useAppSelector(
+    (state) => state.authReducer.isAuthenticated
+  );
   return (
     <Header height={{ base: 100, md: 100 }} p="lg">
       <Container px={0}>
@@ -58,32 +62,38 @@ export default function HeaderPartial(props: Props) {
             </Link>
           </div>
           <Flex gap="lg" align="center">
-            <Link to="/signin">
-              <Button variant="light" color="teal">
-                Sign In
-              </Button>
-            </Link>
-            <Link to="/signup">
-              <Button variant="light" color="blue">
-                Sign Up
-              </Button>
-            </Link>
-            <div>
-              <Menu
-                shadow="md"
-                width={200}
-                trigger="hover"
-                openDelay={100}
-                closeDelay={100}
-              >
-                <Menu.Target>
-                  <ActionIcon size="lg" variant="light" color="green">
-                    <IconUser />
-                  </ActionIcon>
-                </Menu.Target>
-                <UserMenu />
-              </Menu>
-            </div>
+            {!isAuthenticated && (
+              <>
+                <Link to="/signin">
+                  <Button variant="light" color="teal">
+                    Sign In
+                  </Button>
+                </Link>
+                <Link to="/signup">
+                  <Button variant="light" color="blue">
+                    Sign Up
+                  </Button>
+                </Link>
+              </>
+            )}
+            {isAuthenticated && (
+              <div>
+                <Menu
+                  shadow="md"
+                  width={200}
+                  trigger="hover"
+                  openDelay={100}
+                  closeDelay={100}
+                >
+                  <Menu.Target>
+                    <ActionIcon size="lg" variant="light" color="green">
+                      <IconUser />
+                    </ActionIcon>
+                  </Menu.Target>
+                  <UserMenu />
+                </Menu>
+              </div>
+            )}
             <p>|</p>
             <Tooltip label={`Switch to ${oppositeColorScheme} theme`}>
               <ActionIcon
