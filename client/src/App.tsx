@@ -1,10 +1,6 @@
+import AuthPageLayout from "./components/AuthPageLayout";
 function App() {
-
-  return (
-    <div >
-      Hello World
-    </div>
-  )
+  return <div>OK</div>;
 }
 
-export default App
+export default App;
