@@ -1,12 +1,18 @@
 import { Image } from "@mantine/core";
-import React from "react";
+import React, { CSSProperties } from "react";
 
-export default function Logo({ size = 150 }: { size?: number }) {
+interface Props {
+  size?: number;
+  style?: CSSProperties;
+}
+
+export default function Logo({ size = 50, style }: Props) {
   return (
     <Image
       src="/logo.svg"
       style={{
         maxWidth: size,
+        ...style,
       }}
     />
   );

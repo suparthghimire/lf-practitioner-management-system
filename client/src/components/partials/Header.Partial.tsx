@@ -1,7 +1,5 @@
 import {
-  Burger,
   Header,
-  MediaQuery,
   useMantineTheme,
   Text,
   Flex,
@@ -33,15 +31,6 @@ export default function HeaderPartial(props: Props) {
           <div
             style={{ display: "flex", alignItems: "center", height: "100%" }}
           >
-            <MediaQuery largerThan="sm" styles={{ display: "none" }}>
-              <Burger
-                opened={props.burgerOpen}
-                onClick={() => props.setBurgerOpen(!props.burgerOpen)}
-                size="sm"
-                color={theme.colors.gray[6]}
-                mr="xl"
-              />
-            </MediaQuery>
             <Link
               to="/"
               style={{
