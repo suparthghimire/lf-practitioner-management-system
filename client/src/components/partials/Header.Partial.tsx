@@ -127,7 +127,6 @@ export default function HeaderPartial(props: Props) {
 
 function UserMenu() {
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
 
   const [signout, { isSuccess }] = useSignoutMutation();
 

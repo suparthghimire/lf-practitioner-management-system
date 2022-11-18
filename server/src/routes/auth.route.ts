@@ -7,7 +7,7 @@ import { IsLoggedIn, IsLoggedOut } from "../middleware/Auth.Middleware";
 
 router.get("/", IsLoggedIn, AuthController.index); // User Data
 router.delete("/signout", AuthController.signOut); //Logout
-router.post("/refresh", IsLoggedIn, AuthController.refreshToken); //refresh token
+router.post("/refresh", AuthController.refreshToken); //refresh token
 
 router.post("/signin", AuthController.signIn); //Login
 router.post("/signup", IsLoggedOut, AuthController.signUp); //Register

@@ -16,9 +16,6 @@ export default function DashboardPage() {
     }
   }, [isLoading, isAuthenticated]);
 
-  // if (isLoading) return <CustomLoader />;
-
-  // if (!isAuthenticated) return <Center>Not Signed In</Center>;
   if (!isLoading && isAuthenticated)
     return (
       <div>
