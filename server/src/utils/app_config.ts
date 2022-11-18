@@ -6,6 +6,10 @@ const CONFIG = {
   PORT: parseInt(process.env.PORT as string) || 3000,
   JWT_SECRET: process.env.JWT_SECRET || "secret",
   PWD_REGEX: /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
+  CLIENT_DEV_ENDPOINT:
+    process.env.CLIENT_DEV_ENDPOINT || "http://localhost:4173",
+  CLIENT_PRD_ENDPOINT:
+    process.env.CLIENT_PRD_ENDPOINT || "http://localhost:5173",
   ACCESS_TOKEN_EXPIRY: ConvertTimeToSec(
     Number(process.env.ACCESS_TOKEN_EXPIRY) || 10,
     "m"

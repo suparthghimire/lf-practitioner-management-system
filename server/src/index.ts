@@ -4,17 +4,31 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import { PrismaClient } from "@prisma/client";
 import fileUpload from "express-fileupload";
+import cors from "cors";
 /* Route Imports */
 import IndexRoute from "./routes/auth.route";
 import PractitionerRoutes from "./routes/practitioner.route";
 import PractitionerController from "./controllers/Practitioner.Controller";
-import CONFIG from "./utils/app_config";
+
+/* Middleware Imports */
 import { IsLoggedIn } from "./middleware/Auth.Middleware";
 import { HasWritePermission } from "./middleware/Authorization.Middleware";
-
+/* Configf Import */
+import CONFIG from "./utils/app_config";
 // configure .env files
 dotenv.config();
+
 const app = express();
+
+/* Configure Cors */
+
+app.use(
+  cors({
+    origin: [CONFIG.CLIENT_PRD_ENDPOINT, CONFIG.CLIENT_DEV_ENDPOINT],
+    credentials: true,
+  })
+);
+
 app.use(
   fileUpload({
     parseNested: true, // allow nested objects from form-data
