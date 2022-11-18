@@ -2,6 +2,7 @@ import request from "supertest";
 import { app } from "../index";
 import mockData from "./mockData/index.json";
 import path from "path";
+import { Practitioner } from "prisma/prisma-client";
 
 describe("Testing Practitioner", () => {
   describe("Given User is not Authenticated", () => {
@@ -92,12 +93,30 @@ describe("Testing Practitioner", () => {
     practitionerIdNotToDelete = practitioner.id;
   });
   describe("Given User is Authenticated", () => {
+    let allPractitioners: Practitioner[] = [];
     describe("When Request Body and URL Params are Valid", () => {
       it("Should Get Practitioner Data", async () => {
         const res = await request(app)
           .get("/practitioner")
           .set("authorization", token);
+        allPractitioners = res.body.data;
         expect(res.status).toBe(200);
+      });
+      it("Should Order Practitioner Data by Practitioners who are ICU Specialist first", () => {
+        let status = true;
+        for (let i = 0; i < allPractitioners.length; i++) {
+          let nextPractitioner = allPractitioners[i + 1];
+          if (nextPractitioner) {
+            if (
+              nextPractitioner.icuSpecialist === true &&
+              allPractitioners[i].icuSpecialist === false
+            ) {
+              status = false;
+              break;
+            }
+          }
+        }
+        expect(status).toBe(true);
       });
       it("Should Create New Practitioner", async () => {
         const createdPractitioner = await CreatePractitioner(token);
@@ -176,8 +195,7 @@ describe("Testing Practitioner", () => {
       it("Should Not Update Practitioner and Return Form Validation Error (Invalid Request Body)", async () => {
         const res = await request(app)
           .put(`/practitioner/${practitionerIdNotToDelete}`)
-          .field("startTime", "")
-          .field("endTime", "")
+          .field("email", "invalid_email")
           .set("authorization", token);
         expect(res.status).toBe(422);
       });
