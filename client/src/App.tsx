@@ -24,14 +24,11 @@ function App() {
   const toggleColorScheme = (value?: ColorScheme) =>
     setColorScheme(value || (colorScheme === "dark" ? "light" : "dark"));
 
-  const accessToken = useAppSelector((state) => state.authReducer.accessToken);
-
   const dispatch = useAppDispatch();
 
-  const { isSuccess, data, isError } = useMyDataQuery(accessToken ?? "");
+  const { isSuccess, data, isError } = useMyDataQuery("");
   useEffect(() => {
     if (isSuccess) {
-      dispatch(resetUser());
       dispatch(setUser(data?.data));
     } else if (isError) {
       dispatch(setLoading(false));

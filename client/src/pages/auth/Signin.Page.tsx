@@ -69,6 +69,8 @@ export default function SigninPage() {
         icon: <IconCheck />,
         autoClose: 2000,
       });
+      console.log("SININING");
+      console.log(data.data.user);
       dispatch(setUser(data.data.user));
       dispatch(
         setTokens({

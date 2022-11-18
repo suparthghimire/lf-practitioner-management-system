@@ -97,6 +97,8 @@ export const authApi = createApi({
     }),
     myData: builder.query({
       query: (token: string) => {
+        console.log("token", token);
+
         return {
           url: "/",
           credentials: "include",
