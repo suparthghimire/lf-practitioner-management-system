@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useAppSelector } from "../../redux/hooks";
-import { useNavigate } from "react-router-dom";
 import UserPageLayout from "../../components/Layouts/UserPageLayout";
 import { useForm, zodResolver } from "@mantine/form";
 import { Practitioner, PractitionerSchema } from "../../models/Practitioner";
@@ -23,7 +22,6 @@ export default function PractitionerCreatePage() {
   const { isAuthenticated, isLoading: userLoading } = useAppSelector(
     (state) => state.authReducer
   );
-  const navigate = useNavigate();
   const user = useAppSelector((state) => state.authReducer.user);
   const [file, setFile] = useState<File | null>(null);
   const [showImageCropModal, setShowImageCropModal] = useState(false);
@@ -63,9 +61,6 @@ export default function PractitionerCreatePage() {
     else setShowImageCropModal(false);
   }, [file]);
 
-  useEffect(() => {
-    console.log({ userLoading, isAuthenticated });
-  }, [isAuthenticated, userLoading]);
   return (
     <UserPageLayout title="Create New Practitioner">
       <form

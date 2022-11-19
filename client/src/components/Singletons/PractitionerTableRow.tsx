@@ -1,7 +1,16 @@
 import { useEffect, useState } from "react";
 import { Practitioner } from "../../models/Practitioner";
 import moment from "moment";
-import { Badge, Switch, Tooltip, ActionIcon, Flex, Modal } from "@mantine/core";
+import {
+  Badge,
+  Switch,
+  Tooltip,
+  ActionIcon,
+  Flex,
+  Modal,
+  Group,
+  Button,
+} from "@mantine/core";
 import { IconEdit, IconEye, IconFileDatabase, IconTrash } from "@tabler/icons";
 import HELPERS from "../../utils/helpers";
 import SinglePractitionerModalCard from "./SinglePractitionerModalCard";
@@ -15,7 +24,8 @@ export default function PractitionerTableRow({
   practitioner: Practitioner;
   sn: number;
 }) {
-  const [modalOpen, setModalOpen] = useState(false);
+  const [viewModalOpen, setViewModalOpen] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const { user, accessToken } = useAppSelector((state) => state.authReducer);
 
   return (
@@ -47,23 +57,18 @@ export default function PractitionerTableRow({
                   : true
                 : false
             }
-            // onChange={(event) =>
-            //   setIsIcuSpecialist(event.currentTarget.checked)
-            // }
-            label=""
           />
         </Flex>
       </td>
       <td>
         <Flex gap="sm">
-          {practitioner.WorkingDays.map((day) => {
+          {practitioner.WorkingDays.map((day, idx) => {
             return (
-              <Tooltip label={day.day}>
-                <Badge
-                  key={`working-day-practitioner-${day}`}
-                  variant="light"
-                  color="blue"
-                >
+              <Tooltip
+                key={`working-day-practitioner-${day}-${idx}`}
+                label={day.day}
+              >
+                <Badge variant="light" color="blue">
                   {day.day.substring(0, 3)}
                 </Badge>
               </Tooltip>
@@ -82,7 +87,7 @@ export default function PractitionerTableRow({
             label={`View ${HELPERS.TrailingDot(practitioner.fullname, 10)}`}
           >
             <ActionIcon
-              onClick={() => setModalOpen(true)}
+              onClick={() => setViewModalOpen(true)}
               color="blue"
               variant="light"
             >
@@ -117,6 +122,7 @@ export default function PractitionerTableRow({
                     : true
                   : false
               }
+              onClick={() => setDeleteModalOpen(true)}
               color="red"
               variant="light"
             >
@@ -126,12 +132,38 @@ export default function PractitionerTableRow({
         </Flex>
       </td>
       <Modal
-        opened={modalOpen}
+        opened={viewModalOpen}
         centered
         title={practitioner.fullname}
-        onClose={() => setModalOpen(false)}
+        onClose={() => setViewModalOpen(false)}
       >
         <SinglePractitionerModalCard practitioner={practitioner} />
+      </Modal>
+      <Modal
+        opened={deleteModalOpen}
+        centered
+        title="Delete Confirmation"
+        onClose={() => setDeleteModalOpen(false)}
+      >
+        Are you sure you want to delete {practitioner.fullname} ?
+        <Group mt="xl">
+          <Button
+            onClick={() => setDeleteModalOpen(false)}
+            variant="light"
+            color="blue"
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={() => {
+              // setDeleteModalOpen(false);
+            }}
+            variant="light"
+            color="red"
+          >
+            Yes, Delete
+          </Button>
+        </Group>
       </Modal>
     </tr>
   );

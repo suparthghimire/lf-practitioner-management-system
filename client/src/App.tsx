@@ -7,7 +7,14 @@ import { useEffect, useState } from "react";
 
 import GlobalLayout from "./components/Layouts/GlobalLayout";
 
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+  useLocation,
+  Outlet,
+} from "react-router-dom";
 
 import SigninPage from "./pages/auth/Signin.Page";
 import SignupPage from "./pages/auth/Signup.Page";
@@ -21,6 +28,7 @@ import { resetUser, setLoading, setUser } from "./redux/auth/auth.slice";
 import PractitionerIndexPage from "./pages/practitioners";
 import PractitionerCreatePage from "./pages/practitioners/create";
 import PractitionerEditPage from "./pages/practitioners/edit";
+import CustomLoader from "./components/common/Loader";
 
 function App() {
   const [colorScheme, setColorScheme] = useState<ColorScheme>("light");
@@ -64,14 +72,67 @@ function App() {
 function Router() {
   return (
     <Routes>
-      <Route path="/" element={<DashboardPage />} />
-      <Route path="/signup" element={<SignupPage />} />
-      <Route path="/signin" element={<SigninPage />} />
-      <Route path="/practitioner" element={<PractitionerIndexPage />} />
-      <Route path="/practitioner/create" element={<PractitionerCreatePage />} />
-      <Route path="/practitioner/edit" element={<PractitionerEditPage />} />
+      <Route element={<UnProtectedRoutes />}>
+        <Route path="/signup" element={<SignupPage />} />
+        <Route path="/signin" element={<SigninPage />} />
+      </Route>
+      <Route element={<ProtectedRoutes />}>
+        <Route path="/" element={<DashboardPage />} />
+        <Route path="/" element={<DashboardPage />} />
+        <Route path="/practitioner" element={<PractitionerIndexPage />} />
+        <Route
+          path="/practitioner/create"
+          element={<PractitionerCreatePage />}
+        />
+        <Route path="/practitioner/edit" element={<PractitionerEditPage />} />
+      </Route>
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
+  );
+}
+
+function ProtectedRoutes() {
+  const location = useLocation();
+  const { isAuthenticated, isLoading } = useAppSelector(
+    (state) => state.authReducer
+  );
+
+  if (isLoading) {
+    return <CustomLoader />;
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <Navigate
+        replace
+        to="/signin"
+        state={{
+          from: location,
+        }}
+      />
+    );
+  }
+  return <Outlet />;
+}
+
+function UnProtectedRoutes() {
+  const location = useLocation();
+  const { isAuthenticated, isLoading } = useAppSelector(
+    (state) => state.authReducer
+  );
+
+  if (isLoading) return <CustomLoader />;
+
+  if (!isAuthenticated) return <Outlet />;
+
+  return (
+    <Navigate
+      replace
+      to={location.state?.from || "/"}
+      state={{
+        from: location,
+      }}
+    />
   );
 }
 

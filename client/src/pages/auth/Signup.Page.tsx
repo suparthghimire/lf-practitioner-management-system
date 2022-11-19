@@ -46,16 +46,6 @@ export default function SignupPage() {
     { isLoading: signUpLoading, isError, isSuccess, data, error },
   ] = useSignupMutation();
 
-  const { isLoading: userLoading, isAuthenticated } = useAppSelector(
-    (state) => state.authReducer
-  );
-
-  useEffect(() => {
-    if (!userLoading && isAuthenticated) {
-      navigate("/");
-    }
-  }, [isAuthenticated]);
-
   useEffect(() => {
     if (isSuccess) {
       updateNotification({
@@ -83,9 +73,6 @@ export default function SignupPage() {
       });
     }
   }, [signUpLoading, isSuccess, isError]);
-
-  if (isAuthenticated || (!signUpLoading && userLoading))
-    return <CustomLoader />;
 
   return (
     <AuthPageLayout title="Sign Up">

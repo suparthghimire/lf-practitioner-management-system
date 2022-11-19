@@ -23,7 +23,17 @@ export const practitionerApi = createApi({
         credentials: "include",
       }),
     }),
+    deletePractitioner: builder.mutation({
+      query: ({ token, id }: { token: string; id: string }) => ({
+        url: `/practitioner/${id}`,
+        method: "DELETE",
+        headers: {
+          authorization: token,
+        },
+      }),
+    }),
   }),
 });
 
-export const { useGetPractitionersQuery } = practitionerApi;
+export const { useGetPractitionersQuery, useDeletePractitionerMutation } =
+  practitionerApi;

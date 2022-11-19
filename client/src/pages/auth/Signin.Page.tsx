@@ -9,7 +9,7 @@ import {
   Flex,
   Center,
 } from "@mantine/core";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import ServerErrorPartial from "../../components/partials/ServerError.Partial";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { useSigninMutation } from "../../redux/auth/auth.query";
@@ -18,15 +18,14 @@ import { setTokens, setUser } from "../../redux/auth/auth.slice";
 import { showNotification, updateNotification } from "@mantine/notifications";
 import { ServerError } from "../../models/Error";
 import { IconCheck, IconX } from "@tabler/icons";
-import { useNavigate } from "react-router-dom";
-import CustomLoader from "../../components/common/Loader";
 export default function SigninPage() {
-  const navigate = useNavigate();
   const [
     signin,
     { isSuccess, isLoading: signUpLoading, isError, data, error },
   ] = useSigninMutation();
 
+  const location = useLocation();
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
   const form = useForm<UserLogin>({
@@ -37,12 +36,6 @@ export default function SigninPage() {
     validate: zodResolver(UserLoginSchema),
   });
 
-  const {
-    user,
-    isAuthenticated,
-    isLoading: userLoading,
-  } = useAppSelector((state) => state.authReducer);
-
   async function handleSubmit(values: UserLogin) {
     try {
       await signin(values);
@@ -52,12 +45,6 @@ export default function SigninPage() {
       form.reset();
     }
   }
-
-  useEffect(() => {
-    if (!userLoading && isAuthenticated) {
-      navigate("/");
-    }
-  }, [userLoading, isAuthenticated]);
 
   useEffect(() => {
     if (isSuccess) {
@@ -78,6 +65,9 @@ export default function SigninPage() {
           refreshToken: data.data.refreshToken,
         })
       );
+      if (location?.state?.from) {
+        navigate(location.state.from);
+      }
     } else if (isError) {
       updateNotification({
         id: "signin-notification",
@@ -99,9 +89,6 @@ export default function SigninPage() {
       });
     }
   }, [isSuccess, isError, signUpLoading]);
-
-  if (isAuthenticated || (userLoading && !signUpLoading))
-    return <CustomLoader />;
 
   return (
     <AuthPageLayout title="Sign In">

@@ -2,7 +2,7 @@ import { Center, Loader } from "@mantine/core";
 
 export default function CustomLoader() {
   return (
-    <Center style={{ height: "100%" }}>
+    <Center mt={"xl"} style={{ height: "50vh" }}>
       <Loader />;
     </Center>
   );
