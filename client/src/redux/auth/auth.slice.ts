@@ -7,7 +7,6 @@ export interface AuthState {
   refreshToken: string | null;
   user: DisplayUser | null;
   isAuthenticated: boolean;
-  isLoading: boolean;
 }
 
 const initialState: AuthState = {
@@ -15,22 +14,17 @@ const initialState: AuthState = {
   refreshToken: null,
   user: null,
   isAuthenticated: false,
-  isLoading: true,
 };
 
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setLoading: (state, action: PayloadAction<boolean>) => {
-      state.isLoading = action.payload;
-    },
     resetUser(state) {
       state.accessToken = null;
       state.refreshToken = null;
       state.user = null;
       state.isAuthenticated = false;
-      state.isLoading = false;
     },
     setUser(
       state,
@@ -40,7 +34,6 @@ const authSlice = createSlice({
     ) {
       state.user = action.payload;
       state.isAuthenticated = true;
-      state.isLoading = false;
     },
     setTokens(
       state,
@@ -54,5 +47,5 @@ const authSlice = createSlice({
 });
 
 export const selectAuth = (state: RootState) => state.auth;
-export const { resetUser, setUser, setTokens, setLoading } = authSlice.actions;
+export const { resetUser, setUser, setTokens } = authSlice.actions;
 export default authSlice.reducer;

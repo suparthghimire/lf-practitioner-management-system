@@ -5,7 +5,7 @@ import {
   FetchBaseQueryError,
 } from "@reduxjs/toolkit/query/react";
 import CONFIG from "../utils/app_config";
-import { setLoading, setTokens } from "./auth/auth.slice";
+import { setTokens } from "./auth/auth.slice";
 
 const baseQuery = fetchBaseQuery({ baseUrl: CONFIG.SERVER_URL });
 
@@ -14,8 +14,6 @@ const baseQueryWithReauth: BaseQueryFn<
   unknown,
   FetchBaseQueryError
 > = async function (args, api, extraOptions) {
-  api.dispatch(setLoading(true));
-
   const url = (args as any).url as string;
   let result = await baseQuery(args, api, extraOptions);
   if (url === "/signout") {
@@ -58,7 +56,6 @@ const baseQueryWithReauth: BaseQueryFn<
   } else {
     // api.dispatch(resetUser());
   }
-  api.dispatch(setLoading(false));
   return result;
 };
 export default baseQueryWithReauth;

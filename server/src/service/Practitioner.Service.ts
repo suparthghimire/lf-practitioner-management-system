@@ -35,19 +35,22 @@ const PractitionerService = {
   getPractitionersWorkingToday: async () => {
     try {
       const weekDayName = moment().format("dddd");
-      const practitionersWorkingToday =
-        await prismaClient.practitioner.findMany({
-          where: {
-            WorkingDays: {
-              some: {
-                day: weekDayName as DayName,
-              },
+      const todayData = await prismaClient.practitioner.count({
+        where: {
+          WorkingDays: {
+            some: {
+              day: weekDayName as DayName,
             },
           },
-        });
-      const totalPractitoners = await prismaClient.practitioner.count();
+        },
+      });
+      const totalPractitioners = await prismaClient.practitioner.count();
 
-      return { practitionersWorkingToday, totalPractitoners };
+      return {
+        todayData,
+        totalPractitioners,
+        todayPercent: todayData / totalPractitioners,
+      };
     } catch (error) {
       throw error;
     }
@@ -71,6 +74,9 @@ const PractitionerService = {
         orderBy: [
           {
             icuSpecialist: "desc",
+          },
+          {
+            createdAt: "desc",
           },
         ],
         take,

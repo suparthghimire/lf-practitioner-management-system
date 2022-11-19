@@ -1,47 +1,7 @@
 import { z } from "zod";
 import CONFIG from "../utils/app_config";
-
-const dayEnum = [
-  "Sunday",
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-] as const;
-
-const SpecializationSchema = z.object({
-  id: z
-    .number({
-      errorMap: (err) => {
-        return {
-          message: "Enter a Valid Specialization id",
-        };
-      },
-    })
-    .optional(),
-  name: z.string().min(1, {
-    message: "Specialization name is required",
-  }),
-});
-
-const WorkingDaysSchema = z.object({
-  id: z
-    .number({
-      errorMap: (err) => ({
-        message: "Working day id must be a number",
-      }),
-    })
-    .optional(),
-  day: z.enum(dayEnum, {
-    errorMap: (err) => {
-      return {
-        message: "Please select a valid day",
-      };
-    },
-  }),
-});
+import { SpecializationSchema } from "./Specialization";
+import { WorkingDaysSchema } from "./WorkingDay";
 
 export const PractitionerSchema = z.object({
   id: z

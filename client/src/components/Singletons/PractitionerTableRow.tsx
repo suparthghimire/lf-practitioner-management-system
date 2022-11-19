@@ -11,19 +11,15 @@ import {
   Group,
   Button,
 } from "@mantine/core";
-import {
-  IconCheck,
-  IconEdit,
-  IconEye,
-  IconFileDatabase,
-  IconTrash,
-  IconX,
-} from "@tabler/icons";
+import { IconCheck, IconEdit, IconEye, IconTrash, IconX } from "@tabler/icons";
 import HELPERS from "../../utils/helpers";
 import SinglePractitionerModalCard from "./SinglePractitionerModalCard";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { User } from "../../models/User";
-import { useDeletePractitionerMutation } from "../../redux/practitioner/practitioner.query";
+import {
+  useDeletePractitionerMutation,
+  useToggleIcuSpecialistMutation,
+} from "../../redux/practitioner/practitioner.query";
 import { showNotification, updateNotification } from "@mantine/notifications";
 
 import { removePractitionerById } from "../../redux/practitioner/practitioner.slice";
@@ -31,19 +27,45 @@ import { removePractitionerById } from "../../redux/practitioner/practitioner.sl
 export default function PractitionerTableRow({
   practitioner,
   sn,
+  refetch,
 }: {
   practitioner: Practitioner;
   sn: number;
+  refetch: Function;
 }) {
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [isIcuSpecialist, setIsIcuSpecialist] = useState(
+    practitioner.icuSpecialist === true ? true : false
+  );
   const { user, accessToken } = useAppSelector((state) => state.authReducer);
   const dispatch = useAppDispatch();
-  const [deletePractitioner, { isLoading, isSuccess, isError, error, data }] =
-    useDeletePractitionerMutation();
+  const [
+    deletePractitioner,
+    {
+      isLoading: deleteLoading,
+      isSuccess: deleteSuccess,
+      isError: deleteError,
+    },
+  ] = useDeletePractitionerMutation();
+
+  const [
+    toggleIcuSpecialist,
+    {
+      isLoading: icuSpecialistLoading,
+      isSuccess: icuSpecialistSuccess,
+      isError: icuSpecialistError,
+    },
+  ] = useToggleIcuSpecialistMutation();
 
   useEffect(() => {
-    if (isSuccess) {
+    if (icuSpecialistSuccess) {
+      refetch();
+    }
+  }, [icuSpecialistSuccess]);
+
+  useEffect(() => {
+    if (deleteSuccess) {
       updateNotification({
         title: "Deletion Successful",
         message: "Deletion Successful",
@@ -52,8 +74,9 @@ export default function PractitionerTableRow({
         id: "delete-practitioner",
       });
       dispatch(removePractitionerById(practitioner.id as number));
+      refetch();
       setDeleteModalOpen(false);
-    } else if (isError) {
+    } else if (deleteError) {
       updateNotification({
         title: "Deletion Failed",
         message: "There was an error while deleting the practitioner",
@@ -61,7 +84,7 @@ export default function PractitionerTableRow({
         icon: <IconX />,
         id: "delete-practitioner",
       });
-    } else if (isLoading) {
+    } else if (deleteLoading) {
       showNotification({
         title: "Deleting Practitioner",
         message: "Please wait...",
@@ -70,7 +93,7 @@ export default function PractitionerTableRow({
         id: "delete-practitioner",
       });
     }
-  }, [isLoading, isError, isSuccess]);
+  }, [deleteLoading, deleteError, deleteSuccess]);
 
   return (
     <tr>
@@ -81,7 +104,7 @@ export default function PractitionerTableRow({
       <td>{moment(practitioner.dob).format("LL")}</td>
       <td>
         <Flex align="flex-end" gap="sm">
-          {practitioner.icuSpecialist === true ? (
+          {isIcuSpecialist === true ? (
             <Badge variant="light" color="green">
               Yes
             </Badge>
@@ -93,7 +116,16 @@ export default function PractitionerTableRow({
           <Switch
             size="sm"
             color="green"
-            checked={practitioner.icuSpecialist === true}
+            checked={isIcuSpecialist}
+            onChange={async (e) => {
+              setIsIcuSpecialist(e.target.checked);
+              await toggleIcuSpecialist({
+                practitionerId: practitioner.id as number,
+                status: e.target.checked,
+                token: accessToken as string,
+              });
+            }}
+            // checked={practitioner.icuSpecialist === true}
             disabled={
               user
                 ? user.id === (practitioner.createdBy as unknown as User).id

@@ -25,7 +25,11 @@ export default function PractitionerIndexPage() {
     total: totalPages,
     initialPage: currPage,
   });
-  const { isLoading: practitionerLoading, data } = useGetPractitionersQuery({
+  const {
+    isLoading: practitionerLoading,
+    data,
+    refetch,
+  } = useGetPractitionersQuery({
     token: accessToken ?? "",
     page: pagination.active,
     limit: limit,
@@ -42,15 +46,14 @@ export default function PractitionerIndexPage() {
         page={pagination.active}
         onChange={(page) => {
           pagination.setPage(page);
+          2;
           setCurrPage(page);
           navigate(`/practitioner?page=${page}&limit=5`);
         }}
         size="sm"
         total={totalPages}
       />
-      {practitionerLoading ? (
-        <CustomLoader />
-      ) : (
+      {data?.data && (
         <ScrollArea>
           <Table mt="xl">
             <thead>
@@ -73,6 +76,7 @@ export default function PractitionerIndexPage() {
                     key={`Single-Practitioner-${practitioner.id}`}
                     sn={sn + 1}
                     practitioner={practitioner}
+                    refetch={refetch}
                   />
                 );
               })}

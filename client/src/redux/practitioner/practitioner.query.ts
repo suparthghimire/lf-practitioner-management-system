@@ -1,4 +1,6 @@
+import { Practitioner } from "./../../models/Practitioner";
 import { createApi } from "@reduxjs/toolkit/query/react";
+import { serialize } from "object-to-formdata";
 
 import baseQueryWithReauth from "../queryWrapper";
 
@@ -23,6 +25,46 @@ export const practitionerApi = createApi({
         credentials: "include",
       }),
     }),
+    toggleIcuSpecialist: builder.mutation({
+      query: ({
+        token,
+        practitionerId,
+        status,
+      }: {
+        token: string;
+        practitionerId: number;
+        status: boolean;
+      }) => ({
+        url: `/practitioner/${practitionerId}`,
+        method: "PUT",
+        headers: {
+          authorization: token,
+        },
+        credentials: "include",
+        body: {
+          icuSpecialist: status,
+        },
+      }),
+    }),
+    updatePractitioner: builder.mutation({
+      query: ({
+        token,
+        practitionerId,
+        practitioner,
+      }: {
+        token: string;
+        practitionerId: string;
+        practitioner: Practitioner;
+      }) => ({
+        url: `/practitioner/${practitionerId}`,
+        method: "PUT",
+        headers: {
+          authorization: token,
+        },
+        credentials: "include",
+        body: serialize(practitioner),
+      }),
+    }),
     deletePractitioner: builder.mutation({
       query: ({ token, id }: { token: string; id: number }) => ({
         url: `/practitioner/${id}`,
@@ -35,5 +77,10 @@ export const practitionerApi = createApi({
   }),
 });
 
-export const { useGetPractitionersQuery, useDeletePractitionerMutation } =
-  practitionerApi;
+export const {
+  useGetPractitionersQuery,
+
+  useToggleIcuSpecialistMutation,
+  useUpdatePractitionerMutation,
+  useDeletePractitionerMutation,
+} = practitionerApi;

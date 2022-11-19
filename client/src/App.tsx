@@ -24,7 +24,7 @@ import { NotificationsProvider } from "@mantine/notifications";
 
 import { useAppDispatch, useAppSelector } from "./redux/hooks";
 import { useMyDataQuery } from "./redux/auth/auth.query";
-import { resetUser, setLoading, setUser } from "./redux/auth/auth.slice";
+import { resetUser, setUser } from "./redux/auth/auth.slice";
 import PractitionerIndexPage from "./pages/practitioners";
 import PractitionerCreatePage from "./pages/practitioners/create";
 import PractitionerEditPage from "./pages/practitioners/edit";
@@ -39,10 +39,10 @@ function App() {
 
   const { isSuccess, data, isError } = useMyDataQuery("");
   useEffect(() => {
+    console.log("FETCH USER");
     if (isSuccess) {
       dispatch(setUser(data?.data));
     } else if (isError) {
-      dispatch(setLoading(false));
       dispatch(resetUser());
     }
   }, [isSuccess]);
@@ -93,13 +93,7 @@ function Router() {
 
 function ProtectedRoutes() {
   const location = useLocation();
-  const { isAuthenticated, isLoading } = useAppSelector(
-    (state) => state.authReducer
-  );
-
-  if (isLoading) {
-    return <CustomLoader />;
-  }
+  const { isAuthenticated } = useAppSelector((state) => state.authReducer);
 
   if (!isAuthenticated) {
     return (
@@ -117,11 +111,7 @@ function ProtectedRoutes() {
 
 function UnProtectedRoutes() {
   const location = useLocation();
-  const { isAuthenticated, isLoading } = useAppSelector(
-    (state) => state.authReducer
-  );
-
-  if (isLoading) return <CustomLoader />;
+  const { isAuthenticated } = useAppSelector((state) => state.authReducer);
 
   if (!isAuthenticated) return <Outlet />;
 
