@@ -6,6 +6,7 @@ import {
   ActionIcon,
   Text,
   Tooltip,
+  Footer,
 } from "@mantine/core";
 import {
   IconBrandTwitter,
@@ -28,12 +29,9 @@ const useStyles = createStyles((theme) => ({
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
+    padding: theme.spacing.md,
     paddingTop: theme.spacing.xl,
     paddingBottom: theme.spacing.xl,
-
-    [theme.fn.smallerThan("xs")]: {
-      flexDirection: "column",
-    },
   },
 
   links: {
@@ -46,31 +44,33 @@ const useStyles = createStyles((theme) => ({
 export default function FooterPartial() {
   const { classes } = useStyles();
   return (
-    <div className={classes.footer}>
-      <Container className={classes.inner}>
-        <Logo size={50} />
-        <div>
-          <Text color="dimmed">
-            Assignment Submission from{" "}
-            <a href="https://lfttechnology.com">Leapfrog Technology</a>
-          </Text>
-          <Text size="xs" color="dimmed">
-            © 2022 Leapfrog Technology. All rights reserved.
-          </Text>
+    <Footer height={100}>
+      <div className={classes.footer}>
+        <div className={classes.inner}>
+          <Logo size={50} />
+          <div>
+            <Text color="dimmed">
+              Assignment Submission from{" "}
+              <a href="https://lfttechnology.com">Leapfrog Technology</a>
+            </Text>
+            <Text size="xs" color="dimmed">
+              © 2022 Leapfrog Technology. All rights reserved.
+            </Text>
+          </div>
+          <Group spacing={0} className={classes.links} position="right" noWrap>
+            <Tooltip label="Github Repository">
+              <ActionIcon size="lg">
+                <IconBrandGithub size={18} stroke={1.5} />
+              </ActionIcon>
+            </Tooltip>
+            <Tooltip label="Developer Info">
+              <ActionIcon size="lg">
+                <IconWorld size={18} stroke={1.5} />
+              </ActionIcon>
+            </Tooltip>
+          </Group>
         </div>
-        <Group spacing={0} className={classes.links} position="right" noWrap>
-          <Tooltip label="Github Repository">
-            <ActionIcon size="lg">
-              <IconBrandGithub size={18} stroke={1.5} />
-            </ActionIcon>
-          </Tooltip>
-          <Tooltip label="Developer Info">
-            <ActionIcon size="lg">
-              <IconWorld size={18} stroke={1.5} />
-            </ActionIcon>
-          </Tooltip>
-        </Group>
-      </Container>
-    </div>
+      </div>
+    </Footer>
   );
 }

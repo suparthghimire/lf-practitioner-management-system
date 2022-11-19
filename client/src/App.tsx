@@ -18,6 +18,9 @@ import { NotificationsProvider } from "@mantine/notifications";
 import { useAppDispatch, useAppSelector } from "./redux/hooks";
 import { useMyDataQuery } from "./redux/auth/auth.query";
 import { resetUser, setLoading, setUser } from "./redux/auth/auth.slice";
+import PractitionerIndexPage from "./pages/practitioners";
+import PractitionerCreatePage from "./pages/practitioners/create";
+import PractitionerEditPage from "./pages/practitioners/edit";
 
 function App() {
   const [colorScheme, setColorScheme] = useState<ColorScheme>("light");
@@ -64,6 +67,9 @@ function Router() {
       <Route path="/" element={<DashboardPage />} />
       <Route path="/signup" element={<SignupPage />} />
       <Route path="/signin" element={<SigninPage />} />
+      <Route path="/practitioner" element={<PractitionerIndexPage />} />
+      <Route path="/practitioner/create" element={<PractitionerCreatePage />} />
+      <Route path="/practitioner/edit" element={<PractitionerEditPage />} />
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );

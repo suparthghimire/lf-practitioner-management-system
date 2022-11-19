@@ -1,6 +1,18 @@
-
-export default function UserPageLayout() {
+import { Text, Paper, Center, Divider, Box } from "@mantine/core";
+interface Props {
+  children: React.ReactNode;
+  title: string;
+}
+export default function UserPageLayout(props: Props) {
   return (
-    <div>UserPageLayout</div>
-  )
+    <Center>
+      <Paper withBorder style={{ width: "100%" }} shadow="sm" p="lg">
+        <Text size="xl" weight="bold">
+          {props.title}
+        </Text>
+        <Divider mt="xl" />
+        <Box mt="xl">{props.children}</Box>
+      </Paper>
+    </Center>
+  );
 }

@@ -9,22 +9,17 @@ import {
   Button,
   Container,
   Menu,
+  MediaQuery,
+  Burger,
 } from "@mantine/core";
-import {
-  IconCheck,
-  IconDoorExit,
-  IconMoonStars,
-  IconSun,
-  IconUser,
-} from "@tabler/icons";
-import { Link, useNavigate } from "react-router-dom";
+import { IconDoorExit, IconMoonStars, IconSun, IconUser } from "@tabler/icons";
+import { Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { resetUser } from "../../redux/auth/auth.slice";
 
 import Logo from "../common/Logo";
 import { useSignoutMutation } from "../../redux/auth/auth.query";
 import { useEffect } from "react";
-import { showNotification, updateNotification } from "@mantine/notifications";
 
 interface Props {
   burgerOpen: boolean;
@@ -42,85 +37,92 @@ export default function HeaderPartial(props: Props) {
   );
   return (
     <Header height={{ base: 100, md: 100 }} p="lg">
-      <Container px={0}>
-        <Flex align="center" justify="space-between">
-          <div
-            style={{ display: "flex", alignItems: "center", height: "100%" }}
+      {/* <Container px={0}> */}
+      <Flex align="center" justify="space-between">
+        <div style={{ display: "flex", alignItems: "center", height: "100%" }}>
+          <MediaQuery largerThan="sm" styles={{ display: "none" }}>
+            <Burger
+              opened={props.burgerOpen}
+              onClick={() => props.setBurgerOpen((p) => !p)}
+              size="sm"
+              color={theme.colors.gray[6]}
+              mr="xl"
+            />
+          </MediaQuery>
+          <Link
+            to="/"
+            style={{
+              textDecoration: "none",
+              color: dark ? theme.colors.dark[0] : theme.colors.dark[8],
+            }}
           >
-            <Link
-              to="/"
-              style={{
-                textDecoration: "none",
-                color: dark ? theme.colors.dark[0] : theme.colors.dark[8],
-              }}
-            >
-              <Flex gap="md" align="center">
-                <Logo size={50} />
-                <Text
-                  styles={(theme) => ({
-                    main: {
-                      color:
-                        theme.colorScheme === "dark"
-                          ? theme.colors.dark[8]
-                          : theme.colors.gray[0],
-                    },
-                  })}
-                  weight="bolder"
-                  size="xl"
-                >
-                  Practitioner Management System
-                </Text>
-              </Flex>
-            </Link>
-          </div>
-          <Flex gap="lg" align="center">
-            {!isAuthenticated && (
-              <>
-                <Link to="/signin">
-                  <Button variant="light" color="teal">
-                    Sign In
-                  </Button>
-                </Link>
-                <Link to="/signup">
-                  <Button variant="light" color="blue">
-                    Sign Up
-                  </Button>
-                </Link>
-              </>
-            )}
-            {isAuthenticated && (
-              <div>
-                <Menu
-                  shadow="md"
-                  width={200}
-                  trigger="hover"
-                  openDelay={100}
-                  closeDelay={100}
-                >
-                  <Menu.Target>
-                    <ActionIcon size="lg" variant="light" color="green">
-                      <IconUser />
-                    </ActionIcon>
-                  </Menu.Target>
-                  <UserMenu />
-                </Menu>
-              </div>
-            )}
-            <p>|</p>
-            <Tooltip label={`Switch to ${oppositeColorScheme} theme`}>
-              <ActionIcon
-                size="lg"
-                variant="light"
-                color={dark ? "yellow" : "blue"}
-                onClick={() => toggleColorScheme()}
-                title="Toggle color scheme"
+            <Flex gap="md" align="center">
+              <Logo size={50} />
+              <Text
+                styles={(theme) => ({
+                  main: {
+                    color:
+                      theme.colorScheme === "dark"
+                        ? theme.colors.dark[8]
+                        : theme.colors.gray[0],
+                  },
+                })}
+                weight="bolder"
+                size="xl"
               >
-                {dark ? <IconSun size={18} /> : <IconMoonStars size={18} />}
-              </ActionIcon>
-            </Tooltip>
-          </Flex>
+                Practitioner Management System
+              </Text>
+            </Flex>
+          </Link>
+        </div>
+        <Flex gap="lg" align="center">
+          {!isAuthenticated && (
+            <>
+              <Link to="/signin">
+                <Button variant="light" color="teal">
+                  Sign In
+                </Button>
+              </Link>
+              <Link to="/signup">
+                <Button variant="light" color="blue">
+                  Sign Up
+                </Button>
+              </Link>
+            </>
+          )}
+          {isAuthenticated && (
+            <div>
+              <Menu
+                shadow="md"
+                width={200}
+                trigger="hover"
+                openDelay={100}
+                closeDelay={100}
+              >
+                <Menu.Target>
+                  <ActionIcon size="lg" variant="light" color="green">
+                    <IconUser />
+                  </ActionIcon>
+                </Menu.Target>
+                <UserMenu />
+              </Menu>
+            </div>
+          )}
+          <p>|</p>
+          <Tooltip label={`Switch to ${oppositeColorScheme} theme`}>
+            <ActionIcon
+              size="lg"
+              variant="light"
+              color={dark ? "yellow" : "blue"}
+              onClick={() => toggleColorScheme()}
+              title="Toggle color scheme"
+            >
+              {dark ? <IconSun size={18} /> : <IconMoonStars size={18} />}
+            </ActionIcon>
+          </Tooltip>
         </Flex>
-      </Container>
+      </Flex>
+      {/* </Container> */}
     </Header>
   );
 }
