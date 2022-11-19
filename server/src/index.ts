@@ -7,7 +7,12 @@ import fileUpload from "express-fileupload";
 import cors from "cors";
 /* Route Imports */
 import IndexRoute from "./routes/auth.route";
+import UserRoute from "./routes/user.route";
 import PractitionerRoutes from "./routes/practitioner.route";
+import SpecializationRoutes from "./routes/specialization.route";
+import WorkingDayRoutes from "./routes/workingDay.route";
+
+/* Controller Imports */
 import PractitionerController from "./controllers/Practitioner.Controller";
 
 /* Middleware Imports */
@@ -45,6 +50,9 @@ app.use(cookieParser());
  * Routes
  */
 app.use("/", IndexRoute);
+app.use("/user", UserRoute);
+app.use("/day", WorkingDayRoutes);
+app.use("/specialization", SpecializationRoutes);
 app.use("/practitioner", PractitionerRoutes);
 
 /*

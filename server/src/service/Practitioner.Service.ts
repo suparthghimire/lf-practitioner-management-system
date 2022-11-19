@@ -1,8 +1,11 @@
+import { DayName } from "@prisma/client";
+import moment from "moment";
 import { Practitioner } from "../models/Practitioner";
 import { prismaClient } from "../index";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
 import { GetPagination } from "../utils/helpers";
 import { PRISMA_ERROR_CODES } from "../utils/prisma_error_codes";
+import WorkingDayService from "./WorkingDay.Service";
 
 const PractitionerService = {
   getPractitionerByEmail: async (email: string) => {
@@ -29,7 +32,26 @@ const PractitionerService = {
       throw error;
     }
   },
+  getPractitionersWorkingToday: async () => {
+    try {
+      const weekDayName = moment().format("dddd");
+      const practitionersWorkingToday =
+        await prismaClient.practitioner.findMany({
+          where: {
+            WorkingDays: {
+              some: {
+                day: weekDayName as DayName,
+              },
+            },
+          },
+        });
+      const totalPractitoners = await prismaClient.practitioner.count();
 
+      return { practitionersWorkingToday, totalPractitoners };
+    } catch (error) {
+      throw error;
+    }
+  },
   getAllPractitioners: async function (limit: number, page: number) {
     try {
       // set offset for pagination based on limit and page

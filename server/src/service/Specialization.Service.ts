@@ -1,15 +1,23 @@
 import { Specialization } from "prisma/prisma-client";
 import { prismaClient } from "../index";
 const SpecializationService = {
-  // get all specializations
+  // get many specializations
+  getAllSpecializations: async function () {
+    try {
+      return await prismaClient.specialization.findMany();
+    } catch (error) {
+      throw error;
+    }
+  },
+  // get one specializations
   getSpecializationByName: async function (specialization: string) {
     try {
-      const workingDay = await prismaClient.specialization.findUnique({
+      const specializations = await prismaClient.specialization.findUnique({
         where: {
           name: specialization,
         },
       });
-      return workingDay;
+      return specializations;
     } catch (error) {
       throw error;
     }

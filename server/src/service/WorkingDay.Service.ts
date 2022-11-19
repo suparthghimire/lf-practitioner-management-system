@@ -2,6 +2,15 @@ import { prismaClient } from "../index";
 import { DayName, Day } from "prisma/prisma-client";
 const WorkingDayService = {
   // get all working days from databse
+  getAllWorkingDays: async function () {
+    try {
+      return await prismaClient.day.findMany();
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  // get single working day from databse
   getWorkingDayByName: async function (day: DayName) {
     try {
       const workingDay = await prismaClient.day.findUnique({
