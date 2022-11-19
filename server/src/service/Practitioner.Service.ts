@@ -50,9 +50,6 @@ const PractitionerService = {
           {
             icuSpecialist: "desc",
           },
-          {
-            createdAt: "desc",
-          },
         ],
         take,
         skip,
