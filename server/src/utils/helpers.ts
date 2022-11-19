@@ -13,23 +13,16 @@ export function ConvertTimeToSec(time: number, unit: "s" | "m" | "h" | "d") {
 }
 // Returns previous page, next page and total pages
 export function GetPagination(
-  totalData: number,
+  currPage: number,
   limit: number,
-  offset: number
+  totalData: number
 ) {
-  let nextPage;
-  let prevPage;
-  // if total data 0, then there is no next or previous page
-  if (totalData === 0) {
-    nextPage = null;
-    prevPage = null;
-  } else {
-    // next page is offset + limit if total data is greater than offset + limit
-    nextPage = totalData > offset + limit ? offset + limit : null;
-    // previous page is offset - limit if offset - limit is greater than 0
-    prevPage = offset - limit >= 0 ? offset - limit : null;
-  }
-
-  // return previous page, next page
-  return { nextPage, prevPage };
+  const totalPages = Math.ceil(totalData / limit);
+  const prevPageNo = currPage > 1 ? currPage - 1 : null;
+  const nextPageNo = currPage < totalPages ? currPage + 1 : null;
+  return {
+    prevPageNo,
+    nextPageNo,
+    totalPages,
+  };
 }

@@ -15,13 +15,14 @@ import { v4 as uuidv4 } from "uuid";
 import PractitionerService from "../service/Practitioner.Service";
 import CONFIG from "../utils/app_config";
 import { PRISMA_ERROR_CODES } from "../utils/prisma_error_codes";
+import { GetPagination } from "../utils/helpers";
 
 const PractitionerController = {
   // fetch all practitioners
   index: async function (req: Request, res: Response) {
     try {
       // Query Params for Offset Pagination
-      let { pageStr, limitStr } = req.query;
+      let { page: pageStr, limit: limitStr } = req.query;
 
       // Assign Default Values if query is empty
       if (!pageStr) pageStr = "1";
@@ -30,10 +31,18 @@ const PractitionerController = {
       const page = parseInt(pageStr as string);
       const limit = parseInt(limitStr as string);
 
+      console.log(page + " " + limit);
       //  Gets all practitioners based on pagination query provided
-      const { nextPageNo, prevPageNo, totalPages, data } =
-        await PractitionerService.getAllPractitioners(limit, page);
+      const { data, totalData } = await PractitionerService.getAllPractitioners(
+        limit,
+        page
+      );
 
+      const { nextPageNo, prevPageNo, totalPages } = GetPagination(
+        page,
+        limit,
+        totalData
+      );
       /**
        * If next page or previous page isnt available, URL isnt created and it isnt returned in response
        */
@@ -41,12 +50,12 @@ const PractitionerController = {
       // Create URL for next page
       const nextPageUrl =
         nextPageNo !== null
-          ? `${CONFIG.APP_URL}/practitioners?page=${nextPageNo}&limit=${limit}`
+          ? `${CONFIG.APP_URL}/practitioner?page=${nextPageNo}&limit=${limit}`
           : undefined;
       // Create URL for Previous page
       const prevPageUrl =
         prevPageNo !== null
-          ? `${CONFIG.APP_URL}/practitioners?page=${prevPageNo}&limit=${limit}`
+          ? `${CONFIG.APP_URL}/practitioner?page=${prevPageNo}&limit=${limit}`
           : undefined;
 
       // Return success

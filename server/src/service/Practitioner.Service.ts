@@ -66,16 +66,10 @@ const PractitionerService = {
         unresolvedTotalData,
       ]);
 
-      // get pagination data
-      const { nextPage, prevPage } = GetPagination(totalData, limit, page);
-      const totalPages = Math.ceil(totalData / limit);
-
       // return fetched data along with pagination data
       return {
-        nextPageNo: nextPage,
-        prevPageNo: prevPage,
-        totalPages,
         data: practitioners,
+        totalData: totalData,
       };
     } catch (error) {
       throw error;
