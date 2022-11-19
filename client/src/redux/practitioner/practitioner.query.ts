@@ -24,7 +24,7 @@ export const practitionerApi = createApi({
       }),
     }),
     deletePractitioner: builder.mutation({
-      query: ({ token, id }: { token: string; id: string }) => ({
+      query: ({ token, id }: { token: string; id: number }) => ({
         url: `/practitioner/${id}`,
         method: "DELETE",
         headers: {

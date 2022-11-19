@@ -32,10 +32,11 @@ const baseQueryWithReauth: BaseQueryFn<
       extraOptions
     );
     if (refreshResult.data) {
+      console.log("Set Here", (refreshResult.data as any).data);
       api.dispatch(
         setTokens({
-          accessToken: (refreshResult.data as any).accessToken,
-          refreshToken: (refreshResult.data as any).refreshToken,
+          accessToken: (refreshResult.data as any).data?.accessToken,
+          refreshToken: (refreshResult.data as any).data?.refreshToken,
         })
       );
       const token = (refreshResult.data as any).data!.accessToken;

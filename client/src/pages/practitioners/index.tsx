@@ -49,7 +49,7 @@ export default function PractitionerIndexPage() {
         total={totalPages}
       />
       {practitionerLoading ? (
-        <p>Loading</p>
+        <CustomLoader />
       ) : (
         <ScrollArea>
           <Table mt="xl">

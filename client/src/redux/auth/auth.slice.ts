@@ -38,7 +38,6 @@ const authSlice = createSlice({
         DisplayUser & { accessToken: string; refreshToken: string }
       >
     ) {
-      console.log("Setting user", action.payload);
       state.user = action.payload;
       state.isAuthenticated = true;
       state.isLoading = false;
@@ -47,6 +46,7 @@ const authSlice = createSlice({
       state,
       action: PayloadAction<{ accessToken: string; refreshToken: string }>
     ) {
+      console.log("Setting tokens", action);
       state.accessToken = action.payload.accessToken;
       state.refreshToken = action.payload.refreshToken;
     },

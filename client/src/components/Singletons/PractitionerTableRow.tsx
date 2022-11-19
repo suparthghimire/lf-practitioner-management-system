@@ -11,11 +11,22 @@ import {
   Group,
   Button,
 } from "@mantine/core";
-import { IconEdit, IconEye, IconFileDatabase, IconTrash } from "@tabler/icons";
+import {
+  IconCheck,
+  IconEdit,
+  IconEye,
+  IconFileDatabase,
+  IconTrash,
+  IconX,
+} from "@tabler/icons";
 import HELPERS from "../../utils/helpers";
 import SinglePractitionerModalCard from "./SinglePractitionerModalCard";
-import { useAppSelector } from "../../redux/hooks";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { User } from "../../models/User";
+import { useDeletePractitionerMutation } from "../../redux/practitioner/practitioner.query";
+import { showNotification, updateNotification } from "@mantine/notifications";
+
+import { removePractitionerById } from "../../redux/practitioner/practitioner.slice";
 
 export default function PractitionerTableRow({
   practitioner,
@@ -27,6 +38,39 @@ export default function PractitionerTableRow({
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const { user, accessToken } = useAppSelector((state) => state.authReducer);
+  const dispatch = useAppDispatch();
+  const [deletePractitioner, { isLoading, isSuccess, isError, error, data }] =
+    useDeletePractitionerMutation();
+
+  useEffect(() => {
+    if (isSuccess) {
+      updateNotification({
+        title: "Deletion Successful",
+        message: "Deletion Successful",
+        color: "green",
+        icon: <IconCheck />,
+        id: "delete-practitioner",
+      });
+      dispatch(removePractitionerById(practitioner.id as number));
+      setDeleteModalOpen(false);
+    } else if (isError) {
+      updateNotification({
+        title: "Deletion Failed",
+        message: "There was an error while deleting the practitioner",
+        color: "red",
+        icon: <IconX />,
+        id: "delete-practitioner",
+      });
+    } else if (isLoading) {
+      showNotification({
+        title: "Deleting Practitioner",
+        message: "Please wait...",
+        color: "blue",
+        loading: true,
+        id: "delete-practitioner",
+      });
+    }
+  }, [isLoading, isError, isSuccess]);
 
   return (
     <tr>
@@ -155,8 +199,11 @@ export default function PractitionerTableRow({
             Cancel
           </Button>
           <Button
-            onClick={() => {
-              // setDeleteModalOpen(false);
+            onClick={async () => {
+              await deletePractitioner({
+                id: practitioner.id as number,
+                token: accessToken as string,
+              });
             }}
             variant="light"
             color="red"
