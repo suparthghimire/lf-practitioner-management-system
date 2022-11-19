@@ -31,7 +31,6 @@ const PractitionerController = {
       const page = parseInt(pageStr as string);
       const limit = parseInt(limitStr as string);
 
-      console.log(page + " " + limit);
       //  Gets all practitioners based on pagination query provided
       const { data, totalData } = await PractitionerService.getAllPractitioners(
         limit,
@@ -244,7 +243,6 @@ const PractitionerController = {
       const { userId } = body;
 
       let newPractitioner: Practitioner = body;
-
       // Sanitize Body content to match validation
       newPractitioner.dob = body.dob
         ? new Date(body.dob as string)
@@ -258,17 +256,16 @@ const PractitionerController = {
       newPractitioner.Specializations = body.Specializations
         ? body.Specializations
         : practitioner.Specializations;
-      newPractitioner.icuSpecialist = body.icuSpecialist
-        ? body.icuSpecialist == "true"
-          ? true
-          : false
-        : practitioner.icuSpecialist;
+      newPractitioner.icuSpecialist = body.icuSpecialist;
 
       newPractitioner.WorkingDays = body.WorkingDays
         ? body.WorkingDays
         : practitioner.WorkingDays;
 
       newPractitioner.createdBy = parseInt(userId);
+
+      if (newPractitioner.icuSpecialist === undefined)
+        newPractitioner.icuSpecialist = practitioner.icuSpecialist;
 
       // Copy old practioner data to new practitioner to get all data that  does not need to be updated
       newPractitioner = {

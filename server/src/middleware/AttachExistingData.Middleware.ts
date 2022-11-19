@@ -24,8 +24,6 @@ export default async function AttachExistingData(
     if (!Specializations) req.body.Specializations = [];
     if (!WorkingDays) req.body.WorkingDays = [];
 
-    console.log("HERE", req.method);
-
     // If there are no specializations and workingDays, then we don't need to do anything. Just move on to next middleware
     if (
       req.body.Specializations.length <= 0 &&

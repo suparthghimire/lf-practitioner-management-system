@@ -12,7 +12,6 @@ export async function HasWritePermission(
 ) {
   try {
     const { userId } = req.body;
-    console.log(userId);
     const { practitioner_id } = req.params;
     if (isNaN(Number(practitioner_id)))
       throw new ZodError([
@@ -31,7 +30,6 @@ export async function HasWritePermission(
         PRISMA_ERROR_CODES.RECORD_NOT_FOUND,
         ""
       );
-    console.log(practitioner.createdBy.id, parseInt(userId));
     if (practitioner.createdBy.id !== parseInt(userId))
       throw new CustomError("Not Enough Privileges", 403);
     next();

@@ -65,11 +65,6 @@ function HandlePrismaError(
   entityName: string
 ) {
   // Error Codes are defined in prisma_error_codes.ts file
-  console.log(
-    "error.code",
-    error.code,
-    PRISMA_ERROR_CODES.UNIQUE_CONSTRAINT_FAIL
-  );
   switch (error.code) {
     case PRISMA_ERROR_CODES.UNIQUE_CONSTRAINT_FAIL:
       return {
