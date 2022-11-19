@@ -20,11 +20,9 @@ const baseQueryWithReauth: BaseQueryFn<
 
   const url = (args as any).url as string;
   let result = await baseQuery(args, api, extraOptions);
-  console.log(url);
   if (url === "/signout") {
     return result;
   }
-  console.log("OUT");
   if (result.error && result.error.status === 401) {
     const refreshResult = await baseQuery(
       {

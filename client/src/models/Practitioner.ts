@@ -43,7 +43,7 @@ const WorkingDaysSchema = z.object({
   }),
 });
 
-const PractitionerSchema = z.object({
+export const PractitionerSchema = z.object({
   id: z
     .number({
       errorMap: (err) => ({
@@ -156,7 +156,7 @@ const PractitionerSchema = z.object({
   Specializations: z.array(SpecializationSchema).optional(),
 });
 
-const ImageSchema = z.object({
+export const ImageSchema = z.object({
   size: z.number().max(CONFIG.MAX_IMG_SIZE, {
     message: "Image size is too large",
   }),
@@ -171,23 +171,3 @@ const ImageSchema = z.object({
 });
 
 export type Practitioner = z.infer<typeof PractitionerSchema>;
-
-export const ValidatePractitioner = async function (
-  practitioner: Practitioner
-) {
-  try {
-    await PractitionerSchema.parseAsync(practitioner);
-  } catch (error) {
-    throw error;
-  }
-};
-export const ValidateImage = (image: File) => {
-  try {
-    ImageSchema.parse({
-      size: image.size,
-      mimetype: image.type,
-    });
-  } catch (error) {
-    throw error;
-  }
-};
