@@ -61,12 +61,13 @@ export default function PractitionerIndexPage() {
           <thead>
             <tr>
               <th>SN</th>
-              <th>Practitioner ID</th>
+              <th>ID</th>
               <th>Full Name</th>
               <th>Contact</th>
               <th>Date of Birth</th>
               <th>ICU Specialist</th>
               <th>Working Days</th>
+              <th>Working Hours</th>
               <th>Actions</th>
             </tr>
           </thead>

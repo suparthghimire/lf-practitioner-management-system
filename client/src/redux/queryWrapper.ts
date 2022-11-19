@@ -1,13 +1,11 @@
-import { UserLogin, User } from "./../models/User";
 import {
   BaseQueryFn,
-  createApi,
   FetchArgs,
   fetchBaseQuery,
   FetchBaseQueryError,
 } from "@reduxjs/toolkit/query/react";
 import CONFIG from "../utils/app_config";
-import { resetUser, setLoading, setTokens } from "./auth/auth.slice";
+import { setLoading, setTokens } from "./auth/auth.slice";
 
 const baseQuery = fetchBaseQuery({ baseUrl: CONFIG.SERVER_URL });
 

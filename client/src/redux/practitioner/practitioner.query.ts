@@ -1,5 +1,3 @@
-import { Practitioner } from "./../../models/Practitioner";
-import { UserLogin, User } from "./../../models/User";
 import { createApi } from "@reduxjs/toolkit/query/react";
 
 import baseQueryWithReauth from "../queryWrapper";

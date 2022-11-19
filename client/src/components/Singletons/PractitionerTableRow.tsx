@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
 import { Practitioner } from "../../models/Practitioner";
 import moment from "moment";
-import { Badge, Switch, Group, Tooltip, ActionIcon, Flex } from "@mantine/core";
-import { IconEdit, IconEye, IconTrash } from "@tabler/icons";
+import { Badge, Switch, Tooltip, ActionIcon, Flex, Modal } from "@mantine/core";
+import { IconEdit, IconEye, IconFileDatabase, IconTrash } from "@tabler/icons";
 import HELPERS from "../../utils/helpers";
+import SinglePractitionerModalCard from "./SinglePractitionerModalCard";
+import { useAppSelector } from "../../redux/hooks";
+import { User } from "../../models/User";
 
 export default function PractitionerTableRow({
   practitioner,
@@ -12,14 +15,8 @@ export default function PractitionerTableRow({
   practitioner: Practitioner;
   sn: number;
 }) {
-  const [isIcuSpecialist, setIsIcuSpecialist] = useState(false);
-  useEffect(() => {
-    if (practitioner.icuSpecialist === true) {
-      setIsIcuSpecialist(true);
-    }
-  }, []);
-
-  console.log(practitioner, isIcuSpecialist);
+  const [modalOpen, setModalOpen] = useState(false);
+  const { user, accessToken } = useAppSelector((state) => state.authReducer);
 
   return (
     <tr>
@@ -43,6 +40,13 @@ export default function PractitionerTableRow({
             size="sm"
             color="green"
             checked={practitioner.icuSpecialist === true}
+            disabled={
+              user
+                ? user.id === (practitioner.createdBy as unknown as User).id
+                  ? false
+                  : true
+                : false
+            }
             // onChange={(event) =>
             //   setIsIcuSpecialist(event.currentTarget.checked)
             // }
@@ -68,30 +72,67 @@ export default function PractitionerTableRow({
         </Flex>
       </td>
       <td>
+        {moment(practitioner.startTime).format("LT")} to{" "}
+        {moment(practitioner.endTime).format("LT")}
+      </td>
+
+      <td>
         <Flex gap="sm">
           <Tooltip
             label={`View ${HELPERS.TrailingDot(practitioner.fullname, 10)}`}
           >
-            <ActionIcon color="blue" variant="light">
+            <ActionIcon
+              onClick={() => setModalOpen(true)}
+              color="blue"
+              variant="light"
+            >
               <IconEye />
             </ActionIcon>
           </Tooltip>
           <Tooltip
             label={`Edit ${HELPERS.TrailingDot(practitioner.fullname, 10)}`}
           >
-            <ActionIcon color="orange" variant="light">
+            <ActionIcon
+              color="orange"
+              variant="light"
+              disabled={
+                user
+                  ? user.id === (practitioner.createdBy as unknown as User).id
+                    ? false
+                    : true
+                  : false
+              }
+            >
               <IconEdit />
             </ActionIcon>
           </Tooltip>
           <Tooltip
             label={`Delete ${HELPERS.TrailingDot(practitioner.fullname, 10)}`}
           >
-            <ActionIcon color="red" variant="light">
+            <ActionIcon
+              disabled={
+                user
+                  ? user.id === (practitioner.createdBy as unknown as User).id
+                    ? false
+                    : true
+                  : false
+              }
+              color="red"
+              variant="light"
+            >
               <IconTrash />
             </ActionIcon>
           </Tooltip>
         </Flex>
       </td>
+      <Modal
+        opened={modalOpen}
+        centered
+        title={practitioner.fullname}
+        onClose={() => setModalOpen(false)}
+      >
+        <SinglePractitionerModalCard practitioner={practitioner} />
+      </Modal>
     </tr>
   );
 }
