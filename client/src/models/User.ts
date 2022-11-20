@@ -2,6 +2,8 @@ import { z } from "zod";
 
 const PWD_SIZE = 8;
 
+// This is the schema for the user and the User Schema
+
 export const UserLoginSchema = z.object({
   email: z
     .string({

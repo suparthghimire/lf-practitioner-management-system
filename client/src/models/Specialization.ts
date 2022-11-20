@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+// This is schema for Specialization returnd by API
 export const SpecializationSchema = z.object({
   id: z
     .number({
@@ -15,5 +16,6 @@ export const SpecializationSchema = z.object({
   }),
 });
 
-export type Specialization = z.infer<typeof SpecializationSchema>;
+// Creates Type by infering the schema
+type Specialization = z.infer<typeof SpecializationSchema>;
 export default Specialization;

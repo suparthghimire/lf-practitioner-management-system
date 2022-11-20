@@ -1,20 +1,12 @@
 import {
-  Image,
   createStyles,
-  Container,
   Group,
   ActionIcon,
   Text,
   Tooltip,
   Footer,
 } from "@mantine/core";
-import {
-  IconBrandTwitter,
-  IconBrandYoutube,
-  IconBrandInstagram,
-  IconBrandGithub,
-  IconWorld,
-} from "@tabler/icons";
+import { IconBrandGithub, IconWorld } from "@tabler/icons";
 import Logo from "../common/Logo";
 
 const useStyles = createStyles((theme) => ({

@@ -13,6 +13,10 @@ import workingDayReducer from "./workingDay/workingDay.slice";
 import specializationReducer from "./specialization/specialization.slice";
 import userReducer from "./user/user.slice";
 
+/**
+ * Redux Store
+ */
+
 const store = configureStore({
   reducer: {
     authReducer: authReducer,
@@ -30,6 +34,10 @@ const store = configureStore({
     userReducer: userReducer,
     [userApi.reducerPath]: userApi.reducer,
   },
+
+  /**
+   * Middleware for RTK Query
+   */
 
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(

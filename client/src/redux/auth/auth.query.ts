@@ -3,6 +3,10 @@ import { createApi } from "@reduxjs/toolkit/query/react";
 
 import baseQueryWithReauth from "../queryWrapper";
 
+/**
+ * RTK Query API definition for Authentication Endpoints
+ */
+
 export const authApi = createApi({
   reducerPath: "auth",
   baseQuery: baseQueryWithReauth,
@@ -25,7 +29,6 @@ export const authApi = createApi({
     }),
     signout: builder.mutation({
       query: () => {
-        console.log("signout");
         return {
           url: "/signout",
           credentials: "include",
@@ -35,8 +38,6 @@ export const authApi = createApi({
     }),
     myData: builder.query({
       query: (token: string) => {
-        console.log("token", token);
-
         return {
           url: "/",
           credentials: "include",

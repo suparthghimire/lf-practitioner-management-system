@@ -4,6 +4,8 @@ interface Props {
   children: React.ReactNode;
   title: string;
 }
+
+// Layout for Signin and Signup Pages
 export default function AuthPageLayout(props: Props) {
   return (
     <Center>

@@ -1,8 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../store";
 import { Practitioner } from "../../models/Practitioner";
-import WorkingDay from "../../models/WorkingDay";
-import Specialization from "../../models/Specialization";
+
+/**
+ * Manages the state of the Practitioner
+ */
 
 export interface PractitionerState {
   practitioners: Practitioner[];

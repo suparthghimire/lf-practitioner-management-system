@@ -1,10 +1,11 @@
+import { Day } from "prisma/prisma-client";
 import { Request, Response } from "express";
 import ErrorService from "../service/Error.Service";
 import WorkingDayService from "../service/WorkingDay.Service";
 const WorkingDayController = {
   index: async function (req: Request, res: Response) {
     try {
-      const allWorkingDays: any = await WorkingDayService.getAllWorkingDays();
+      const allWorkingDays: Day[] = await WorkingDayService.getAllWorkingDays();
       return res.status(200).json({
         status: true,
         message: "All Working Days",

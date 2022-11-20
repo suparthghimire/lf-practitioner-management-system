@@ -1,10 +1,11 @@
+import { Specialization } from "prisma/prisma-client";
 import { Request, Response } from "express";
 import ErrorService from "../service/Error.Service";
 import SpecializationService from "../service/Specialization.Service";
 const SpecializationController = {
   index: async function (req: Request, res: Response) {
     try {
-      const allSpecializations: any =
+      const allSpecializations: Specialization[] =
         await SpecializationService.getAllSpecializations();
       return res.status(200).json({
         status: true,

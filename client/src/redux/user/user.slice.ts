@@ -1,6 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { PractitionersWorkingToday } from "../../models/Dashboard";
 
+/**
+ * Manages the state of the User Dashboard
+ */
+
 export interface UserSlice {
   practitionersWorkingToday: PractitionersWorkingToday;
 }

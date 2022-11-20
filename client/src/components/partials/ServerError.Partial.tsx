@@ -7,6 +7,7 @@ export default function ServerErrorPartial({
 }: {
   errors: ServerError | undefined;
 }) {
+  // Flattens the errors object into an array of strings
   const data = errors?.data ? Object.values(errors.data).flat() : undefined;
   return errors ? (
     <Box mb="xl">
@@ -18,9 +19,13 @@ export default function ServerErrorPartial({
       >
         <div>
           <List>
-            {data?.map((error) => (
-              <Text key={error}>{error}</Text>
-            ))}
+            {data?.map((error, idx) =>
+              error ? (
+                <SingleError error={error} key={`server-error-${idx}`} />
+              ) : (
+                <></>
+              )
+            )}
           </List>
         </div>
       </Alert>
@@ -35,7 +40,7 @@ function SingleError({ error }: { error: string }) {
   return (
     <List.Item>
       <Text color={colorScheme === "dark" ? "white" : "dark"} size="sm">
-        Invalid Email or Password
+        {error}
       </Text>
     </List.Item>
   );

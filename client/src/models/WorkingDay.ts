@@ -10,6 +10,8 @@ const dayEnum = [
   "Saturday",
 ] as const;
 
+// This is the schema Working Day, Returned By API
+
 export const WorkingDaysSchema = z.object({
   id: z
     .number({
@@ -26,6 +28,7 @@ export const WorkingDaysSchema = z.object({
     },
   }),
 });
-type WorkingDay = z.infer<typeof WorkingDaysSchema>;
 
+// Creates Type by infering the schema
+type WorkingDay = z.infer<typeof WorkingDaysSchema>;
 export default WorkingDay;

@@ -1,6 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import WorkingDay from "../../models/WorkingDay";
 
+/**
+ * Manages the state of the WorkingDay
+ */
+
 export interface WorkingDaySlice {
   workingDays: WorkingDay[];
 }

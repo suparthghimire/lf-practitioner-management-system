@@ -3,6 +3,8 @@ interface Props {
   children: React.ReactNode;
   title: string;
 }
+
+// Layout foir Authenticated Pages
 export default function UserPageLayout(props: Props) {
   return (
     <Center>

@@ -35,6 +35,7 @@ const PractitionerService = {
   getPractitionersWorkingToday: async () => {
     try {
       const weekDayName = moment().format("dddd");
+      console.log(weekDayName);
       const todayData = await prismaClient.practitioner.count({
         where: {
           WorkingDays: {

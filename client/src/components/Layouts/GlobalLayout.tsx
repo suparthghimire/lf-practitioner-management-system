@@ -5,18 +5,17 @@ import FooterPartial from "../partials/Footer.Partial";
 import { useAppSelector } from "../../redux/hooks";
 import NavbarPartial from "../partials/Navbar.Partial";
 
+// Layout for Entire application
 interface Props {
   children: React.ReactNode;
 }
 export default function GlobalLayout(props: Props) {
   const [toggleNavbar, setToggleNavbar] = useState(false);
 
-  const [colorScheme, setColorScheme] = useState<ColorScheme>("light");
-  const toggleColorScheme = (value?: ColorScheme) =>
-    setColorScheme(value || (colorScheme === "dark" ? "light" : "dark"));
   const isAuthenticated = useAppSelector(
     (state) => state.authReducer.isAuthenticated
   );
+
   return (
     <AppShell
       padding="md"
@@ -27,6 +26,7 @@ export default function GlobalLayout(props: Props) {
         />
       }
       navbarOffsetBreakpoint="md"
+      // If user is authenticated, only then show navbar
       navbar={isAuthenticated ? <NavbarPartial opened={toggleNavbar} /> : <></>}
       footer={<FooterPartial />}
       styles={(theme) => ({

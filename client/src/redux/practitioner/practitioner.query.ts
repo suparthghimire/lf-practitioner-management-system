@@ -4,6 +4,10 @@ import { serialize } from "object-to-formdata";
 
 import baseQueryWithReauth from "../queryWrapper";
 
+/**
+ * RTK Query API definition for Practitioner Endpoints
+ */
+
 export const practitionerApi = createApi({
   reducerPath: "practitioner",
   baseQuery: baseQueryWithReauth,
@@ -69,6 +73,9 @@ export const practitionerApi = createApi({
           authorization: token,
         },
         credentials: "include",
+        // Serialize converts POJO to FormData
+        // indices true gives indesing to data in form of array in form data
+        // e.g. {name: "John", age: 20} => {name[0]: "John", age[1]: 20}
         body: serialize(practitioner, {
           indices: true,
         }),
@@ -90,6 +97,9 @@ export const practitionerApi = createApi({
           authorization: token,
         },
         credentials: "include",
+        // Serialize converts POJO to FormData
+        // indices true gives indesing to data in form of array in form data
+        // e.g. {name: "John", age: 20} => {name[0]: "John", age[1]: 20}
         body: serialize(practitioner, {
           indices: true,
         }),

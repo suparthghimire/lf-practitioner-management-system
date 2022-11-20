@@ -1,6 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import Specialization from "../../models/Specialization";
 
+/**
+ * Manages the state of the Specialization
+ */
+
 export interface SpecializationSlice {
   Specializations: Specialization[];
 }

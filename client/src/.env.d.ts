@@ -2,8 +2,6 @@
 
 interface ImportMetaEnv {
   readonly VITE_SERVER_ENDPOINT: string;
-
-  // more env variables...
 }
 
 interface ImportMeta {

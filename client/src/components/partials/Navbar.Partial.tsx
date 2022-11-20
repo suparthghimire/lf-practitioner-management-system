@@ -113,13 +113,14 @@ function LinkItem({
 }) {
   const { classes, cx } = useStyles();
   const location = useLocation();
+
   // check if url has /practitioner if yes, then set active to true
   // remove slash form location path
   let path = location.pathname.replace("/", "");
   const dashboardMatches = label === "Dashboard" && path === "";
   const linkMatches = path.includes(link);
-  console.log(dashboardMatches, linkMatches);
 
+  // Active is toggled if url matches the link in the navbar
   return (
     <Link
       to={to}

@@ -1,8 +1,7 @@
 import { z } from "zod";
 import CONFIG from "../utils/app_config";
-import { SpecializationSchema } from "./Specialization";
-import { WorkingDaysSchema } from "./WorkingDay";
 
+// Schema for Practitioner returned by API
 export const PractitionerSchema = z
   .object({
     id: z
@@ -177,4 +176,6 @@ export const PractitionerSchema = z
       });
   });
 
-export type Practitioner = z.infer<typeof PractitionerSchema>;
+// Creates Type by infering the schema
+type Practitioner = z.infer<typeof PractitionerSchema>;
+export default Practitioner;

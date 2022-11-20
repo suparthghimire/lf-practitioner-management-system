@@ -28,20 +28,28 @@ import { resetUser, setUser } from "./redux/auth/auth.slice";
 import PractitionerIndexPage from "./pages/practitioners";
 import PractitionerCreatePage from "./pages/practitioners/create";
 import PractitionerEditPage from "./pages/practitioners/edit";
+import { useLocalStorage } from "@mantine/hooks";
 
 function App() {
-  const [colorScheme, setColorScheme] = useState<ColorScheme>("light");
+  // mantine hook to set color theme from local storage and theme persist
+  const [colorScheme, setColorScheme] = useLocalStorage<ColorScheme>({
+    key: "colorScheme",
+    defaultValue: "light",
+  });
+
   const toggleColorScheme = (value?: ColorScheme) =>
     setColorScheme(value || (colorScheme === "dark" ? "light" : "dark"));
 
   const dispatch = useAppDispatch();
 
+  // get user data from redux store
   const { isSuccess, data, isError } = useMyDataQuery("");
   useEffect(() => {
-    console.log("FETCH USER");
+    // if user data is successfull then set user data in redux store
     if (isSuccess) {
       dispatch(setUser(data?.data));
     } else if (isError) {
+      // if user data is not successfull then reset user data in redux store
       dispatch(resetUser());
     }
   }, [isSuccess]);
@@ -69,13 +77,16 @@ function App() {
 }
 
 function Router() {
+  // Router component to handle routes
   return (
     <Routes>
       <Route element={<UnProtectedRoutes />}>
+        {/* Signed Up User cantt enter these routes */}
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/signin" element={<SigninPage />} />
       </Route>
       <Route element={<ProtectedRoutes />}>
+        {/* Signed Out User can access these routes */}
         <Route path="/" element={<DashboardPage />} />
         <Route path="/practitioner" element={<PractitionerIndexPage />} />
         <Route
@@ -93,10 +104,13 @@ function Router() {
 }
 
 function ProtectedRoutes() {
+  // ProtectedRoutes component to handle protected routes
   const location = useLocation();
   const { isAuthenticated, user } = useAppSelector(
     (state) => state.authReducer
   );
+
+  // If user is Not authenticated, they can't access child routes
 
   if (!user && !isAuthenticated) {
     return (
@@ -109,17 +123,24 @@ function ProtectedRoutes() {
       />
     );
   }
+  // If user is authenticated, they can access child routes
+  // Outlet component renders child route component if these is one
   return <Outlet />;
 }
 
 function UnProtectedRoutes() {
+  // UnProtectedRoutes component to handle un protected routes
   const location = useLocation();
   const { isAuthenticated, user } = useAppSelector(
     (state) => state.authReducer
   );
 
+  // If user is not authenticated, they can access child routes
+  // Outlet component renders child route component if these is one
+
   if (!isAuthenticated && !user) return <Outlet />;
 
+  // If user is authenticated, they can't access child routes
   return (
     <Navigate
       replace

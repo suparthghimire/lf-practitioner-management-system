@@ -6,6 +6,7 @@ interface Props {
   style?: CSSProperties;
 }
 
+// Component for App Logo
 export default function Logo({ size = 50, style }: Props) {
   return (
     <Image

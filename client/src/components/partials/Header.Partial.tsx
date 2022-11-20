@@ -7,7 +7,6 @@ import {
   ActionIcon,
   Tooltip,
   Button,
-  Container,
   Menu,
   MediaQuery,
   Burger,
@@ -131,7 +130,7 @@ function UserMenu() {
   const dispatch = useAppDispatch();
 
   const [signout, { isSuccess }] = useSignoutMutation();
-
+  // if user signs out , thenreset the user
   useEffect(() => {
     if (isSuccess) {
       dispatch(resetUser());
