@@ -75,13 +75,17 @@ export default function SinglePractitionerModalCard({
         </Text>
         <Flex gap="sm" wrap="wrap">
           {practitioner.WorkingDays.map((day) => {
+            const dataFromAPI = day as unknown as {
+              id: number;
+              day: string;
+            };
             return (
               <Badge
-                key={`working-day-practitioner-${day}`}
+                key={`working-day-practitioner-${dataFromAPI.day}`}
                 variant="light"
                 color="blue"
               >
-                {day.day}
+                {dataFromAPI.day}
               </Badge>
             );
           })}
@@ -101,13 +105,17 @@ export default function SinglePractitionerModalCard({
             </Text>
             <Flex gap="sm" wrap="wrap">
               {practitioner.Specializations.map((spec) => {
+                const dataFromAPI = spec as unknown as {
+                  id: number;
+                  name: string;
+                };
                 return (
                   <Badge
-                    key={`working-day-practitioner-${spec.name}`}
+                    key={`working-day-practitioner-${dataFromAPI.name}`}
                     variant="light"
                     color="blue"
                   >
-                    {spec.name}
+                    {dataFromAPI.name}
                   </Badge>
                 );
               })}
