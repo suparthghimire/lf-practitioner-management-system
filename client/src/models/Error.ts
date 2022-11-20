@@ -1,5 +1,5 @@
 export type ServerError = {
   status: boolean;
   message: string;
-  data?: any;
+  data?: { [x: string]: string[] | undefined };
 };

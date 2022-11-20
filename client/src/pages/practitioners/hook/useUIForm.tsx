@@ -4,7 +4,11 @@ import { useAppSelector } from "../../../redux/hooks";
 import { useGetSpecializationsQuery } from "../../../redux/specialization/specialization.query";
 import { useGetWorkingDaysQuery } from "../../../redux/workingDay/workingDay.query";
 import { useEffect, useState } from "react";
-export default function useUIForm() {
+export default function useUIForm({
+  practitioner,
+}: {
+  practitioner?: Practitioner;
+}) {
   const { user, accessToken } = useAppSelector((state) => state.authReducer);
 
   const {
@@ -18,6 +22,7 @@ export default function useUIForm() {
     isError: workingDaysError,
   } = useGetWorkingDaysQuery(accessToken as string);
 
+  console.log(practitioner);
   const isLoading = specializationsLoading || workingDaysLoading;
   const isError = specializationsError || workingDaysError;
   const form = useForm<
@@ -27,7 +32,7 @@ export default function useUIForm() {
     }
   >({
     initialValues: {
-      fullname: "",
+      fullname: practitioner ? practitioner.fullname : "",
       email: "",
       address: "",
       contact: "",
@@ -60,6 +65,35 @@ export default function useUIForm() {
       );
     }
   }, [allSpecializations, allWorkingDays]);
+
+  useEffect(() => {
+    if (practitioner) {
+      form.setFieldValue("fullname", practitioner.fullname);
+      form.setFieldValue("email", practitioner.email);
+      form.setFieldValue("address", practitioner.address);
+      form.setFieldValue("contact", practitioner.contact);
+      form.setFieldValue("image", practitioner.image);
+
+      const dob = new Date(practitioner.dob);
+      const startDateTime = new Date(practitioner.startTime);
+      const endDateTime = new Date(practitioner.endTime);
+
+      form.setFieldValue("dob", dob);
+      form.setFieldValue("endTime", endDateTime);
+      form.setFieldValue("startTime", startDateTime);
+      form.setFieldValue("icuSpecialist", practitioner.icuSpecialist);
+      const workingDayNames = practitioner.WorkingDays.map((d) => {
+        const dataFromApi = d as unknown as { id: number; day: string };
+        return dataFromApi.day;
+      });
+      form.setFieldValue("WorkingDays", workingDayNames);
+      const specializationNames = practitioner.Specializations?.map((spec) => {
+        const dataFromApi = spec as unknown as { id: number; name: string };
+        return dataFromApi.name;
+      });
+      form.setFieldValue("Specializations", specializationNames);
+    }
+  }, [practitioner]);
 
   return { form, isLoading, isError };
 }

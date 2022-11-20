@@ -6,7 +6,8 @@ import {
   IconBuildingHospital,
   IconDashboard,
 } from "@tabler/icons";
-import Logo from "../common/Logo";
+import { Link, useLocation } from "react-router-dom";
+
 const useStyles = createStyles((theme, _params, getRef) => {
   const icon = getRef("icon");
   return {
@@ -87,10 +88,13 @@ const useStyles = createStyles((theme, _params, getRef) => {
 });
 
 const data = [
-  { link: "", label: "Dashboard", icon: <IconDashboard />, active: true },
-  { link: "", label: "Practitioners", icon: <IconHealthRecognition /> },
-  { link: "", label: "Specializations", icon: <IconBuildingHospital /> },
-  { link: "", label: "Working Days", icon: <IconCalendar /> },
+  { link: "", label: "Dashboard", icon: <IconDashboard />, to: "/" },
+  {
+    link: "practitioner",
+    label: "Practitioners",
+    icon: <IconHealthRecognition />,
+    to: "/practitioner",
+  },
 ];
 
 interface Props {
@@ -98,39 +102,44 @@ interface Props {
 }
 
 function LinkItem({
-  item: { icon, label, link, active = false },
+  item: { icon, label, link, to },
 }: {
   item: {
     link: string;
     label: string;
     icon: JSX.Element;
-    active?: boolean;
+    to: string;
   };
 }) {
   const { classes, cx } = useStyles();
+  const location = useLocation();
+  // check if url has /practitioner if yes, then set active to true
+  // remove slash form location path
+  let path = location.pathname.replace("/", "");
+  const dashboardMatches = label === "Dashboard" && path === "";
+  const linkMatches = path.includes(link);
+  console.log(dashboardMatches, linkMatches);
+
   return (
-    <a
+    <Link
+      to={to}
       className={cx(classes.link, {
-        [classes.linkActive]: active,
+        [classes.linkActive]:
+          label === "Dashboard"
+            ? dashboardMatches && linkMatches
+            : !dashboardMatches && linkMatches,
       })}
-      href={link}
       key={label}
-      onClick={(event) => {
-        event.preventDefault();
-      }}
     >
       <>
         {icon}
         <span>{label}</span>
       </>
-    </a>
+    </Link>
   );
 }
 
 export default function NavbarPartial(props: Props) {
-  const { classes, cx } = useStyles();
-  const [active, setActive] = useState("Billing");
-
   const links = data.map((item) => <LinkItem item={item} key={item.label} />);
 
   return (

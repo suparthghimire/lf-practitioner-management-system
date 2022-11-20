@@ -9,12 +9,16 @@ import { setDashboard } from "../../redux/user/user.slice";
 export default function DashboardPage() {
   const { user, accessToken } = useAppSelector((state) => state.authReducer);
   const dispatch = useAppDispatch();
-  const { data, isError, isLoading, isSuccess } = useGetDashboardDataQuery(
-    accessToken as string
-  );
+  const { data, isError, isLoading, isSuccess, refetch } =
+    useGetDashboardDataQuery(accessToken as string);
   const { practitionersWorkingToday } = useAppSelector(
     (state) => state.userReducer
   );
+
+  useEffect(() => {
+    console.log("REFETCH");
+    refetch();
+  }, []);
 
   useEffect(() => {
     if (isSuccess) {
@@ -32,7 +36,6 @@ export default function DashboardPage() {
       );
     }
   }, [isSuccess]);
-  console.log(data?.data);
 
   return (
     <UserPageLayout title={`Welcome Back ${user?.name}`}>

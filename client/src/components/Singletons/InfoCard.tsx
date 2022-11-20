@@ -122,7 +122,9 @@ export default function InfoCard({
                 size={150}
                 sections={[
                   {
-                    value: (completed / total) * 100,
+                    value: isNaN((completed / total) * 100)
+                      ? 0
+                      : (completed / total) * 100,
                     color: theme.primaryColor,
                   },
                 ]}
@@ -134,7 +136,10 @@ export default function InfoCard({
                       className={classes.label}
                       sx={{ fontSize: 22 }}
                     >
-                      {((completed / total) * 100).toFixed(0)}%
+                      {isNaN((completed / total) * 100)
+                        ? 0
+                        : (completed / total) * 100}
+                      %
                     </Text>
                     <Text align="center" size="xs" color="dimmed">
                       {percentText}

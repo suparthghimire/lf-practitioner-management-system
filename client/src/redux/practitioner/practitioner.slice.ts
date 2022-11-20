@@ -6,10 +6,12 @@ import Specialization from "../../models/Specialization";
 
 export interface PractitionerState {
   practitioners: Practitioner[];
+  selectedPractitioner: Practitioner | null;
 }
 
 const initialState: PractitionerState = {
   practitioners: [],
+  selectedPractitioner: null,
 };
 
 const practitionerSlice = createSlice({
@@ -20,7 +22,6 @@ const practitionerSlice = createSlice({
       state.practitioners = action.payload;
     },
     removePractitionerById(state, action: PayloadAction<number>) {
-      console.log("HERE");
       state.practitioners = state.practitioners.filter(
         (practitioner) => practitioner.id !== action.payload
       );

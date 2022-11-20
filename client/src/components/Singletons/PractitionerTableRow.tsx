@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Practitioner } from "../../models/Practitioner";
 import moment from "moment";
+import { Link } from "react-router-dom";
 import {
   Badge,
   Switch,
@@ -23,6 +24,7 @@ import {
 import { showNotification, updateNotification } from "@mantine/notifications";
 
 import { removePractitionerById } from "../../redux/practitioner/practitioner.slice";
+import WorkingDay from "../../models/WorkingDay";
 
 export default function PractitionerTableRow({
   practitioner,
@@ -125,7 +127,6 @@ export default function PractitionerTableRow({
                 token: accessToken as string,
               });
             }}
-            // checked={practitioner.icuSpecialist === true}
             disabled={
               user
                 ? user.id === (practitioner.createdBy as unknown as User).id
@@ -139,13 +140,17 @@ export default function PractitionerTableRow({
       <td>
         <Flex gap="sm">
           {practitioner.WorkingDays.map((day, idx) => {
+            const dataFrpmApi: { id: number; day: string } = day as unknown as {
+              id: number;
+              day: string;
+            };
             return (
               <Tooltip
                 key={`working-day-practitioner-${day}-${idx}`}
-                label={day.day}
+                label={dataFrpmApi.day}
               >
                 <Badge variant="light" color="blue">
-                  {day.day.substring(0, 3)}
+                  {dataFrpmApi.day.substring(0, 3)}
                 </Badge>
               </Tooltip>
             );
@@ -174,6 +179,8 @@ export default function PractitionerTableRow({
             label={`Edit ${HELPERS.TrailingDot(practitioner.fullname, 10)}`}
           >
             <ActionIcon
+              component={Link}
+              to={`/practitioner/${practitioner.id}/edit`}
               color="orange"
               variant="light"
               disabled={

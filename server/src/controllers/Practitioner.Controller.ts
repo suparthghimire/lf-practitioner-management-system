@@ -96,8 +96,11 @@ const PractitionerController = {
       practitioner.dob = new Date(body.dob as string);
       practitioner.startTime = new Date(body.startTime as string);
       practitioner.endTime = new Date(body.endTime as string);
-      practitioner.icuSpecialist = Boolean(body.icuSpecialist || false);
+      practitioner.icuSpecialist = body.icuSpecialist
+        ? body.icuSpecialist === "true"
+        : false;
       practitioner.createdBy = parseInt(body.userId);
+
       // Check if image exist
       const image = req.files?.image;
       if (!image)
@@ -116,24 +119,16 @@ const PractitionerController = {
       // Validation checks for Input Sanitization and If unique constraint fails; throws ZodError if validation fails
       await ValidatePractitioner(practitioner);
 
-      console.log("11111");
-
       // Validation for Image Size and Mimietype; throws ZodError if validation fails
       ValidateImage(image as UploadedFile);
-      console.log("22222");
-
       // Generate unique name for image
       const imageName =
         uuidv4() + "--" + Date.now() + "--" + (image as UploadedFile).name;
-      console.log("33333");
-
       // Upload Image to Firebase Bucket
       const imageUrl = await FileUploadService.upload(
         image as UploadedFile,
         imageName
       );
-
-      console.log("44444");
 
       // set image url returned from upload function
       practitioner.image = imageUrl;
@@ -252,6 +247,19 @@ const PractitionerController = {
       const body = req.body;
       const { userId } = body;
 
+      let newIcuSpecialist = practitioner.icuSpecialist;
+      if (body.icuSpecialist !== undefined) {
+        if (typeof body.icuSpecialist === "string") {
+          console.log("STRING");
+          newIcuSpecialist = body.icuSpecialist === "true";
+          console.log(newIcuSpecialist);
+        } else if (typeof body.icuSpecialist === "boolean") {
+          console.log("boolean");
+
+          newIcuSpecialist = body.icuSpecialist;
+        }
+      }
+
       let newPractitioner: Practitioner = body;
       // Sanitize Body content to match validation
       newPractitioner.dob = body.dob
@@ -266,7 +274,8 @@ const PractitionerController = {
       newPractitioner.Specializations = body.Specializations
         ? body.Specializations
         : practitioner.Specializations;
-      newPractitioner.icuSpecialist = body.icuSpecialist;
+
+      newPractitioner.icuSpecialist = newIcuSpecialist;
 
       newPractitioner.WorkingDays = body.WorkingDays
         ? body.WorkingDays

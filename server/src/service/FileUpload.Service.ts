@@ -29,11 +29,9 @@ const FileUploadService = {
       const storageRef = ref(storage, `${PARENT_DIR}/${name}`);
       // upload file to storage bucket
 
-      console.log("US -  111111");
       const uploadTask = await uploadBytes(storageRef, file.data, {
         contentType: file.mimetype,
       });
-      console.log("US -  22222", uploadTask);
 
       // get download url of uploaded file
       const downloadUrl = await getDownloadURL(uploadTask.ref);

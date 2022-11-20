@@ -7,6 +7,8 @@ export default function ServerErrorPartial({
 }: {
   errors: ServerError | undefined;
 }) {
+  const data = errors?.data ? Object.values(errors.data).flat() : undefined;
+  console.log(errors);
   return errors ? (
     <Box mb="xl">
       <Alert
@@ -15,7 +17,13 @@ export default function ServerErrorPartial({
         title={errors.message}
         color="red"
       >
-        <div></div>
+        <div>
+          <List>
+            {data?.map((error) => (
+              <Text key={error}>{error}</Text>
+            ))}
+          </List>
+        </div>
       </Alert>
     </Box>
   ) : (

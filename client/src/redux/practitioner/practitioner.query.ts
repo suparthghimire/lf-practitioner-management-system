@@ -25,6 +25,15 @@ export const practitionerApi = createApi({
         credentials: "include",
       }),
     }),
+    getSinglePractitioner: builder.query({
+      query: ({ token, id }: { token: string; id: string }) => ({
+        url: `/practitioner/${id}`,
+        headers: {
+          authorization: token,
+        },
+        credentials: "include",
+      }),
+    }),
     toggleIcuSpecialist: builder.mutation({
       query: ({
         token,
@@ -104,4 +113,5 @@ export const {
   useToggleIcuSpecialistMutation,
   useUpdatePractitionerMutation,
   useDeletePractitionerMutation,
+  useGetSinglePractitionerQuery,
 } = practitionerApi;

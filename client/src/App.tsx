@@ -78,13 +78,15 @@ function Router() {
       </Route>
       <Route element={<ProtectedRoutes />}>
         <Route path="/" element={<DashboardPage />} />
-        <Route path="/" element={<DashboardPage />} />
         <Route path="/practitioner" element={<PractitionerIndexPage />} />
         <Route
           path="/practitioner/create"
           element={<PractitionerCreatePage />}
         />
-        <Route path="/practitioner/edit" element={<PractitionerEditPage />} />
+        <Route
+          path="/practitioner/:id/edit"
+          element={<PractitionerEditPage />}
+        />
       </Route>
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
@@ -93,9 +95,11 @@ function Router() {
 
 function ProtectedRoutes() {
   const location = useLocation();
-  const { isAuthenticated } = useAppSelector((state) => state.authReducer);
+  const { isAuthenticated, user } = useAppSelector(
+    (state) => state.authReducer
+  );
 
-  if (!isAuthenticated) {
+  if (!user && !isAuthenticated) {
     return (
       <Navigate
         replace
@@ -111,9 +115,11 @@ function ProtectedRoutes() {
 
 function UnProtectedRoutes() {
   const location = useLocation();
-  const { isAuthenticated } = useAppSelector((state) => state.authReducer);
+  const { isAuthenticated, user } = useAppSelector(
+    (state) => state.authReducer
+  );
 
-  if (!isAuthenticated) return <Outlet />;
+  if (!isAuthenticated && !user) return <Outlet />;
 
   return (
     <Navigate
