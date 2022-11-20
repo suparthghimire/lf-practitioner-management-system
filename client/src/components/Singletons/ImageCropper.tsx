@@ -30,7 +30,6 @@ export default function ImageCropper(props: Props) {
           imageType: type,
           pixelCrop: croppedAreaPixels!,
         });
-        console.log("croppedImage", croppedImage);
         setCroppedImageSrc(URL.createObjectURL(croppedImage));
         setFile(croppedImage);
         modalClose(false);

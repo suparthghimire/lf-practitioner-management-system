@@ -10,6 +10,7 @@ import {
   Center,
 } from "@mantine/core";
 import { Link } from "react-router-dom";
+import HELPERS from "../../utils/helpers";
 import CustomLoader from "../common/Loader";
 const useStyles = createStyles((theme) => ({
   card: {
@@ -124,7 +125,7 @@ export default function InfoCard({
                   {
                     value: isNaN((completed / total) * 100)
                       ? 0
-                      : (completed / total) * 100,
+                      : HELPERS.FixFloat((completed / total) * 100, 2),
                     color: theme.primaryColor,
                   },
                 ]}
@@ -138,7 +139,7 @@ export default function InfoCard({
                     >
                       {isNaN((completed / total) * 100)
                         ? 0
-                        : (completed / total) * 100}
+                        : HELPERS.FixFloat((completed / total) * 100, 2)}
                       %
                     </Text>
                     <Text align="center" size="xs" color="dimmed">

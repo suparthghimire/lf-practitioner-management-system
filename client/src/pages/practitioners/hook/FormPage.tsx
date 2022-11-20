@@ -90,10 +90,6 @@ export default function FormPage(props: Props) {
   ] = mutation();
 
   useEffect(() => {
-    console.log(practitioner);
-  }, [practitioner]);
-
-  useEffect(() => {
     if (mutationSuccess) {
       updateNotification({
         id: "create-practitioner",

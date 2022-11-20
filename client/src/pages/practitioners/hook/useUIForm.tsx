@@ -22,7 +22,6 @@ export default function useUIForm({
     isError: workingDaysError,
   } = useGetWorkingDaysQuery(accessToken as string);
 
-  console.log(practitioner);
   const isLoading = specializationsLoading || workingDaysLoading;
   const isError = specializationsError || workingDaysError;
   const form = useForm<
@@ -32,7 +31,7 @@ export default function useUIForm({
     }
   >({
     initialValues: {
-      fullname: practitioner ? practitioner.fullname : "",
+      fullname: "",
       email: "",
       address: "",
       contact: "",

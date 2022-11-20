@@ -8,7 +8,6 @@ export default function ServerErrorPartial({
   errors: ServerError | undefined;
 }) {
   const data = errors?.data ? Object.values(errors.data).flat() : undefined;
-  console.log(errors);
   return errors ? (
     <Box mb="xl">
       <Alert
