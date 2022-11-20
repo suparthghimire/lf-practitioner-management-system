@@ -78,7 +78,31 @@ export const PractitionerSchema = z.object({
     .min(1, {
       message: "Practitioner address is required",
     }),
-  image: z.string().min(0),
+  image: z.any().superRefine((img: File, ctx) => {
+    if (img instanceof File === false)
+      ctx.addIssue({
+        code: "custom",
+        message: "Please select a Valid Image",
+        // path: ["image"],
+      });
+    else {
+      if (img.size > CONFIG.MAX_IMG_SIZE)
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `Image size must be less than ${
+            CONFIG.MAX_IMG_SIZE / (1024 * 1024)
+          } MB`,
+        });
+      else {
+        if (!CONFIG.IMAGE_ACCEPT_MIMES.includes(img.type))
+          ctx.addIssue({
+            code: "custom",
+            message: `Accepted File Type is only .jpg/.jpeg and .png`,
+            // path: ["image"],
+          });
+      }
+    }
+  }),
   icuSpecialist: z
     .boolean({
       errorMap: (err) => {
@@ -103,31 +127,45 @@ export const PractitionerSchema = z.object({
     },
   }),
   WorkingDays: z
-    .array(WorkingDaysSchema, {
-      errorMap: (err) => {
-        return {
-          message: "Working days for practitioner is required",
-        };
-      },
-    })
-    .nonempty({
-      message: "Please select at least one day",
-    }),
-  Specializations: z.array(SpecializationSchema).optional(),
-});
+    .array(
+      z.string({
+        errorMap: (err) => {
+          return {
+            message: "Please select a valid day",
+          };
+        },
+      })
+    )
 
-export const ImageSchema = z.object({
-  size: z.number().max(CONFIG.MAX_IMG_SIZE, {
-    message: "Image size is too large",
-  }),
-  mimetype: z.string().superRefine((mime, ctx) => {
-    if (mime !== "image/png" && mime !== "image/jpeg") {
-      ctx.addIssue({
-        code: "custom",
-        message: "File type is not supported",
-      });
-    }
-  }),
+    .superRefine((days, ctx) => {
+      if (days.length > 0) {
+        days.map((d) => {
+          console.log(d);
+          if (d.length <= 0)
+            ctx.addIssue({
+              code: "custom",
+              message: "Please Select or create valid Working Day",
+              // path: ["WorkingDays"],
+            });
+        });
+      } else
+        ctx.addIssue({
+          code: "custom",
+          message: "Please Select or create atlease one Working Day",
+          // path: ["WorkingDays"],
+        });
+    }),
+  Specializations: z
+    .array(
+      z.string({
+        errorMap: (err) => {
+          return {
+            message: "Specialization for practitioner is required",
+          };
+        },
+      })
+    )
+    .optional(),
 });
 
 export type Practitioner = z.infer<typeof PractitionerSchema>;

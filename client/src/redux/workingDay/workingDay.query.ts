@@ -6,9 +6,9 @@ export const workingDayApi = createApi({
   reducerPath: "workingDay",
   baseQuery: baseQueryWithReauth,
   endpoints: (builder) => ({
-    getSpecializations: builder.query({
+    getWorkingDays: builder.query({
       query: (token: string) => ({
-        url: `/specialization`,
+        url: `/day`,
         headers: {
           authorization: token,
         },
@@ -18,4 +18,4 @@ export const workingDayApi = createApi({
   }),
 });
 
-export const { useGetSpecializationsQuery } = workingDayApi;
+export const { useGetWorkingDaysQuery } = workingDayApi;

@@ -46,6 +46,25 @@ export const practitionerApi = createApi({
         },
       }),
     }),
+    createPractitioner: builder.mutation({
+      query: ({
+        token,
+        practitioner,
+      }: {
+        token: string;
+        practitioner: Practitioner;
+      }) => ({
+        url: `/practitioner`,
+        method: "POST",
+        headers: {
+          authorization: token,
+        },
+        credentials: "include",
+        body: serialize(practitioner, {
+          indices: true,
+        }),
+      }),
+    }),
     updatePractitioner: builder.mutation({
       query: ({
         token,
@@ -62,7 +81,9 @@ export const practitionerApi = createApi({
           authorization: token,
         },
         credentials: "include",
-        body: serialize(practitioner),
+        body: serialize(practitioner, {
+          indices: true,
+        }),
       }),
     }),
     deletePractitioner: builder.mutation({
@@ -79,7 +100,7 @@ export const practitionerApi = createApi({
 
 export const {
   useGetPractitionersQuery,
-
+  useCreatePractitionerMutation,
   useToggleIcuSpecialistMutation,
   useUpdatePractitionerMutation,
   useDeletePractitionerMutation,

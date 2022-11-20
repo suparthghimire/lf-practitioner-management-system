@@ -1,83 +1,80 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-
-import ReactCrop, {
-  centerCrop,
-  makeAspectCrop,
-  Crop,
-  PixelCrop,
-} from "react-image-crop";
+import React, { useState, useCallback } from "react";
+import Cropper from "react-easy-crop";
+import { Point, Area } from "react-easy-crop/types";
 import { Button } from "@mantine/core";
-import CanvasPreview from "./CanvasPreview";
-
-function centerAspectCrop(
-  mediaWidth: number,
-  mediaHeight: number,
-  aspect: number
-) {
-  return centerCrop(
-    makeAspectCrop(
-      {
-        unit: "%",
-        width: 90,
-      },
-      aspect,
-      mediaWidth,
-      mediaHeight
-    ),
-    mediaWidth,
-    mediaHeight
-  );
+import GetCroppedImage from "./CroppedImage";
+interface Props {
+  src: string;
+  type: string;
+  setFile: React.Dispatch<React.SetStateAction<File | null>>;
+  modalClose: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export default function ImageCropper({ file }: { file: File | null }) {
-  const [imgSrc, setImgSrc] = useState(file && URL.createObjectURL(file));
-  const imgRef = useRef<HTMLImageElement>(null);
-  const [crop, setCrop] = useState<Crop>();
-  const [completedCrop, setCompletedCrop] = useState<PixelCrop>();
-  const [scale, setScale] = useState(1);
-  const [rotate, setRotate] = useState(0);
-  const [aspect, setAspect] = useState<number | undefined>(1 / 1);
+export default function ImageCropper(props: Props) {
+  const { src, type, setFile, modalClose } = props;
+  const [crop, setCrop] = useState<Point>({ x: 0, y: 0 });
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area>();
+  const [croppedImageSrc, setCroppedImageSrc] = useState<string>();
+  const onCropComplete = useCallback(
+    (croppedArea: Area, croppedAreaPixels: Area) => {
+      setCroppedAreaPixels(croppedAreaPixels);
+    },
+    []
+  );
 
-  useEffect(() => {
-    console.log(completedCrop, imgRef);
-  }, [completedCrop]);
-
-  function onImageLoad(e: React.SyntheticEvent<HTMLImageElement>) {
-    if (aspect) {
-      const { width, height } = e.currentTarget;
-      setCrop(centerAspectCrop(width, height, aspect));
-    }
-  }
-
-  function handleToggleAspectClick() {
-    if (aspect) {
-      setAspect(undefined);
-    } else if (imgRef.current) {
-      const { width, height } = imgRef.current;
-      setAspect(1 / 1);
-      setCrop(centerAspectCrop(width, height, 1 / 1));
-    }
-  }
+  const CropImage = useCallback(
+    async function () {
+      try {
+        const croppedImage = await GetCroppedImage({
+          imageSrc: src,
+          imageType: type,
+          pixelCrop: croppedAreaPixels!,
+        });
+        console.log("croppedImage", croppedImage);
+        setCroppedImageSrc(URL.createObjectURL(croppedImage));
+        setFile(croppedImage);
+        modalClose(false);
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    [croppedAreaPixels]
+  );
 
   return (
-    <>
-      {!!imgSrc && (
-        <ReactCrop
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      <div
+        style={{
+          height: "500px",
+          bottom: "10px",
+          position: "relative",
+          marginBottom: "4px",
+        }}
+      >
+        <Cropper
+          image={src}
           crop={crop}
-          onChange={(_, percentCrop) => setCrop(percentCrop)}
-          onComplete={(c) => setCompletedCrop(c)}
-          aspect={aspect}
-        >
-          <img
-            ref={imgRef}
-            alt="Crop me"
-            src={imgSrc}
-            style={{ transform: `scale(${scale}) rotate(${rotate}deg)` }}
-            onLoad={onImageLoad}
-          />
-        </ReactCrop>
-      )}
-      <Button onClick={handleToggleAspectClick}>Crop</Button>
-    </>
+          cropShape="round"
+          cropSize={{ width: 250, height: 250 }}
+          aspect={1 / 1}
+          onCropChange={setCrop}
+          onCropComplete={onCropComplete}
+        />
+      </div>
+      <div
+        style={{
+          isolation: "isolate",
+        }}
+      >
+        <Button onClick={CropImage} fullWidth>
+          Crop
+        </Button>
+      </div>
+    </div>
   );
 }

@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "react-easy-crop": "^4.6.2"
+  },
+  "devDependencies": {
+    "@types/react-easy-crop": "^2.0.0"
+  }
+}
