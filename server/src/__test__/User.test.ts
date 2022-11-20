@@ -36,7 +36,12 @@ describe("Testing User", () => {
       const res = await request(app).get("/").set("authorization", accessToken);
       expect(res.status).toBe(200);
     });
-
+    it("Should Get Dashboard Data", async () => {
+      const res = await request(app)
+        .get("/user/dashboard")
+        .set("authorization", accessToken);
+      expect(res.status).toBe(200);
+    });
     it("Should Be able to Refresh Token", async () => {
       const res = await request(app)
         .post("/refresh")
@@ -81,5 +86,12 @@ describe("Testing User", () => {
       const res = await CreateUser(newUserEmail + "1");
       expect(res.status).toBe(201);
     });
+    it("Should Not Get Dashboard Data", async () => {
+      const res = await request(app).get("/user/dashboard");
+      expect(res.status).toBe(401);
+    });
+  });
+  afterAll(async function () {
+    await request(app).delete("/signout");
   });
 });

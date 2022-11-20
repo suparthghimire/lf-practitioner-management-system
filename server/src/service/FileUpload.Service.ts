@@ -36,7 +36,6 @@ const FileUploadService = {
       // get download url of uploaded file
       const downloadUrl = await getDownloadURL(uploadTask.ref);
       return downloadUrl;
-      throw new CustomError("Failed to upload file", 500);
       // throw new CustomError("FILE UPLOAD ERROR", 409);
     } catch (error) {
       // console.log(error);

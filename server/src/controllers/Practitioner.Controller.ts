@@ -84,7 +84,6 @@ const PractitionerController = {
   // Get All Practitioners
   post: async function (req: Request, res: Response) {
     try {
-      console.log("HERE");
       const body = req.body;
       const practitioner: Practitioner = body;
 
@@ -137,10 +136,7 @@ const PractitionerController = {
       const createdPractitioner = await PractitionerService.createPractitioner(
         practitioner
       );
-      console.log("444444");
 
-      console.log("RETURNINHG");
-      // return success
       return res.status(201).json({
         status: true,
         message: "Practitioner Created Successfully",
@@ -250,12 +246,8 @@ const PractitionerController = {
       let newIcuSpecialist = practitioner.icuSpecialist;
       if (body.icuSpecialist !== undefined) {
         if (typeof body.icuSpecialist === "string") {
-          console.log("STRING");
           newIcuSpecialist = body.icuSpecialist === "true";
-          console.log(newIcuSpecialist);
         } else if (typeof body.icuSpecialist === "boolean") {
-          console.log("boolean");
-
           newIcuSpecialist = body.icuSpecialist;
         }
       }

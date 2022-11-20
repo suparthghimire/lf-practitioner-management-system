@@ -82,7 +82,7 @@ describe("Testing Practitioner", () => {
     const authResponse2 = await request(app)
       .post("/signin")
       .send({
-        email: "suparthnarayan212121@ghimire.com",
+        email: "suparthnarayannew@ghimire.com",
         password: "suparth123",
       })
       .set("Accept", "application/json");
@@ -252,5 +252,8 @@ describe("Testing Practitioner", () => {
         expect(res.status).toBe(403);
       });
     });
+  });
+  afterAll(async function () {
+    await request(app).delete("/signout");
   });
 });

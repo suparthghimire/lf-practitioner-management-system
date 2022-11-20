@@ -22,8 +22,7 @@ import { HasWritePermission } from "./middleware/Authorization.Middleware";
 import CONFIG from "./utils/app_config";
 // configure .env files
 dotenv.config();
-
-const app = express();
+export const app = express();
 
 /* Configure Cors */
 
@@ -73,8 +72,7 @@ const PORT = CONFIG.PORT || 3000;
 
 if (process.env.NODE_ENV !== "test") {
   app.listen(PORT, () => console.log(`Server Started at ${PORT}`));
-}
-// configure prisma client
+} // configure prisma client
 /**
  * Prisma Docs suggests to create a new instance of PrismaClient once and use it everywhere
  */
