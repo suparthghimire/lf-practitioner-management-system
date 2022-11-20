@@ -12,14 +12,16 @@ import { Practitioner } from "../../models/Practitioner";
 import FormPage from "./hook/FormPage";
 import CustomLoader from "../../components/common/Loader";
 export default function PractitionerEditPage() {
-  const params = useParams();
+  const params = useParams<{
+    practitioner_id: string;
+  }>();
   const { accessToken } = useAppSelector((state) => state.authReducer);
   const navigate = useNavigate();
   const [practitioner, setPractitioner] = useState<Practitioner>();
   const { data, isSuccess, isError, isLoading, refetch, error } =
     useGetSinglePractitionerQuery({
       token: accessToken as string,
-      id: params.id as string,
+      id: params.practitioner_id as string,
     });
 
   useEffect(() => {

@@ -28,7 +28,6 @@ import { resetUser, setUser } from "./redux/auth/auth.slice";
 import PractitionerIndexPage from "./pages/practitioners";
 import PractitionerCreatePage from "./pages/practitioners/create";
 import PractitionerEditPage from "./pages/practitioners/edit";
-import CustomLoader from "./components/common/Loader";
 
 function App() {
   const [colorScheme, setColorScheme] = useState<ColorScheme>("light");
@@ -84,7 +83,7 @@ function Router() {
           element={<PractitionerCreatePage />}
         />
         <Route
-          path="/practitioner/:id/edit"
+          path="/practitioner/:practitioner_id/edit"
           element={<PractitionerEditPage />}
         />
       </Route>
