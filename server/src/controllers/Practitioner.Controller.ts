@@ -148,7 +148,6 @@ const PractitionerController = {
       });
     } catch (error) {
       console.error(error);
-
       // Error Service handles Error based on Error Instance (ZodError, PrismaClientError, etc)
       const { message, data, status } = ErrorService.handleError(
         error,
@@ -180,7 +179,7 @@ const PractitionerController = {
         throw new ZodError([
           {
             path: ["id"],
-            message: "Invalid Practitioner id",
+            message: "Practitioner id must be a number",
             code: "custom",
           },
         ]);
@@ -228,11 +227,12 @@ const PractitionerController = {
       if (isNaN(parseInt(practitioner_id)))
         throw new ZodError([
           {
-            path: ["id"],
-            message: "Invalid Practitioner id",
             code: "custom",
+            message: "Practitioner Id must be a number",
+            path: ["practitioner_id"],
           },
         ]);
+
       const practitioner = await PractitionerService.getPractitionerById(
         parseInt(practitioner_id)
       );
@@ -369,6 +369,14 @@ const PractitionerController = {
             path: ["id"],
             message: "Practitioner id is required",
             code: "custom",
+          },
+        ]);
+      if (isNaN(parseInt(practitioner_id)))
+        throw new ZodError([
+          {
+            code: "custom",
+            message: "Practitioner Id must be a number",
+            path: ["practitioner_id"],
           },
         ]);
 

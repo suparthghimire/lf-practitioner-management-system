@@ -83,11 +83,11 @@ const TokenService = {
           PRISMA_ERROR_CODES.RECORD_NOT_FOUND,
           ""
         );
-      const expureTime = moment().add(expireTimeInSec, "seconds").toDate();
+      const expireTime = moment().add(expireTimeInSec, "seconds").toDate();
       await prismaClient.refreshToken.create({
         data: {
           token,
-          expireTime: expureTime,
+          expireTime: expireTime,
           user: {
             connect: {
               id: userId,

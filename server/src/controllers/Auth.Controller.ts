@@ -190,7 +190,7 @@ const AuthController = {
         req.headers["authorization"];
 
       // If Refresh Token is not present, throw error of Invalid Token
-      if (!bearerToken) throw new CustomError("Invalid Token 1", 401);
+      if (!bearerToken) throw new CustomError("Invalid No Bearer Token", 401);
 
       const refreshToken = bearerToken.split(" ")[1];
       // Verify Refresh Token
@@ -198,13 +198,12 @@ const AuthController = {
 
       // Get Refresh Token from database
       const token = await TokenService.getUserToken(refreshToken);
-
       // If Refresh Token is not present in database, throw error of Invalid Token
-      if (!token) throw new CustomError("Invalid Token 2", 401);
+      if (!token) throw new CustomError("Invalid Token", 401);
 
       // check if roken has expired
       if (token.expireTime < new Date())
-        throw new CustomError("Invalid Token 3", 401);
+        throw new CustomError("Invalid Token Expired", 401);
 
       // Create Payload for JWT Token
       const tokenPayload: JWTPayload = {
