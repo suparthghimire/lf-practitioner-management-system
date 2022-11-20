@@ -84,6 +84,7 @@ const PractitionerController = {
   // Get All Practitioners
   post: async function (req: Request, res: Response) {
     try {
+      console.log("HERE");
       const body = req.body;
       const practitioner: Practitioner = body;
 
@@ -115,18 +116,24 @@ const PractitionerController = {
       // Validation checks for Input Sanitization and If unique constraint fails; throws ZodError if validation fails
       await ValidatePractitioner(practitioner);
 
+      console.log("11111");
+
       // Validation for Image Size and Mimietype; throws ZodError if validation fails
       ValidateImage(image as UploadedFile);
+      console.log("22222");
 
       // Generate unique name for image
       const imageName =
         uuidv4() + "--" + Date.now() + "--" + (image as UploadedFile).name;
+      console.log("33333");
 
       // Upload Image to Firebase Bucket
       const imageUrl = await FileUploadService.upload(
         image as UploadedFile,
         imageName
       );
+
+      console.log("44444");
 
       // set image url returned from upload function
       practitioner.image = imageUrl;
@@ -135,6 +142,9 @@ const PractitionerController = {
       const createdPractitioner = await PractitionerService.createPractitioner(
         practitioner
       );
+      console.log("444444");
+
+      console.log("RETURNINHG");
       // return success
       return res.status(201).json({
         status: true,

@@ -37,6 +37,9 @@ app.use(
 app.use(
   fileUpload({
     parseNested: true, // allow nested objects from form-data
+    debug: false,
+    useTempFiles: true,
+    createParentPath: true,
   })
 );
 // configure express to use json

@@ -1,3 +1,5 @@
+import path from "path";
+import { CustomError } from "./Error.Service";
 import { UploadedFile } from "express-fileupload";
 import {
   getStorage,
@@ -6,6 +8,7 @@ import {
   uploadBytes,
   deleteObject,
 } from "@firebase/storage";
+import fs from "fs";
 import { initializeApp } from "@firebase/app";
 import firebaseConfig from "../utils/firebase_config";
 
@@ -19,19 +22,26 @@ const FileUploadService = {
   // upload file to firebase storage
   upload: async function (file: UploadedFile, name: string) {
     try {
+      // console.log(file, file.data);
       // get storage instance
       const storage = getStorage();
       // get reference to storage bucket with parent directory and file name
       const storageRef = ref(storage, `${PARENT_DIR}/${name}`);
       // upload file to storage bucket
+
+      console.log("US -  111111");
       const uploadTask = await uploadBytes(storageRef, file.data, {
         contentType: file.mimetype,
       });
+      console.log("US -  22222", uploadTask);
+
       // get download url of uploaded file
       const downloadUrl = await getDownloadURL(uploadTask.ref);
       return downloadUrl;
+      throw new CustomError("Failed to upload file", 500);
+      // throw new CustomError("FILE UPLOAD ERROR", 409);
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       // error handling is done in controller
       throw error;
     }
