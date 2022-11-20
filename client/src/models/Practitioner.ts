@@ -177,5 +177,4 @@ export const PractitionerSchema = z
   });
 
 // Creates Type by infering the schema
-type Practitioner = z.infer<typeof PractitionerSchema>;
-export default Practitioner;
+export type Practitioner = z.infer<typeof PractitionerSchema>;

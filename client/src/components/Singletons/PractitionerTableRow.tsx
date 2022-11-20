@@ -24,7 +24,6 @@ import {
 import { showNotification, updateNotification } from "@mantine/notifications";
 
 import { removePractitionerById } from "../../redux/practitioner/practitioner.slice";
-import WorkingDay from "../../models/WorkingDay";
 
 export default function PractitionerTableRow({
   practitioner,
