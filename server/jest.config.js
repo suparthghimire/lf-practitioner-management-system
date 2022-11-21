@@ -4,4 +4,5 @@ module.exports = {
   testEnvironment: 'node',
   verbose: true,
   forceExit: true,
+  modulePathIgnorePatterns: ["<rootDir>/dist/"]
 };
