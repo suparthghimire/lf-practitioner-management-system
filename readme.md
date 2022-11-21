@@ -210,6 +210,8 @@ Deletes Existing Practitioner
 
 ## Project Setup
 
+1. Setup Environment Variables based on .env.example of server and client
+
 ### Docker
 
 ```bash
@@ -265,8 +267,6 @@ If ports aren't mapped correctly, change mapping in docker-compose.yml file
 ```bash
   yarn
 ```
-
-3. Setup Environment Variables based on .env.example
 
 ### Running Locally
 
