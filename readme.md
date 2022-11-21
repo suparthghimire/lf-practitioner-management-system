@@ -278,10 +278,6 @@ Deletes Existing Practitioner
   yarn dev
 ```
 
-```bash
-  yarn dev
-```
-
 ---
 
 ### Build
