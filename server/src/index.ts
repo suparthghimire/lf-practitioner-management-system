@@ -71,6 +71,7 @@ app.delete(
 const PORT = CONFIG.PORT || 3000;
 
 if (process.env.NODE_ENV !== "test") {
+  console.log(process.env.CLIENT_DEV_ENDPOINT, process.env.CLIENT_PRD_ENDPOINT);
   app.listen(PORT, () => console.log(`Server Started at ${PORT}`));
 } // configure prisma client
 /**
