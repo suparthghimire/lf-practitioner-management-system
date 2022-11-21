@@ -208,7 +208,7 @@ Deletes Existing Practitioner
   git clone https://github.com/suparthghimire/lf-practitioner-management-system.git
 ```
 
-## Run
+## Project Setup
 
 ### Server
 
@@ -238,17 +238,77 @@ Deletes Existing Practitioner
 
 ---
 
+### Client
+
+```bash
+  cd client
+```
+
+1. Install Dependencies
+
+```bash
+  yarn
+```
+
+3. Setup Environment Variables based on .env.example
+
+### Running Locally
+
 ### Development
 
 1. Start the Development server
 
+**Client**
+
+```bash
+  cd client
 ```
+
+```
+  yarn dev
+```
+
+**Server**
+
+```bash
+  cd server
+```
+
+```
+  yarn dev
+```
+
+```bash
   yarn dev
 ```
 
 ---
 
 ### Build
+
+**Client**
+
+```bash
+  cd client
+```
+
+1. Build the project
+
+```bash
+  yarn build
+```
+
+2. Start
+
+```bash
+  yarn start
+```
+
+**Server**
+
+```bash
+  cd server
+```
 
 1. Build the project
 
@@ -266,25 +326,19 @@ Deletes Existing Practitioner
 
 ### Tests
 
-1. Checkout to Testing Branch
-
-```
-  git checkout testing
-```
-
-2. Run Tests Without Logs
+1. Run Tests Without Logs
 
 ```
   yarn test
 ```
 
-3. Run Tests With Logs
+2. Run Tests With Logs
 
 ```
   yarn test:log
 ```
 
-4. Run Tests with Coverage
+3. Run Tests with Coverage
 
 ```
   yarn test:coverage
