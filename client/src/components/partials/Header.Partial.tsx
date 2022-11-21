@@ -10,15 +10,16 @@ import {
   Menu,
   MediaQuery,
   Burger,
+  Divider,
 } from "@mantine/core";
 import { IconDoorExit, IconMoonStars, IconSun, IconUser } from "@tabler/icons";
 import { Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { resetUser } from "../../redux/auth/auth.slice";
-
+import { Modal } from "@mantine/core";
 import Logo from "../common/Logo";
 import { useSignoutMutation } from "../../redux/auth/auth.query";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 interface Props {
   burgerOpen: boolean;
@@ -128,8 +129,9 @@ export default function HeaderPartial(props: Props) {
 
 function UserMenu() {
   const dispatch = useAppDispatch();
-
+  const [profileModalOpen, setProfileModalOpen] = useState(false);
   const [signout, { isSuccess }] = useSignoutMutation();
+  const { user } = useAppSelector((state) => state.authReducer);
   // if user signs out , thenreset the user
   useEffect(() => {
     if (isSuccess) {
@@ -137,17 +139,49 @@ function UserMenu() {
     }
   }, [isSuccess]);
   return (
-    <Menu.Dropdown>
-      <Menu.Item icon={<IconUser size={14} />}>View Profile</Menu.Item>
-      <Menu.Item
-        color="red"
-        icon={<IconDoorExit size={14} />}
-        onClick={async () => {
-          await signout("");
-        }}
-      >
-        Log Out
-      </Menu.Item>
-    </Menu.Dropdown>
+    <>
+      <Menu.Dropdown>
+        <Menu.Item
+          icon={<IconUser size={14} />}
+          onClick={() => setProfileModalOpen(true)}
+        >
+          View Profile
+        </Menu.Item>
+        <Menu.Item
+          color="red"
+          icon={<IconDoorExit size={14} />}
+          onClick={async () => {
+            await signout("");
+          }}
+        >
+          Log Out
+        </Menu.Item>
+      </Menu.Dropdown>
+      {user && (
+        <Modal
+          centered
+          title="User Profile"
+          opened={profileModalOpen}
+          onClose={() => setProfileModalOpen(false)}
+        >
+          <Flex gap="sm">
+            <Text weight="bold">Id</Text>
+            {user.id}
+          </Flex>
+          <Flex gap="sm">
+            <Text weight="bold">Name</Text>
+            {user.name}
+          </Flex>
+          <Flex gap="sm">
+            <Text weight="bold">Email</Text>
+            {user.email}
+          </Flex>
+          <Divider my="lg" />
+          <Button variant="light" onClick={() => setProfileModalOpen(false)}>
+            Close
+          </Button>
+        </Modal>
+      )}
+    </>
   );
 }
