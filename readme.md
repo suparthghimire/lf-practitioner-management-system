@@ -210,6 +210,16 @@ Deletes Existing Practitioner
 
 ## Project Setup
 
+### Docker
+
+```bash
+  docker compose up --build --detach
+```
+
+If ports aren't mapped correctly, change mapping in docker-compose.yml file
+
+### No Docker
+
 ### Server
 
 ```bash
@@ -236,6 +246,12 @@ Deletes Existing Practitioner
   yarn prisma migrate dev --name InitialMigration
 ```
 
+6. Generate Prisma Client (Optional)
+
+```
+  yarn prisma generate
+```
+
 ---
 
 ### Client
@@ -253,8 +269,6 @@ Deletes Existing Practitioner
 3. Setup Environment Variables based on .env.example
 
 ### Running Locally
-
-### Development
 
 1. Start the Development server
 
