@@ -234,21 +234,21 @@ If ports aren't mapped correctly, change mapping in docker-compose.yml file
   yarn
 ```
 
-3. Setup Environment Variables based on .env.example
+2. Setup Environment Variables based on .env.example
 
-4. Initialize Prisma
+3. Initialize Prisma
 
 ```
   yarn prisma init
 ```
 
-5. Run Migration
+4. Run Migration
 
 ```
   yarn prisma migrate dev --name InitialMigration
 ```
 
-6. Generate Prisma Client (Optional)
+5. Generate Prisma Client (Optional)
 
 ```
   yarn prisma generate
