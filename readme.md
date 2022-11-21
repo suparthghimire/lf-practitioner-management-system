@@ -221,7 +221,10 @@ Deletes Existing Practitioner
 If ports aren't mapped correctly, change mapping in docker-compose.yml file
 
 **Default Server Port = 7000**
+
 **Default Client Port = 7002**
+
+---
 
 ### No Docker
 
