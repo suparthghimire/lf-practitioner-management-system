@@ -5,7 +5,6 @@ COPY . .
 RUN yarn
 RUN yarn prisma generate
 RUN yarn prisma migrate
-RUN yarn prisma db seed
 RUN yarn build
 EXPOSE 4000
 CMD ["yarn","start"]
