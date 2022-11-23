@@ -262,6 +262,12 @@ If ports aren't mapped correctly, change mapping in docker-compose.yml file
   yarn prisma generate
 ```
 
+6. Seed Data
+
+```
+  yarn prisma db seed
+```
+
 ---
 
 ### Client
