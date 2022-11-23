@@ -214,6 +214,14 @@ Deletes Existing Practitioner
 
 1. Setup Environment Variables based on .env.example of server and client
 
+2. Setuyp Database
+
+3. Seed Data
+
+```
+  yarn prisma db seed
+```
+
 ### Docker
 
 ```bash
