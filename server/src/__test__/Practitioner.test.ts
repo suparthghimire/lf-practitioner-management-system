@@ -74,16 +74,16 @@ describe("Testing Practitioner", () => {
     const authResponse = await request(app)
       .post("/signin")
       .send({
-        email: "suparthnarayan@ghimire.com",
-        password: "suparth123",
+        email: "default_user@gmail.com",
+        password: "password",
       })
       .set("Accept", "application/json");
 
     const authResponse2 = await request(app)
       .post("/signin")
       .send({
-        email: "suparthnarayannew@ghimire.com",
-        password: "suparth123",
+        email: "testUser@gmail.com",
+        password: "password",
       })
       .set("Accept", "application/json");
 

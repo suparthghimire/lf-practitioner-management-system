@@ -60,7 +60,15 @@ async function main() {
         password: "password",
       },
     };
+    const testUser = {
+      data: {
+        name: "Test",
+        email: "testUser@gmail.com",
+        password: "password",
+      },
+    };
     users.push(loginUser);
+    users.push(testUser);
     // // save the users to the json
     await fs.writeFile(
       "./prisma/seed_data.json",
