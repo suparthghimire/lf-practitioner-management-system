@@ -31,9 +31,9 @@
     ]
   },
   "user": {
-    "email": "testuser@test.com",
+    "email": "test_create_user@test.com",
     "password": "password",
     "confirmPassword": "password",
-    "name": "Test User"
+    "name": "Test User Create"
   }
 }

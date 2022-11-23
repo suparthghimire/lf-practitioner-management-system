@@ -1,0 +1,396 @@
+[
+  {
+    "id": 1,
+    "name": "Michaela Nicolas",
+    "email": "Petra.Little17@gmail.com",
+    "password": "$2b$10$GL.1v3MEsOdZxWcPYju6F.ANqsfidSgjHzgPh76yecp5IrTk/x7zC",
+    "createdAt": "2022-11-23T11:29:13.550Z",
+    "updatedAt": "2022-11-23T11:29:13.550Z",
+    "Practitioner": [
+      {
+        "id": 1,
+        "fullname": "Linnie Auer",
+        "email": "Alvena10@yahoo.com",
+        "contact": "605.941.1889 x7684",
+        "dob": "2022-11-23T11:29:13.451Z",
+        "address": "Mckenzie Rest",
+        "image": "https://loremflickr.com/640/480",
+        "createdByUserId": 1,
+        "icuSpecialist": true,
+        "createdAt": "2022-11-23T11:29:13.550Z",
+        "updatedAt": "2022-11-23T11:29:13.550Z",
+        "startTime": "2022-11-23T11:29:13.451Z",
+        "endTime": "2022-11-23T11:29:13.451Z",
+        "Specializations": [
+          { "id": 3, "name": "Corporate Metrics Officer" },
+          { "id": 5, "name": "Customer Assurance Associate" },
+          { "id": 2, "name": "Investor Web Consultant" },
+          { "id": 4, "name": "Senior Accounts Consultant" },
+          { "id": 1, "name": "Senior Interactions Producer" }
+        ],
+        "WorkingDays": [
+          { "id": 5, "day": "Tuesday" },
+          { "id": 2, "day": "Thursday" },
+          { "id": 4, "day": "Friday" },
+          { "id": 1, "day": "Saturday" },
+          { "id": 3, "day": "Sunday" }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Shemar Hammes",
+    "email": "Robert_Casper@gmail.com",
+    "password": "$2b$10$GL.1v3MEsOdZxWcPYju6F.ANqsfidSgjHzgPh76yecp5IrTk/x7zC",
+    "createdAt": "2022-11-23T11:29:13.590Z",
+    "updatedAt": "2022-11-23T11:29:13.590Z",
+    "Practitioner": [
+      {
+        "id": 2,
+        "fullname": "Bailee Graham",
+        "email": "Etha27@gmail.com",
+        "contact": "1-945-751-1562 x48592",
+        "dob": "2022-11-23T11:29:13.587Z",
+        "address": "DuBuque Freeway",
+        "image": "https://loremflickr.com/640/480",
+        "createdByUserId": 2,
+        "icuSpecialist": true,
+        "createdAt": "2022-11-23T11:29:13.590Z",
+        "updatedAt": "2022-11-23T11:29:13.590Z",
+        "startTime": "2022-11-23T11:29:13.587Z",
+        "endTime": "2022-11-23T11:29:13.587Z",
+        "Specializations": [
+          { "id": 9, "name": "Customer Optimization Administrator" },
+          { "id": 10, "name": "Direct Applications Liaison" },
+          { "id": 7, "name": "Human Mobility Designer" },
+          { "id": 8, "name": "Internal Intranet Strategist" },
+          { "id": 6, "name": "Senior Research Director" }
+        ],
+        "WorkingDays": [
+          { "id": 6, "day": "Wednesday" },
+          { "id": 4, "day": "Friday" },
+          { "id": 3, "day": "Sunday" }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "name": "Estevan Schroeder",
+    "email": "Fidel.Runte34@gmail.com",
+    "password": "$2b$10$GL.1v3MEsOdZxWcPYju6F.ANqsfidSgjHzgPh76yecp5IrTk/x7zC",
+    "createdAt": "2022-11-23T11:29:13.620Z",
+    "updatedAt": "2022-11-23T11:29:13.620Z",
+    "Practitioner": [
+      {
+        "id": 3,
+        "fullname": "Frederique Connelly",
+        "email": "Presley4@hotmail.com",
+        "contact": "334.953.4078 x90128",
+        "dob": "2022-11-23T11:29:13.614Z",
+        "address": "Nelda Knolls",
+        "image": "https://loremflickr.com/640/480",
+        "createdByUserId": 3,
+        "icuSpecialist": true,
+        "createdAt": "2022-11-23T11:29:13.620Z",
+        "updatedAt": "2022-11-23T11:29:13.620Z",
+        "startTime": "2022-11-23T11:29:13.614Z",
+        "endTime": "2022-11-23T11:29:13.614Z",
+        "Specializations": [
+          { "id": 13, "name": "Investor Metrics Administrator" },
+          { "id": 14, "name": "Lead Division Technician" },
+          { "id": 15, "name": "Lead Functionality Assistant" },
+          { "id": 12, "name": "Lead Markets Specialist" },
+          { "id": 11, "name": "Product Program Orchestrator" }
+        ],
+        "WorkingDays": [
+          { "id": 7, "day": "Monday" },
+          { "id": 6, "day": "Wednesday" },
+          { "id": 2, "day": "Thursday" },
+          { "id": 1, "day": "Saturday" },
+          { "id": 3, "day": "Sunday" }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "name": "Sammie Mayert",
+    "email": "Immanuel60@yahoo.com",
+    "password": "$2b$10$GL.1v3MEsOdZxWcPYju6F.ANqsfidSgjHzgPh76yecp5IrTk/x7zC",
+    "createdAt": "2022-11-23T11:29:13.652Z",
+    "updatedAt": "2022-11-23T11:29:13.652Z",
+    "Practitioner": [
+      {
+        "id": 4,
+        "fullname": "Meggie Howell",
+        "email": "Everardo.Waelchi@hotmail.com",
+        "contact": "1-892-935-7583",
+        "dob": "2022-11-23T11:29:13.649Z",
+        "address": "Ritchie Place",
+        "image": "https://loremflickr.com/640/480",
+        "createdByUserId": 4,
+        "icuSpecialist": false,
+        "createdAt": "2022-11-23T11:29:13.652Z",
+        "updatedAt": "2022-11-23T11:29:13.652Z",
+        "startTime": "2022-11-23T11:29:13.649Z",
+        "endTime": "2022-11-23T11:29:13.649Z",
+        "Specializations": [
+          { "id": 16, "name": "National Operations Supervisor" },
+          { "id": 17, "name": "Direct Configuration Architect" },
+          { "id": 18, "name": "National Metrics Designer" },
+          { "id": 19, "name": "Chief Creative Coordinator" },
+          { "id": 20, "name": "Global Creative Coordinator" }
+        ],
+        "WorkingDays": [
+          { "id": 7, "day": "Monday" },
+          { "id": 5, "day": "Tuesday" },
+          { "id": 2, "day": "Thursday" }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "name": "Denis Anderson",
+    "email": "Bernard.Fahey@gmail.com",
+    "password": "$2b$10$GL.1v3MEsOdZxWcPYju6F.ANqsfidSgjHzgPh76yecp5IrTk/x7zC",
+    "createdAt": "2022-11-23T11:29:13.678Z",
+    "updatedAt": "2022-11-23T11:29:13.678Z",
+    "Practitioner": [
+      {
+        "id": 5,
+        "fullname": "Retha Upton",
+        "email": "Alysa.Von32@gmail.com",
+        "contact": "207.363.7707",
+        "dob": "2022-11-23T11:29:13.674Z",
+        "address": "Schaden Knoll",
+        "image": "https://loremflickr.com/640/480",
+        "createdByUserId": 5,
+        "icuSpecialist": true,
+        "createdAt": "2022-11-23T11:29:13.678Z",
+        "updatedAt": "2022-11-23T11:29:13.678Z",
+        "startTime": "2022-11-23T11:29:13.674Z",
+        "endTime": "2022-11-23T11:29:13.674Z",
+        "Specializations": [
+          { "id": 21, "name": "Lead Group Developer" },
+          { "id": 22, "name": "Lead Program Consultant" },
+          { "id": 23, "name": "Product Research Liaison" },
+          { "id": 24, "name": "Customer Intranet Designer" },
+          { "id": 25, "name": "Principal Operations Coordinator" }
+        ],
+        "WorkingDays": [
+          { "id": 5, "day": "Tuesday" },
+          { "id": 2, "day": "Thursday" },
+          { "id": 4, "day": "Friday" },
+          { "id": 3, "day": "Sunday" }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "name": "Kraig Weimann",
+    "email": "Genevieve.Kuhlman50@hotmail.com",
+    "password": "$2b$10$GL.1v3MEsOdZxWcPYju6F.ANqsfidSgjHzgPh76yecp5IrTk/x7zC",
+    "createdAt": "2022-11-23T11:29:13.700Z",
+    "updatedAt": "2022-11-23T11:29:13.700Z",
+    "Practitioner": [
+      {
+        "id": 6,
+        "fullname": "Aliza Schumm",
+        "email": "Santiago.Effertz@gmail.com",
+        "contact": "(215) 908-3353 x8533",
+        "dob": "2022-11-23T11:29:13.697Z",
+        "address": "Gideon Road",
+        "image": "https://loremflickr.com/640/480",
+        "createdByUserId": 6,
+        "icuSpecialist": true,
+        "createdAt": "2022-11-23T11:29:13.700Z",
+        "updatedAt": "2022-11-23T11:29:13.700Z",
+        "startTime": "2022-11-23T11:29:13.697Z",
+        "endTime": "2022-11-23T11:29:13.697Z",
+        "Specializations": [
+          { "id": 26, "name": "Dynamic Usability Developer" },
+          { "id": 27, "name": "Internal Identity Executive" },
+          { "id": 28, "name": "National Functionality Director" },
+          { "id": 29, "name": "Chief Accounts Technician" },
+          { "id": 30, "name": "National Metrics Consultant" }
+        ],
+        "WorkingDays": [
+          { "id": 5, "day": "Tuesday" },
+          { "id": 2, "day": "Thursday" },
+          { "id": 3, "day": "Sunday" }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "name": "Tatum Kuvalis",
+    "email": "Maximillia71@yahoo.com",
+    "password": "$2b$10$GL.1v3MEsOdZxWcPYju6F.ANqsfidSgjHzgPh76yecp5IrTk/x7zC",
+    "createdAt": "2022-11-23T11:29:13.724Z",
+    "updatedAt": "2022-11-23T11:29:13.724Z",
+    "Practitioner": [
+      {
+        "id": 7,
+        "fullname": "Constantin Hahn",
+        "email": "Jedediah92@yahoo.com",
+        "contact": "1-839-570-4003 x1933",
+        "dob": "2022-11-23T11:29:13.721Z",
+        "address": "Shanon Harbors",
+        "image": "https://loremflickr.com/640/480",
+        "createdByUserId": 7,
+        "icuSpecialist": false,
+        "createdAt": "2022-11-23T11:29:13.724Z",
+        "updatedAt": "2022-11-23T11:29:13.724Z",
+        "startTime": "2022-11-23T11:29:13.721Z",
+        "endTime": "2022-11-23T11:29:13.721Z",
+        "Specializations": [
+          { "id": 31, "name": "Direct Intranet Manager" },
+          { "id": 32, "name": "Internal Assurance Developer" },
+          { "id": 33, "name": "Customer Functionality Analyst" },
+          { "id": 34, "name": "Future Group Strategist" },
+          { "id": 35, "name": "Direct Directives Director" }
+        ],
+        "WorkingDays": [
+          { "id": 5, "day": "Tuesday" },
+          { "id": 6, "day": "Wednesday" },
+          { "id": 2, "day": "Thursday" },
+          { "id": 3, "day": "Sunday" }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 8,
+    "name": "Barry Gorczany",
+    "email": "Emilia_Schimmel0@hotmail.com",
+    "password": "$2b$10$GL.1v3MEsOdZxWcPYju6F.ANqsfidSgjHzgPh76yecp5IrTk/x7zC",
+    "createdAt": "2022-11-23T11:29:13.750Z",
+    "updatedAt": "2022-11-23T11:29:13.750Z",
+    "Practitioner": [
+      {
+        "id": 8,
+        "fullname": "Emilio Pagac",
+        "email": "Jaquan.Smith@hotmail.com",
+        "contact": "659.947.7503 x6482",
+        "dob": "2022-11-23T11:29:13.747Z",
+        "address": "Klein Cove",
+        "image": "https://loremflickr.com/640/480",
+        "createdByUserId": 8,
+        "icuSpecialist": false,
+        "createdAt": "2022-11-23T11:29:13.750Z",
+        "updatedAt": "2022-11-23T11:29:13.750Z",
+        "startTime": "2022-11-23T11:29:13.747Z",
+        "endTime": "2022-11-23T11:29:13.747Z",
+        "Specializations": [
+          { "id": 36, "name": "Future Intranet Manager" },
+          { "id": 37, "name": "Investor Division Architect" },
+          { "id": 38, "name": "Internal Accountability Agent" },
+          { "id": 39, "name": "Customer Brand Developer" },
+          { "id": 40, "name": "Human Accounts Analyst" }
+        ],
+        "WorkingDays": [
+          { "id": 7, "day": "Monday" },
+          { "id": 5, "day": "Tuesday" }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 9,
+    "name": "Tomas Morar",
+    "email": "Trisha_Homenick77@hotmail.com",
+    "password": "$2b$10$GL.1v3MEsOdZxWcPYju6F.ANqsfidSgjHzgPh76yecp5IrTk/x7zC",
+    "createdAt": "2022-11-23T11:29:13.776Z",
+    "updatedAt": "2022-11-23T11:29:13.776Z",
+    "Practitioner": [
+      {
+        "id": 9,
+        "fullname": "Adan Yost",
+        "email": "Myrna.Fahey3@gmail.com",
+        "contact": "1-468-620-5334 x8906",
+        "dob": "2022-11-23T11:29:13.773Z",
+        "address": "Kunde Lodge",
+        "image": "https://loremflickr.com/640/480",
+        "createdByUserId": 9,
+        "icuSpecialist": true,
+        "createdAt": "2022-11-23T11:29:13.776Z",
+        "updatedAt": "2022-11-23T11:29:13.776Z",
+        "startTime": "2022-11-23T11:29:13.773Z",
+        "endTime": "2022-11-23T11:29:13.773Z",
+        "Specializations": [
+          { "id": 41, "name": "Regional Integration Technician" },
+          { "id": 42, "name": "Senior Directives Planner" },
+          { "id": 43, "name": "International Group Manager" },
+          { "id": 44, "name": "Investor Data Agent" },
+          { "id": 45, "name": "National Accounts Technician" }
+        ],
+        "WorkingDays": [
+          { "id": 7, "day": "Monday" },
+          { "id": 1, "day": "Saturday" },
+          { "id": 3, "day": "Sunday" }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 10,
+    "name": "Clementine Kertzmann",
+    "email": "Macy20@gmail.com",
+    "password": "$2b$10$GL.1v3MEsOdZxWcPYju6F.ANqsfidSgjHzgPh76yecp5IrTk/x7zC",
+    "createdAt": "2022-11-23T11:29:13.803Z",
+    "updatedAt": "2022-11-23T11:29:13.803Z",
+    "Practitioner": [
+      {
+        "id": 10,
+        "fullname": "Jaida Greenfelder",
+        "email": "Damian_Schamberger31@hotmail.com",
+        "contact": "1-917-386-8117",
+        "dob": "2022-11-23T11:29:13.799Z",
+        "address": "Carmela Circles",
+        "image": "https://loremflickr.com/640/480",
+        "createdByUserId": 10,
+        "icuSpecialist": false,
+        "createdAt": "2022-11-23T11:29:13.803Z",
+        "updatedAt": "2022-11-23T11:29:13.803Z",
+        "startTime": "2022-11-23T11:29:13.799Z",
+        "endTime": "2022-11-23T11:29:13.799Z",
+        "Specializations": [
+          { "id": 46, "name": "National Marketing Strategist" },
+          { "id": 47, "name": "Dynamic Markets Agent" },
+          { "id": 48, "name": "Human Response Designer" },
+          { "id": 49, "name": "Corporate Optimization Coordinator" },
+          { "id": 50, "name": "Corporate Implementation Orchestrator" }
+        ],
+        "WorkingDays": [
+          { "id": 7, "day": "Monday" },
+          { "id": 6, "day": "Wednesday" },
+          { "id": 2, "day": "Thursday" },
+          { "id": 3, "day": "Sunday" }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 11,
+    "name": "Default User",
+    "email": "default_user@gmail.com",
+    "password": "$2b$10$GL.1v3MEsOdZxWcPYju6F.ANqsfidSgjHzgPh76yecp5IrTk/x7zC",
+    "createdAt": "2022-11-23T11:29:13.824Z",
+    "updatedAt": "2022-11-23T11:29:13.824Z",
+    "Practitioner": []
+  },
+  {
+    "id": 12,
+    "name": "Test User",
+    "email": "testuser@gmail.com",
+    "password": "$2b$10$GL.1v3MEsOdZxWcPYju6F.ANqsfidSgjHzgPh76yecp5IrTk/x7zC",
+    "createdAt": "2022-11-23T11:29:13.830Z",
+    "updatedAt": "2022-11-23T11:29:13.830Z",
+    "Practitioner": []
+  }
+]

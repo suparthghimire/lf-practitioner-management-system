@@ -14,8 +14,8 @@ describe("Specialization Test", () => {
     const authResponse = await request(app)
       .post("/signin")
       .send({
-        email: "suparthnarayan@ghimire.com",
-        password: "suparth123",
+        email: "testuser@gmail.com",
+        password: "password",
       })
       .set("Accept", "application/json");
     token = authResponse.body.data.accessToken;

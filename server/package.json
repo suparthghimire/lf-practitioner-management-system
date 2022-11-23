@@ -27,7 +27,7 @@
     "test:coverage": "jest --coverage --silent"
   },
   "prisma": {
-    "seed": "ts-node prisma/seed.ts"
+    "seed": "ts-node src/seed/seed.ts"
   },
   "dependencies": {
     "@firebase/app": "^0.8.4",
