@@ -1,5 +1,6 @@
 {
   "devDependencies": {
+    "@faker-js/faker": "^7.6.0",
     "@types/bcrypt": "^5.0.0",
     "@types/cookie-parser": "^1.4.3",
     "@types/cors": "^2.8.12",
@@ -24,6 +25,9 @@
     "test": "jest --silent",
     "test:log": "jest",
     "test:coverage": "jest --coverage --silent"
+  },
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
   },
   "dependencies": {
     "@firebase/app": "^0.8.4",
