@@ -5,6 +5,8 @@ import TokenService from "../service/Token.Service";
 import UserService from "../service/User.Service";
 import CONFIG from "../utils/app_config";
 import { JWTPayload } from "../utils/interfaces";
+import TwoFaService from "../service/TwoFA.Service";
+import { ZodError } from "zod";
 
 const AuthController = {
   // get my data from token
@@ -50,6 +52,30 @@ const AuthController = {
         loginData.email,
         loginData.password
       );
+
+      // check if 2fa
+
+      if (user.UserTwoFA && user.UserTwoFA.verified) {
+        console.log("2fa verified");
+        if (!loginData.token)
+          throw new ZodError([
+            {
+              code: "custom",
+              message: "Invalid 2FA token",
+              path: ["token"],
+            },
+          ]);
+        // check if 2fa is verified. If not, this throws error
+        await TwoFaService.verify({
+          email: loginData.email,
+          password: loginData.password,
+          secret: user.UserTwoFA.secret,
+          token: loginData.token,
+          type: "user",
+        });
+      } else {
+        console.log("2fa not enabled");
+      }
 
       // Create Payload for JWT Token
       const tokenPayload: JWTPayload = {

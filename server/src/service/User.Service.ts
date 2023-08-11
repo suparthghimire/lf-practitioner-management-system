@@ -22,6 +22,7 @@ const UserService = {
         where: { id },
         select: userSelectFields,
       });
+      if (!user) throw new CustomError("User not found", 404);
       return user;
     } catch (error) {
       // error handeling is done in the controller
@@ -34,6 +35,9 @@ const UserService = {
       const user = await prismaClient.user.findUnique({
         where: {
           email,
+        },
+        include: {
+          UserTwoFA: true,
         },
       });
       // if not found, throw invalid email or passwortd

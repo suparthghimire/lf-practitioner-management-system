@@ -19,6 +19,7 @@ model User {
   updatedAt    DateTime       @updatedAt
   RefreshToken RefreshToken[]
   Practitioner Practitioner[]
+  UserTwoFA    UserTwoFA?
 }
 
 model RefreshToken {
@@ -32,22 +33,63 @@ model RefreshToken {
 }
 
 model Practitioner {
-  id              Int              @id @default(autoincrement())
-  fullname        String
-  email           String           @unique
-  contact         String           @unique
-  dob             DateTime
-  address         String
-  image           String           @db.LongText
-  createdBy       User             @relation(fields: [createdByUserId], references: [id])
-  createdByUserId Int
-  icuSpecialist   Boolean          @default(false)
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
-  startTime       DateTime
-  endTime         DateTime
-  WorkingDays     Day[]
-  Specializations Specialization[]
+  id                Int                @id @default(autoincrement())
+  fullname          String
+  passwordChanged   Boolean            @default(false)
+  email             String             @unique
+  contact           String             @unique
+  dob               DateTime
+  password          String             @default("password")
+  address           String
+  image             String             @db.LongText
+  createdBy         User               @relation(fields: [createdByUserId], references: [id])
+  createdByUserId   Int
+  icuSpecialist     Boolean            @default(false)
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  startTime         DateTime
+  endTime           DateTime
+  WorkingDays       Day[]
+  Specializations   Specialization[]
+  Attendance        Attendance[]
+  PractitionerTwoFA PractitionerTwoFA?
+}
+
+model Attendance {
+  id             Int          @id @default(autoincrement())
+  date           DateTime     @unique
+  checkInTime    DateTime
+  checkOutTime   DateTime?
+  duration       Int?
+  wasOvertime    Boolean?
+  wasLate        Boolean?
+  minHrAchieved  Boolean?
+  Practitioner   Practitioner @relation(fields: [practitionerId], references: [id])
+  practitionerId Int
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+}
+
+model UserTwoFA {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  secret    String
+  qrImage   String   @db.LongText
+  verified  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model PractitionerTwoFA {
+  id             Int          @id @default(autoincrement())
+  practitionerId Int          @unique
+  practitioner   Practitioner @relation(fields: [practitionerId], references: [id], onDelete: Cascade)
+  secret         String
+  qrImage        String       @db.LongText
+  verified       Boolean      @default(false)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
 }
 
 enum DayName {

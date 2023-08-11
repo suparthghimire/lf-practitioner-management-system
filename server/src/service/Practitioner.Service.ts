@@ -2,11 +2,12 @@ import { DayName } from "@prisma/client";
 import moment from "moment";
 import { Practitioner } from "../models/Practitioner";
 import { prismaClient } from "../index";
-import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
 import { GetPagination } from "../utils/helpers";
 import { PRISMA_ERROR_CODES } from "../utils/prisma_error_codes";
 import WorkingDayService from "./WorkingDay.Service";
-
+import bcrypt from "bcrypt";
+import { CustomError } from "./Error.Service";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 const PractitionerService = {
   getPractitionerByEmail: async (email: string) => {
     try {
@@ -32,12 +33,13 @@ const PractitionerService = {
       throw error;
     }
   },
-  getPractitionersWorkingToday: async () => {
+  getPractitionersWorkingToday: async (userId: number) => {
     try {
+      console.log("USER", userId);
       const weekDayName = moment().format("dddd");
-      console.log(weekDayName);
       const todayData = await prismaClient.practitioner.count({
         where: {
+          createdByUserId: userId,
           WorkingDays: {
             some: {
               day: weekDayName as DayName,
@@ -45,7 +47,11 @@ const PractitionerService = {
           },
         },
       });
-      const totalPractitioners = await prismaClient.practitioner.count();
+      const totalPractitioners = await prismaClient.practitioner.count({
+        where: {
+          createdByUserId: userId,
+        },
+      });
 
       return {
         todayData,
@@ -56,8 +62,13 @@ const PractitionerService = {
       throw error;
     }
   },
-  getAllPractitioners: async function (limit: number, page: number) {
+  getAllPractitioners: async function (
+    limit: number,
+    page: number,
+    userId: number
+  ) {
     try {
+      console.log("USER", userId);
       // set offset for pagination based on limit and page
       const offset = (page - 1) * limit;
       // take and limit are used for pagination in Prisma ORM, where Take is total records to be fetched and skip is the offset
@@ -65,6 +76,9 @@ const PractitionerService = {
       const skip = offset;
       // get all practitioners from database with pagination and ordered by descending order of creation date
       const unresolvedPractitioners = prismaClient.practitioner.findMany({
+        where: {
+          createdByUserId: userId,
+        },
         include: {
           Specializations: true,
           WorkingDays: true,
@@ -110,6 +124,7 @@ const PractitionerService = {
         include: {
           WorkingDays: true,
           Specializations: true,
+          Attendance: true,
           createdBy: {
             select: {
               id: true,
@@ -122,11 +137,10 @@ const PractitionerService = {
         },
       });
       if (!practitioner)
-        throw new PrismaClientKnownRequestError(
-          "",
-          PRISMA_ERROR_CODES.RECORD_NOT_FOUND,
-          ""
-        );
+        throw new PrismaClientKnownRequestError("Practitioner not found", {
+          code: PRISMA_ERROR_CODES.RECORD_NOT_FOUND,
+          clientVersion: "2.24.1",
+        });
       return practitioner;
     } catch (error) {
       throw error;
@@ -135,6 +149,10 @@ const PractitionerService = {
   // Create new practitioner
   createPractitioner: async function (practitioner: Practitioner) {
     try {
+      console.log("HADH PAS");
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(practitioner.contact, salt);
+      console.log("HADH PAS", hashedPassword);
       return await prismaClient.practitioner.create({
         data: {
           fullname: practitioner.fullname,
@@ -147,6 +165,7 @@ const PractitionerService = {
           icuSpecialist: practitioner.icuSpecialist,
           image: practitioner.image,
           createdByUserId: practitioner.createdBy,
+          password: hashedPassword,
           WorkingDays: {
             /**
              * connect or create tries to connect the relation model with the current model
@@ -240,6 +259,37 @@ const PractitionerService = {
           id: id,
         },
       });
+    } catch (error) {
+      throw error;
+    }
+  },
+  authenticate: async function (email: string, password: string) {
+    try {
+      const practitioner = await prismaClient.practitioner.findUnique({
+        where: {
+          email: email,
+        },
+        include: {
+          Attendance: true,
+          Specializations: true,
+          PractitionerTwoFA: true,
+          WorkingDays: {
+            select: {
+              day: true,
+            },
+          },
+        },
+      });
+      if (!practitioner)
+        throw new CustomError("Invalid Email or Password", 401);
+
+      // compare password
+      const storedPwd = practitioner.password;
+      const isPwdMatch = await bcrypt.compare(password, storedPwd);
+
+      if (!isPwdMatch) throw new CustomError("Invalid Email or Password", 401);
+
+      return practitioner;
     } catch (error) {
       throw error;
     }

@@ -6,7 +6,7 @@ import {
   ValidateImage,
   ValidatePractitioner,
 } from "../models/Practitioner";
-import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 
 import ErrorService, { CustomError } from "../service/Error.Service";
 import FileUploadService from "../service/FileUpload.Service";
@@ -16,6 +16,10 @@ import PractitionerService from "../service/Practitioner.Service";
 import CONFIG from "../utils/app_config";
 import { PRISMA_ERROR_CODES } from "../utils/prisma_error_codes";
 import { GetPagination } from "../utils/helpers";
+import TokenService from "../service/Token.Service";
+import { JWTPayload } from "../utils/interfaces";
+import { UserLogin, ValidateLogin } from "../models/User";
+import TwoFaService from "../service/TwoFA.Service";
 
 const PractitionerController = {
   // fetch all practitioners
@@ -23,6 +27,9 @@ const PractitionerController = {
     try {
       // Query Params for Offset Pagination
       let { page: pageStr, limit: limitStr } = req.query;
+
+      const { userId } = req.body;
+      console.log(userId);
 
       // Assign Default Values if query is empty
       if (!pageStr) pageStr = "1";
@@ -34,7 +41,8 @@ const PractitionerController = {
       //  Gets all practitioners based on pagination query provided
       const { data, totalData } = await PractitionerService.getAllPractitioners(
         limit,
-        page
+        page,
+        userId
       );
 
       const { nextPageNo, prevPageNo, totalPages } = GetPagination(
@@ -117,7 +125,7 @@ const PractitionerController = {
 
       // Validation checks for Input Sanitization and If unique constraint fails; throws ZodError if validation fails
       await ValidatePractitioner(practitioner);
-
+      console.log("VALIUDATION");
       // Validation for Image Size and Mimietype; throws ZodError if validation fails
       ValidateImage(image as UploadedFile);
       // Generate unique name for image
@@ -128,6 +136,8 @@ const PractitionerController = {
         image as UploadedFile,
         imageName
       );
+
+      console.log("FILE UPLOAD");
 
       // set image url returned from upload function
       practitioner.image = imageUrl;
@@ -186,11 +196,10 @@ const PractitionerController = {
 
       // if practitioner is not found, throw Validation Error (Practitioner not found)
       if (!practitioner)
-        throw new PrismaClientKnownRequestError(
-          "",
-          PRISMA_ERROR_CODES.RECORD_NOT_FOUND,
-          ""
-        );
+        throw new PrismaClientKnownRequestError("", {
+          code: PRISMA_ERROR_CODES.RECORD_NOT_FOUND,
+          clientVersion: "2.24.1",
+        });
       // return success
       return res.status(200).json({ status: true, data: practitioner });
     } catch (error) {
@@ -234,11 +243,10 @@ const PractitionerController = {
       );
       // if practitioner is not found, throw not found error
       if (!practitioner)
-        throw new PrismaClientKnownRequestError(
-          "",
-          PRISMA_ERROR_CODES.RECORD_NOT_FOUND,
-          ""
-        );
+        throw new PrismaClientKnownRequestError("", {
+          code: PRISMA_ERROR_CODES.RECORD_NOT_FOUND,
+          clientVersion: "2.24.1",
+        });
 
       const body = req.body;
       const { userId } = body;
@@ -378,12 +386,10 @@ const PractitionerController = {
       );
       // if practitioner is not found, throw Not found error to client
       if (!practitioner)
-        throw new PrismaClientKnownRequestError(
-          "",
-          PRISMA_ERROR_CODES.RECORD_NOT_FOUND,
-          ""
-        );
-
+        throw new PrismaClientKnownRequestError("", {
+          code: PRISMA_ERROR_CODES.RECORD_NOT_FOUND,
+          clientVersion: "2.24.1",
+        });
       const imageUrl = decodeURI(practitioner.image);
 
       // The response from delete function is not used, so it is resolved in parallel and not awaited
@@ -407,6 +413,85 @@ const PractitionerController = {
       return res.status(status || 500).json({
         status: false,
         message: message || "Failed to delete practitioner",
+        data: data == null ? undefined : data,
+      });
+    }
+  },
+  login: async (req: Request, res: Response) => {
+    try {
+      const body = req.body;
+      const loginData: UserLogin = body;
+
+      // Validate User Credentials
+      ValidateLogin(loginData);
+
+      const practitioner = await PractitionerService.authenticate(
+        loginData.email,
+        loginData.password
+      );
+
+      /**
+       * Get practitioner data from database basedo on email and password
+       * If practitioner is not found, throws error of Invalid Credentials
+       * else returns userid
+       */
+      // check if 2fa
+
+      if (
+        practitioner.PractitionerTwoFA &&
+        practitioner.PractitionerTwoFA.verified
+      ) {
+        if (!loginData.token)
+          throw new ZodError([
+            {
+              code: "custom",
+              message: "Invalid 2FA token",
+              path: ["token"],
+            },
+          ]);
+        // check if 2fa is verified. If not, this throws error
+        await TwoFaService.verify({
+          email: loginData.email,
+          password: loginData.password,
+          secret: practitioner.PractitionerTwoFA.secret,
+          token: loginData.token,
+          type: "practitioner",
+        });
+      } else {
+        console.log("2fa not enabled");
+      }
+
+      // Create Payload for JWT Token
+      const tokenPayload: JWTPayload = {
+        id: practitioner.id,
+      };
+
+      // Generate Token for access token with some expiration time (Set in Config File)
+      const accessToken = TokenService.createToken(
+        tokenPayload,
+        CONFIG.ACCESS_TOKEN_EXPIRY
+      );
+
+      // return success
+      return res.status(201).json({
+        status: true,
+        message: "SignIn Successful",
+        data: {
+          practitioner: practitioner,
+          accessToken: "Bearer " + accessToken,
+        },
+      });
+    } catch (error) {
+      console.error(error);
+      // Handle Error
+      const { message, data, status } = ErrorService.handleError(
+        error,
+        "Practitioner"
+      );
+      // return failuer
+      return res.status(status || 500).json({
+        status: false,
+        message: message || "SignIn Failed",
         data: data == null ? undefined : data,
       });
     }

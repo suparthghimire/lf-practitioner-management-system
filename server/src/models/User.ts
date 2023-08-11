@@ -24,6 +24,7 @@ const UserLoginSchema = z.object({
     .min(PWD_SIZE, {
       message: `Password must be at least ${PWD_SIZE} characters`,
     }),
+  token: z.string().optional(),
 });
 
 const UserSchema = z

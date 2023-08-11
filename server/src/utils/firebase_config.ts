@@ -8,5 +8,14 @@ const firebaseConfig = {
   ).trim(),
   appId: (process.env.FIREBASE_APP_ID as string).trim(),
 };
-
+console.log("FC", firebaseConfig);
 export default firebaseConfig;
+
+// const firebaseConfig = {
+//   apiKey: "AIzaSyCJfPU_ZJRjnjpN00vlMY8uX2YcDgQmvOU",
+//   authDomain: "swivt-pms.firebaseapp.com",
+//   projectId: "swivt-pms",
+//   storageBucket: "swivt-pms.appspot.com",
+//   messagingSenderId: "284415632260",
+//   appId: "1:284415632260:web:2673718d729ab7748c33d1"
+// };

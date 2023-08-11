@@ -5,8 +5,9 @@ import PractitionerService from "../service/Practitioner.Service";
 const UserController = {
   index: async (req: Request, res: Response) => {
     try {
+      const { userId } = req.body;
       const practitonersWorkingToday =
-        await PractitionerService.getPractitionersWorkingToday();
+        await PractitionerService.getPractitionersWorkingToday(userId);
 
       return res.status(200).json({
         status: true,

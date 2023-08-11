@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import moment from "moment";
 import { prismaClient } from "../index";
 import { CustomError } from "./Error.Service";
@@ -47,11 +47,10 @@ const TokenService = {
         },
       });
       if (!user)
-        throw new PrismaClientKnownRequestError(
-          "",
-          PRISMA_ERROR_CODES.RECORD_NOT_FOUND,
-          ""
-        );
+        throw new PrismaClientKnownRequestError("", {
+          code: PRISMA_ERROR_CODES.RECORD_NOT_FOUND,
+          clientVersion: "2.24.1",
+        });
       return user;
     } catch (error) {
       throw error;
@@ -78,11 +77,10 @@ const TokenService = {
 
       const [_, user] = await Promise.all([delPromise, userPromise]);
       if (!user)
-        throw new PrismaClientKnownRequestError(
-          "",
-          PRISMA_ERROR_CODES.RECORD_NOT_FOUND,
-          ""
-        );
+        throw new PrismaClientKnownRequestError("", {
+          code: PRISMA_ERROR_CODES.RECORD_NOT_FOUND,
+          clientVersion: "2.24.1",
+        });
       const expireTime = moment().add(expireTimeInSec, "seconds").toDate();
       await prismaClient.refreshToken.create({
         data: {

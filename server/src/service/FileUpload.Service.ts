@@ -1,4 +1,3 @@
-import path from "path";
 import { CustomError } from "./Error.Service";
 import { UploadedFile } from "express-fileupload";
 import {
@@ -8,7 +7,6 @@ import {
   uploadBytes,
   deleteObject,
 } from "@firebase/storage";
-import fs from "fs";
 import { initializeApp } from "@firebase/app";
 import firebaseConfig from "../utils/firebase_config";
 
@@ -29,16 +27,23 @@ const FileUploadService = {
       const storageRef = ref(storage, `${PARENT_DIR}/${name}`);
       // upload file to storage bucket
 
+      console.log("UPLOAD", file.data, {
+        contentType: file.mimetype,
+      });
       const uploadTask = await uploadBytes(storageRef, file.data, {
         contentType: file.mimetype,
       });
+      console.log("UPLOAD DONE");
 
       // get download url of uploaded file
+      console.log("GET URL");
       const downloadUrl = await getDownloadURL(uploadTask.ref);
+      console.log("URL GOT");
+
       return downloadUrl;
       // throw new CustomError("FILE UPLOAD ERROR", 409);
     } catch (error) {
-      // console.log(error);
+      console.log(error);
       // error handling is done in controller
       throw error;
     }

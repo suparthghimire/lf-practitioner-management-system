@@ -11,6 +11,7 @@ import UserRoute from "./routes/user.route";
 import PractitionerRoutes from "./routes/practitioner.route";
 import SpecializationRoutes from "./routes/specialization.route";
 import WorkingDayRoutes from "./routes/workingDay.route";
+import AttendanceRoutes from "./routes/attendance.route";
 
 /* Controller Imports */
 import PractitionerController from "./controllers/Practitioner.Controller";
@@ -53,6 +54,7 @@ app.use("/user", UserRoute);
 app.use("/day", WorkingDayRoutes);
 app.use("/specialization", SpecializationRoutes);
 app.use("/practitioner", PractitionerRoutes);
+app.use("/attendance", AttendanceRoutes);
 
 /*
  * The Assignment Mentioned the API

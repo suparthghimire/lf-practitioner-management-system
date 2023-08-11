@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { ZodError } from "zod";
 import PractitionerService from "../service/Practitioner.Service";
 import ErrorService, { CustomError } from "../service/Error.Service";
-import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { PRISMA_ERROR_CODES } from "../utils/prisma_error_codes";
 
 export async function HasWritePermission(
@@ -25,11 +25,10 @@ export async function HasWritePermission(
       parseInt(practitioner_id)
     );
     if (!practitioner)
-      throw new PrismaClientKnownRequestError(
-        "",
-        PRISMA_ERROR_CODES.RECORD_NOT_FOUND,
-        ""
-      );
+      throw new PrismaClientKnownRequestError("", {
+        code: PRISMA_ERROR_CODES.RECORD_NOT_FOUND,
+        clientVersion: "2.24.1",
+      });
     if (practitioner.createdBy.id !== parseInt(userId))
       throw new CustomError("Not Enough Privileges", 403);
     next();

@@ -1,5 +1,5 @@
 import { ZodError } from "zod";
-import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { PRISMA_ERROR_CODES } from "../utils/prisma_error_codes";
 
 // Custom Error extends Inbuilt Error class has status property to set status code of response
