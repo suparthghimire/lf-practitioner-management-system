@@ -4,7 +4,7 @@ WORKDIR /app
 COPY . .
 RUN yarn
 RUN yarn prisma generate
-RUN yarn prisma migrate
+RUN yarn prisma migrate dev --name init
 RUN yarn build
 EXPOSE 4000
 CMD ["yarn","start"]
