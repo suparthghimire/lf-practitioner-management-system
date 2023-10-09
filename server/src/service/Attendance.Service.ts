@@ -10,39 +10,73 @@ import { CustomError } from "./Error.Service";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { ZodError } from "zod";
 const AttendanceService = {
-  checkIn: async (time: Date, practitionerId: number) => {
-    // get practitioner
-    const practitioner = await prismaClient.practitioner.findUnique({
-      where: {
-        id: practitionerId,
-      },
-      include: { WorkingDays: true },
-    });
-    if (!practitioner) throw new CustomError("Practitioner not found", 404);
-
-    // see if practitioner was late
-    const wasLate = moment(time).isAfter(practitioner.startTime);
-    //   create attendance
-    const attendance = await prismaClient.attendance.create({
+  create: async (time: Date, practitionerId: number) => {
+    return await prismaClient.attendance.create({
       data: {
-        checkInTime: time,
-        wasLate: wasLate,
         practitionerId: practitionerId,
-        date: new Date(),
+        date: time,
+        checkInTime: null,
         checkOutTime: null,
         duration: null,
         minHrAchieved: null,
       },
     });
-    return attendance;
   },
-  checkOut: async (time: Date, attendanceId: number) => {
-    const currAttendance = await prismaClient.attendance.findUnique({
+  checkIn: async (time: Date, practitionerId: number) => {
+    //  update attendance
+    const today = moment().startOf("day").toDate();
+    const currAttendance = await prismaClient.attendance.findFirst({
       where: {
-        id: attendanceId,
+        practitionerId: practitionerId,
+        date: {
+          gte: today,
+          lt: moment(today).add(1, "day").toDate(),
+        },
       },
       include: { Practitioner: true },
     });
+    if (!currAttendance) throw new CustomError("Attendance not found", 404);
+    // see if checkin is already done
+    if (currAttendance.checkInTime)
+      throw new CustomError("Already checked in", 400);
+    //  see if checkout is already done
+    if (currAttendance.checkOutTime)
+      throw new CustomError("Already checked out", 400);
+
+    // check if checkin is before start time
+    if (moment(time).isBefore(moment(currAttendance.Practitioner.startTime)))
+      throw new ZodError([
+        {
+          code: "custom",
+          message: "Checkin time cannot be before start time",
+          path: ["time"],
+        },
+      ]);
+
+    const updateAttendance = await prismaClient.attendance.update({
+      where: {
+        id: currAttendance.id,
+      },
+      data: {
+        checkInTime: time,
+      },
+    });
+
+    return updateAttendance;
+  },
+  checkOut: async (time: Date, practitionerId: number) => {
+    const today = moment().startOf("day").toDate();
+    const currAttendance = await prismaClient.attendance.findFirst({
+      where: {
+        practitionerId: practitionerId,
+        date: {
+          gte: today,
+          lt: moment(today).add(1, "day").toDate(),
+        },
+      },
+      include: { Practitioner: true },
+    });
+
     if (!currAttendance) throw new CustomError("Attendance not found", 404);
     // see if checkout is already done
     if (currAttendance.checkOutTime)
@@ -70,18 +104,20 @@ const AttendanceService = {
       "seconds"
     );
 
-    const attendance = await prismaClient.attendance.update({
+    return await prismaClient.attendance.update({
       where: {
-        id: attendanceId,
+        id: currAttendance.id,
       },
       data: {
         checkOutTime: time,
+        wasLate: moment(checkInTime).isAfter(
+          moment(currAttendance.Practitioner.startTime)
+        ),
         duration: attendanceDuration,
         minHrAchieved: attendanceDuration >= pracReqHrs,
         wasOvertime: attendanceDuration > pracReqHrs,
       },
     });
-    return attendance;
   },
   getAllAttendanceByPractitioner: async (practitionerId: number) => {
     const attendance = await prismaClient.attendance.findMany({
@@ -97,9 +133,7 @@ const AttendanceService = {
 
   getTodayAttendanceByPractitioner: async (practitionerId: number) => {
     // find attendance whose month, day and year matches today's month day and year
-
     const today = moment().startOf("day").toDate();
-
     const attendance = await prismaClient.attendance.findFirst({
       where: {
         practitionerId: practitionerId,
@@ -110,6 +144,35 @@ const AttendanceService = {
       },
     });
     return attendance;
+  },
+  generateAttendance: async () => {
+    // for all practitioners, generate attendance
+    const todayDayName = moment().format("dddd") as DayName;
+    const practitioners = await prismaClient.practitioner.findMany({
+      select: {
+        id: true,
+        fullname: true,
+        WorkingDays: true,
+      },
+      where: {
+        WorkingDays: {
+          some: {
+            day: todayDayName,
+          },
+        },
+      },
+    });
+
+    await prismaClient.attendance.createMany({
+      data: practitioners.map((practitioner) => ({
+        practitionerId: practitioner.id,
+        date: new Date(),
+        checkInTime: null,
+        checkOutTime: null,
+        duration: null,
+        minHrAchieved: null,
+      })),
+    });
   },
 };
 

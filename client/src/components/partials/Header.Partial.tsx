@@ -11,8 +11,20 @@ import {
   MediaQuery,
   Burger,
   Divider,
+  ModalProps,
+  Paper,
+  Card,
+  Container,
+  Box,
 } from "@mantine/core";
-import { IconDoorExit, IconMoonStars, IconSun, IconUser } from "@tabler/icons";
+import {
+  IconDoorExit,
+  IconMoonStars,
+  IconSettings,
+  IconStethoscope,
+  IconSun,
+  IconUser,
+} from "@tabler/icons";
 import { Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { resetUser } from "../../redux/auth/auth.slice";
@@ -20,6 +32,10 @@ import { Modal } from "@mantine/core";
 import Logo from "../common/Logo";
 import { useSignoutMutation } from "../../redux/auth/auth.query";
 import { useEffect, useState } from "react";
+import { useDisclosure } from "@mantine/hooks";
+import { resetPractitioner } from "../../redux/auth/practitioner/auth.slice";
+import UserMenu from "./SubMenu/User.Menu";
+import PractitionerMenu from "./SubMenu/Practitioner.Menu";
 
 interface Props {
   burgerOpen: boolean;
@@ -35,6 +51,13 @@ export default function HeaderPartial(props: Props) {
   const isAuthenticated = useAppSelector(
     (state) => state.authReducer.isAuthenticated
   );
+  const isPractitionerAuthenticated = useAppSelector(
+    (state) => state.practitionerAuthReducer.isAuthenticated
+  );
+
+  const [signInOptOpened, { open: openSigninOpt, close: closeSigninOpt }] =
+    useDisclosure(false);
+
   return (
     <Header height={{ base: 100, md: 100 }} p="lg">
       {/* <Container px={0}> */}
@@ -76,13 +99,13 @@ export default function HeaderPartial(props: Props) {
           </Link>
         </div>
         <Flex gap="lg" align="center">
-          {!isAuthenticated && (
+          {!isAuthenticated && !isPractitionerAuthenticated && (
             <>
-              <Link to="/signin">
-                <Button variant="light" color="teal">
-                  Sign In
-                </Button>
-              </Link>
+              {/* <Link to="/signin"> */}
+              <Button variant="light" color="teal" onClick={openSigninOpt}>
+                Sign In
+              </Button>
+              {/* </Link> */}
               <Link to="/signup">
                 <Button variant="light" color="blue">
                   Sign Up
@@ -90,7 +113,7 @@ export default function HeaderPartial(props: Props) {
               </Link>
             </>
           )}
-          {isAuthenticated && (
+          {isAuthenticated || isPractitionerAuthenticated ? (
             <div>
               <Menu
                 shadow="md"
@@ -104,9 +127,11 @@ export default function HeaderPartial(props: Props) {
                     <IconUser />
                   </ActionIcon>
                 </Menu.Target>
-                <UserMenu />
+                {isAuthenticated ? <UserMenu /> : <PractitionerMenu />}
               </Menu>
             </div>
+          ) : (
+            <></>
           )}
           <p>|</p>
           <Tooltip label={`Switch to ${oppositeColorScheme} theme`}>
@@ -123,65 +148,47 @@ export default function HeaderPartial(props: Props) {
         </Flex>
       </Flex>
       {/* </Container> */}
+      <SignInOptions onClose={closeSigninOpt} opened={signInOptOpened} />
     </Header>
   );
 }
 
-function UserMenu() {
-  const dispatch = useAppDispatch();
-  const [profileModalOpen, setProfileModalOpen] = useState(false);
-  const [signout, { isSuccess }] = useSignoutMutation();
-  const { user } = useAppSelector((state) => state.authReducer);
-  // if user signs out , thenreset the user
-  useEffect(() => {
-    if (isSuccess) {
-      dispatch(resetUser());
-    }
-  }, [isSuccess]);
+function SignInOptions(props: ModalProps) {
   return (
-    <>
-      <Menu.Dropdown>
-        <Menu.Item
-          icon={<IconUser size={14} />}
-          onClick={() => setProfileModalOpen(true)}
-        >
-          View Profile
-        </Menu.Item>
-        <Menu.Item
-          color="red"
-          icon={<IconDoorExit size={14} />}
-          onClick={async () => {
-            await signout("");
-          }}
-        >
-          Log Out
-        </Menu.Item>
-      </Menu.Dropdown>
-      {user && (
-        <Modal
-          centered
-          title="User Profile"
-          opened={profileModalOpen}
-          onClose={() => setProfileModalOpen(false)}
-        >
-          <Flex gap="sm">
-            <Text weight="bold">Id</Text>
-            {user.id}
-          </Flex>
-          <Flex gap="sm">
-            <Text weight="bold">Name</Text>
-            {user.name}
-          </Flex>
-          <Flex gap="sm">
-            <Text weight="bold">Email</Text>
-            {user.email}
-          </Flex>
-          <Divider my="lg" />
-          <Button variant="light" onClick={() => setProfileModalOpen(false)}>
-            Close
+    <Modal
+      {...props}
+      centered
+      radius={8}
+      title="Who are You?"
+      styles={() => ({
+        title: {
+          fontSize: "1.25rem",
+          fontWeight: 700,
+        },
+      })}
+    >
+      <Flex gap="1rem">
+        <Link to="/signin">
+          <Button
+            variant="light"
+            leftIcon={<IconUser />}
+            onClick={props.onClose}
+          >
+            User
           </Button>
-        </Modal>
-      )}
-    </>
+        </Link>
+
+        <Link to="/practitioner/signin">
+          <Button
+            variant="light"
+            color="teal"
+            leftIcon={<IconStethoscope />}
+            onClick={props.onClose}
+          >
+            Practitioner
+          </Button>
+        </Link>
+      </Flex>
+    </Modal>
   );
 }

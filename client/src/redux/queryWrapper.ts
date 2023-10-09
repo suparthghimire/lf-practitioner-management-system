@@ -12,7 +12,7 @@ import { setTokens } from "./auth/auth.slice";
  * refresh the access token if the API returns a 401 response.
  */
 
-const baseQuery = fetchBaseQuery({ baseUrl: CONFIG.SERVER_URL });
+export const baseQuery = fetchBaseQuery({ baseUrl: CONFIG.SERVER_URL });
 
 const baseQueryWithReauth: BaseQueryFn<
   string | FetchArgs,

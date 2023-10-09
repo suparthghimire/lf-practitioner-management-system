@@ -2,9 +2,10 @@ import { z } from "zod";
 import { prismaClient } from "..";
 import moment from "moment";
 import { DayName } from "@prisma/client";
-export const CheckinSchema = z
+
+export const CheckinoutSchema = z
   .object({
-    checkInTime: z.date(),
+    time: z.date(),
     practitionerId: z.number(),
   })
   .superRefine(async (v, ctx) => {
@@ -13,59 +14,18 @@ export const CheckinSchema = z
       where: {
         id: v.practitionerId,
       },
-      include: {
-        WorkingDays: true,
-      },
     });
 
-    if (practitioner) {
-      //   see if practitioner is working today
-      const today = moment(new Date()).format("dddd") as DayName;
-      const isWorkingToday = practitioner.WorkingDays.some(
-        (day) => day.day === today
-      );
-      if (!isWorkingToday)
-        ctx.addIssue({
-          code: "custom",
-          message: "Practitioner Is Not Working Today",
-          path: ["practitionerId"],
-        });
-    } else
+    if (!practitioner)
       ctx.addIssue({
         code: "custom",
         message: "Practitioner not found",
         path: ["practitionerId"],
       });
-    return;
   });
 
-export const CheckoutSchema = z
-  .object({
-    checkOutTime: z.date(),
-    attendanceId: z.number(),
-  })
-  .superRefine(async (v, ctx) => {
-    // check if practitioner exists
-    const attendance = await prismaClient.attendance.findUnique({
-      where: {
-        id: v.attendanceId,
-      },
-    });
+export type T_CheckInOut = z.infer<typeof CheckinoutSchema>;
 
-    if (!attendance)
-      ctx.addIssue({
-        code: "custom",
-        message: "Attendance not found",
-        path: ["attendanceId"],
-      });
-  });
-
-export type T_Checkin = z.infer<typeof CheckinSchema>;
-export type T_Checkout = z.infer<typeof CheckoutSchema>;
-
-export async function ValidateCheckin(data: T_Checkin) {
-  await CheckinSchema.parseAsync(data);
-}
-export async function ValidateCheckout(data: T_Checkout) {
-  await CheckoutSchema.parseAsync(data);
+export async function ValidateCheckInOut(data: T_CheckInOut) {
+  await CheckinoutSchema.parseAsync(data);
 }

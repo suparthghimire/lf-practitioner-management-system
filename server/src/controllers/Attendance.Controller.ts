@@ -3,23 +3,22 @@ import { Request, Response } from "express";
 import ErrorService, { CustomError } from "../service/Error.Service";
 import AttendanceService from "../service/Attendance.Service";
 import {
-  T_Checkin,
-  T_Checkout,
-  ValidateCheckin,
-  ValidateCheckout,
+  CheckinoutSchema,
+  T_CheckInOut,
+  ValidateCheckInOut,
 } from "../models/Attendance";
 const AttendanceController = {
   checkIn: async function (req: Request, res: Response) {
     try {
       const body = req.body;
-      const data: T_Checkin = {
-        checkInTime: new Date(body.checkInTime),
-        practitionerId: parseInt(body.practitionerId),
+      const data: T_CheckInOut = {
+        time: new Date(body.checkInTime),
+        practitionerId: body.practitionerId,
       };
-      await ValidateCheckin(data);
+      await ValidateCheckInOut(data);
 
       const attendance = await AttendanceService.checkIn(
-        data.checkInTime,
+        data.time,
         data.practitionerId
       );
       return res.status(201).json({
@@ -46,16 +45,16 @@ const AttendanceController = {
     try {
       const body = req.body;
 
-      const data: T_Checkout = {
-        checkOutTime: new Date(body.checkOutTime),
-        attendanceId: parseInt(body.attendanceId),
+      const data: T_CheckInOut = {
+        time: new Date(body.checkOutTime),
+        practitionerId: body.practitionerId,
       };
 
-      await ValidateCheckout(data);
+      await ValidateCheckInOut(data);
 
       const attendance = await AttendanceService.checkOut(
-        data.checkOutTime,
-        data.attendanceId
+        data.time,
+        data.practitionerId
       );
       return res.status(201).json({
         status: true,

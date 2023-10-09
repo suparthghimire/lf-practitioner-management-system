@@ -9,6 +9,7 @@ import { usePagination } from "@mantine/hooks";
 
 import PractitionerTableRow from "../../components/Singletons/PractitionerTableRow";
 import CustomLoader from "../../components/common/Loader";
+import { T_Attendance } from "../../models/Attendance";
 export default function PractitionerIndexPage() {
   const { accessToken } = useAppSelector((state) => state.authReducer);
 
@@ -71,22 +72,30 @@ export default function PractitionerIndexPage() {
                   <th>Date of Birth</th>
                   <th>ICU Specialist</th>
                   <th>Working Days</th>
+                  <th>Attendance</th>
                   <th>Working Hours</th>
                   <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {data?.data?.length > 0 ? (
-                  data?.data?.map((practitioner: Practitioner, sn: number) => {
-                    return (
-                      <PractitionerTableRow
-                        key={`Single-Practitioner-${practitioner.id}`}
-                        sn={sn + 1}
-                        practitioner={practitioner}
-                        refetch={refetch}
-                      />
-                    );
-                  })
+                  data?.data?.map(
+                    (
+                      practitioner: Practitioner & {
+                        Attendance: T_Attendance[];
+                      },
+                      sn: number
+                    ) => {
+                      return (
+                        <PractitionerTableRow
+                          key={`Single-Practitioner-${practitioner.id}`}
+                          sn={sn + 1}
+                          practitioner={practitioner}
+                          refetch={refetch}
+                        />
+                      );
+                    }
+                  )
                 ) : (
                   <tr>
                     <td colSpan={9}>

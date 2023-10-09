@@ -35,7 +35,6 @@ const PractitionerService = {
   },
   getPractitionersWorkingToday: async (userId: number) => {
     try {
-      console.log("USER", userId);
       const weekDayName = moment().format("dddd");
       const todayData = await prismaClient.practitioner.count({
         where: {
@@ -74,6 +73,8 @@ const PractitionerService = {
       // take and limit are used for pagination in Prisma ORM, where Take is total records to be fetched and skip is the offset
       const take = limit;
       const skip = offset;
+
+      const today = moment().startOf("day").toDate();
       // get all practitioners from database with pagination and ordered by descending order of creation date
       const unresolvedPractitioners = prismaClient.practitioner.findMany({
         where: {
@@ -82,6 +83,14 @@ const PractitionerService = {
         include: {
           Specializations: true,
           WorkingDays: true,
+          Attendance: {
+            where: {
+              date: {
+                gte: today,
+                lt: moment(today).add(1, "day").toDate(),
+              },
+            },
+          },
           createdBy: {
             select: { id: true, name: true },
           },
@@ -106,6 +115,7 @@ const PractitionerService = {
         unresolvedTotalData,
       ]);
 
+      // console.log(practitioners);
       // return fetched data along with pagination data
       return {
         data: practitioners,

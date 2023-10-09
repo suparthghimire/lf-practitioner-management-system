@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useAppSelector } from "../../../redux/hooks";
 import UserPageLayout from "../../../components/Layouts/UserPageLayout";
 import {
@@ -10,6 +10,7 @@ import {
   Modal,
   Text,
   Switch,
+  ActionIcon,
 } from "@mantine/core";
 import useUIForm from "./useUIForm";
 import { useNavigate } from "react-router-dom";
@@ -27,7 +28,7 @@ import {
   FetchBaseQueryError,
   MutationDefinition,
 } from "@reduxjs/toolkit/dist/query";
-import { IconCheck, IconX } from "@tabler/icons";
+import { IconCheck, IconX, IconClock } from "@tabler/icons";
 import ServerErrorPartial from "../../../components/partials/ServerError.Partial";
 import { ServerError } from "../../../models/Error";
 
@@ -70,6 +71,9 @@ export default function FormPage(props: Props) {
   const [file, setFile] = useState<File | null>(null);
   const [showImageCropModal, setShowImageCropModal] = useState(false);
   const navigate = useNavigate();
+
+  const startTimeRef = useRef<HTMLInputElement>();
+  const endTimeRef = useRef<HTMLInputElement>();
 
   const {
     form,
@@ -156,7 +160,7 @@ export default function FormPage(props: Props) {
   }
 
   return (
-    <UserPageLayout title="Create New Practitioner">
+    <UserPageLayout title={`${props.purpose} Practitioner`}>
       <ServerErrorPartial
         errors={(mutationErrorData as any)?.data as ServerError}
       />
@@ -312,15 +316,27 @@ export default function FormPage(props: Props) {
             }}
           >
             <TimeInput
+              ref={startTimeRef}
               format="24"
               label="Start Time of Practitioner"
               withAsterisk
               {...form.getInputProps("startTime")}
+              rightSection={
+                <ActionIcon onClick={() => startTimeRef.current?.showPicker()}>
+                  <IconClock size="1rem" stroke={1.5} />
+                </ActionIcon>
+              }
             />
             <TimeInput
+              ref={endTimeRef}
               label="End Time of Practitioner"
               withAsterisk
               {...form.getInputProps("endTime")}
+              rightSection={
+                <ActionIcon onClick={() => endTimeRef.current?.showPicker()}>
+                  <IconClock size="1rem" stroke={1.5} />
+                </ActionIcon>
+              }
             />
           </FormGroup>
           <FormGroup>

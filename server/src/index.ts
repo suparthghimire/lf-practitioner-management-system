@@ -12,7 +12,7 @@ import PractitionerRoutes from "./routes/practitioner.route";
 import SpecializationRoutes from "./routes/specialization.route";
 import WorkingDayRoutes from "./routes/workingDay.route";
 import AttendanceRoutes from "./routes/attendance.route";
-
+import cron from "node-cron";
 /* Controller Imports */
 import PractitionerController from "./controllers/Practitioner.Controller";
 
@@ -21,6 +21,8 @@ import { IsLoggedIn } from "./middleware/Auth.Middleware";
 import { HasWritePermission } from "./middleware/Authorization.Middleware";
 /* Configf Import */
 import CONFIG from "./utils/app_config";
+import AttendanceService from "./service/Attendance.Service";
+import moment from "moment";
 // configure .env files
 dotenv.config();
 export const app = express();
@@ -80,3 +82,20 @@ if (process.env.NODE_ENV !== "test") {
  * Prisma Docs suggests to create a new instance of PrismaClient once and use it everywhere
  */
 export const prismaClient = new PrismaClient();
+
+// every 24 hrs, create a new attendance record for all practitioners
+// 0 0 * * *
+
+const generate24HrsAttendance = async () => {
+  const date = moment(new Date()).format("YYYY-MM-DD HH:mm:ss");
+  try {
+    await AttendanceService.generateAttendance();
+    console.log(`SUCCESS: ATTENDANCE FOR ${date} GENERATED`);
+  } catch (error) {
+    console.log(`ERROR: ATTENDANCE FOR ${date} NOT GENERATED DUE TO ERROR`);
+    console.log(error);
+  }
+};
+cron.schedule("0 0 * * * *", generate24HrsAttendance);
+
+// generate24HrsAttendance();

@@ -10,6 +10,7 @@ router.delete("/signout", AuthController.signOut); //Logout
 
 router.post("/refresh", AuthController.refreshToken); //refresh token
 router.post("/signin", IsLoggedOut, AuthController.signIn); //Login
+router.post("/verify2fa", IsLoggedOut, AuthController.verify2Fa); //Login
 router.post("/signup", IsLoggedOut, AuthController.signUp); //Register
 
 export default router;

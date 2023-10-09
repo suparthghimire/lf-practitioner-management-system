@@ -58,6 +58,7 @@ async function main() {
               dob: new Date(),
               email: faker.internet.email(),
               endTime: new Date(),
+              password: password,
               startTime: new Date(),
               image: faker.image.imageUrl(),
               icuSpecialist: Math.floor(Math.random() * 2) === 1,

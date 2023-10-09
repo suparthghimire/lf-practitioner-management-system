@@ -1,5 +1,6 @@
 import { z } from "zod";
 import CONFIG from "../utils/app_config";
+import moment from "moment";
 
 // Schema for Practitioner returned by API
 export const PractitionerSchema = z
@@ -168,7 +169,14 @@ export const PractitionerSchema = z
   })
   .superRefine((practitioner, ctx) => {
     // check if end time is greater than start time
-    if (practitioner.startTime > practitioner.endTime)
+
+    // check in 24 hrs format
+
+    const stGtEt = moment(practitioner.startTime).isAfter(
+      moment(practitioner.endTime)
+    );
+
+    if (stGtEt)
       ctx.addIssue({
         code: "custom",
         message: "End time must be greater than start time",

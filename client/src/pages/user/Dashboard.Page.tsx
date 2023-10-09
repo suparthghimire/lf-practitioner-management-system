@@ -16,7 +16,6 @@ export default function DashboardPage() {
   );
 
   useEffect(() => {
-    console.log("REFETCH");
     refetch();
   }, []);
 

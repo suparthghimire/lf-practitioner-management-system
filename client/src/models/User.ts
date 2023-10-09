@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { TwoFaSchema } from "./2Fa";
 
 const PWD_SIZE = 8;
 
@@ -72,6 +73,7 @@ export const UserSchema = z
         };
       },
     }),
+    UserTwoFa: TwoFaSchema.optional().nullable(),
   })
   .superRefine((data, ctx) => {
     if (data.password !== data.confirmPassword) {

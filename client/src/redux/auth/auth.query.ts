@@ -47,6 +47,42 @@ export const authApi = createApi({
         };
       },
     }),
+    generate2fa: builder.mutation({
+      query: (data: UserLogin & { token: string }) => {
+        return {
+          url: "/user/2fa/generate",
+          credentials: "include",
+          method: "POST",
+          body: {
+            email: data.email,
+            password: data.password,
+          },
+          headers: {
+            authorization: data.token,
+          },
+        };
+      },
+    }),
+    remove2fa: builder.mutation({
+      query: (
+        data: UserLogin & {
+          token: string;
+        }
+      ) => {
+        return {
+          url: "/user/2fa/remove",
+          credentials: "include",
+          method: "DELETE",
+          body: {
+            email: data.email,
+            password: data.password,
+          },
+          headers: {
+            authorization: data.token,
+          },
+        };
+      },
+    }),
   }),
 });
 
@@ -54,5 +90,6 @@ export const {
   useSigninMutation,
   useSignupMutation,
   useSignoutMutation,
+  useGenerate2faMutation,
   useMyDataQuery,
 } = authApi;

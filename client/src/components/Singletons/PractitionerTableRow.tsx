@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Practitioner } from "../../models/Practitioner";
 import moment from "moment";
 import { Link } from "react-router-dom";
@@ -24,13 +24,14 @@ import {
 import { showNotification, updateNotification } from "@mantine/notifications";
 
 import { removePractitionerById } from "../../redux/practitioner/practitioner.slice";
+import { T_Attendance } from "../../models/Attendance";
 
 export default function PractitionerTableRow({
   practitioner,
   sn,
   refetch,
 }: {
-  practitioner: Practitioner;
+  practitioner: Practitioner & { Attendance: T_Attendance[] };
   sn: number;
   refetch: Function;
 }) {
@@ -157,10 +158,13 @@ export default function PractitionerTableRow({
         </Flex>
       </td>
       <td>
+        <RenderAttendance attendance={practitioner.Attendance} />
+      </td>
+
+      <td>
         {moment(practitioner.startTime).format("LT")} to{" "}
         {moment(practitioner.endTime).format("LT")}
       </td>
-
       <td>
         <Flex gap="sm">
           <Tooltip
@@ -251,5 +255,61 @@ export default function PractitionerTableRow({
         </Group>
       </Modal>
     </tr>
+  );
+}
+
+function RenderAttendance(props: { attendance: T_Attendance[] }) {
+  const attendance = useMemo(() => props.attendance.at(0), [props.attendance]);
+
+  if (!attendance)
+    return (
+      <Badge color="red" variant="light">
+        Not Working Today
+      </Badge>
+    );
+
+  if (!attendance.checkInTime)
+    return (
+      <Badge color="red" variant="light">
+        Not Checked in
+      </Badge>
+    );
+  if (!attendance.checkOutTime)
+    return (
+      <Badge color="red" variant="light">
+        Not Checked Out
+      </Badge>
+    );
+  return (
+    <div className="flex max-w-[350px] flex-wrap gap-4">
+      <Badge color="green" variant="light">
+        Present Today from {moment(attendance.checkInTime).format("LT")} to{" "}
+        {moment(attendance.checkOutTime).format("LT")}
+      </Badge>
+      {attendance.wasLate !== null && (
+        <Badge color={attendance.wasLate ? "red" : "green"} variant="light">
+          {attendance.wasLate ? "Late" : "On Time"}
+        </Badge>
+      )}
+      {attendance.minHrAchieved !== null && (
+        <Badge
+          color={attendance.minHrAchieved ? "green" : "red"}
+          variant="light"
+        >
+          {attendance.minHrAchieved ? "Hrs Met" : "Hrs Not Met"}
+        </Badge>
+      )}
+      {attendance.wasOvertime !== null && (
+        <Badge color="blue" variant="light">
+          {attendance.wasOvertime ? "Overtime" : "Not Overtime"}
+        </Badge>
+      )}
+      {attendance.duration !== null && (
+        <Badge color="blue" variant="light">
+          Total Hrs Worked:{" "}
+          {moment.utc(attendance.duration * 1000).format("HH:mm:ss")} hrs
+        </Badge>
+      )}
+    </div>
   );
 }

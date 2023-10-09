@@ -9,7 +9,11 @@ import TwoFaService from "../service/TwoFA.Service";
 const TwoFAController = {
   generate: async (req: Request, res: Response) => {
     try {
-      const body = req.body;
+      const rawBody = req.body;
+      const body = {
+        ...rawBody,
+        type: "user",
+      };
       const data = ValidateTwoFaGenerateUserType(body);
 
       if (!data) throw data;
@@ -39,7 +43,11 @@ const TwoFAController = {
 
   verify: async (req: Request, res: Response) => {
     try {
-      const body = req.body;
+      const rawBody = req.body;
+      const body = {
+        ...rawBody,
+        type: "user",
+      };
       const data = ValidateTwoFaVerifyUserType(body);
 
       if (!data) throw data;

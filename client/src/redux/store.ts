@@ -3,11 +3,15 @@ import { workingDayApi } from "./workingDay/workingDay.query";
 import { specializationApi } from "./specialization/specialization.query";
 import { configureStore } from "@reduxjs/toolkit";
 import { authApi } from "./auth/auth.query";
+import { practitionerAuthApi } from "./auth/practitioner/auth.query";
 import { practitionerApi } from "./practitioner/practitioner.query";
 import { userApi } from "./user/user.query";
+import { attendanceApi } from "./attendance/attendance.query";
 
 import { setupListeners } from "@reduxjs/toolkit/query/react";
 import authReducer from "./auth/auth.slice";
+import attendanceReducer from "./attendance/attendance.slice";
+import practitionerAuthReducer from "./auth/practitioner/auth.slice";
 import practitionerReducer from "./practitioner/practitioner.slice";
 import workingDayReducer from "./workingDay/workingDay.slice";
 import specializationReducer from "./specialization/specialization.slice";
@@ -22,6 +26,9 @@ const store = configureStore({
     authReducer: authReducer,
     [authApi.reducerPath]: authApi.reducer,
 
+    practitionerAuthReducer: practitionerAuthReducer,
+    [practitionerAuthApi.reducerPath]: practitionerAuthApi.reducer,
+
     practitionerReducer: practitionerReducer,
     [practitionerApi.reducerPath]: practitionerApi.reducer,
 
@@ -33,6 +40,9 @@ const store = configureStore({
 
     userReducer: userReducer,
     [userApi.reducerPath]: userApi.reducer,
+
+    attendanceReducer: attendanceReducer,
+    [attendanceApi.reducerPath]: attendanceApi.reducer,
   },
 
   /**
@@ -42,10 +52,12 @@ const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
       authApi.middleware,
+      practitionerAuthApi.middleware,
       practitionerApi.middleware,
       specializationApi.middleware,
       workingDayApi.middleware,
-      userApi.middleware
+      userApi.middleware,
+      attendanceApi.middleware
     ),
 });
 

@@ -20,7 +20,10 @@ const UserService = {
     try {
       const user = await prismaClient.user.findUnique({
         where: { id },
-        select: userSelectFields,
+        select: {
+          ...userSelectFields,
+          UserTwoFA: true,
+        },
       });
       if (!user) throw new CustomError("User not found", 404);
       return user;

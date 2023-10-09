@@ -39,7 +39,7 @@ model Practitioner {
   email             String             @unique
   contact           String             @unique
   dob               DateTime
-  password          String             @default("password")
+  password          String
   address           String
   image             String             @db.LongText
   createdBy         User               @relation(fields: [createdByUserId], references: [id])
@@ -57,17 +57,19 @@ model Practitioner {
 
 model Attendance {
   id             Int          @id @default(autoincrement())
-  date           DateTime     @unique
-  checkInTime    DateTime
+  date           DateTime
+  checkInTime    DateTime?
   checkOutTime   DateTime?
   duration       Int?
   wasOvertime    Boolean?
   wasLate        Boolean?
   minHrAchieved  Boolean?
-  Practitioner   Practitioner @relation(fields: [practitionerId], references: [id])
+  Practitioner   Practitioner @relation(fields: [practitionerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   practitionerId Int
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
+
+  @@unique([date, practitionerId])
 }
 
 model UserTwoFA {

@@ -41,12 +41,9 @@ export default function FooterPartial() {
         <div className={classes.inner}>
           <Logo size={50} />
           <div>
-            <Text color="dimmed">
-              Assignment Submission from{" "}
-              <a href="https://lfttechnology.com">Leapfrog Technology</a>
-            </Text>
+            <Text color="dimmed">Internship Project</Text>
             <Text size="xs" color="dimmed">
-              © 2022 Leapfrog Technology. All rights reserved.
+              © 2022 Suparth Narayan Ghimire. All rights reserved.
             </Text>
           </div>
           <Group spacing={0} className={classes.links} position="right" noWrap>

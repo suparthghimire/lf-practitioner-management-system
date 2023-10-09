@@ -20,6 +20,9 @@ import TokenService from "../service/Token.Service";
 import { JWTPayload } from "../utils/interfaces";
 import { UserLogin, ValidateLogin } from "../models/User";
 import TwoFaService from "../service/TwoFA.Service";
+import moment from "moment";
+import { DayName } from "@prisma/client";
+import AttendanceService from "../service/Attendance.Service";
 
 const PractitionerController = {
   // fetch all practitioners
@@ -147,6 +150,17 @@ const PractitionerController = {
         practitioner
       );
 
+      // after creating, see if practitioner is working today. if yes, create an attendance for practitioner
+      const todayDayName = moment().format("dddd") as DayName;
+
+      const isWorkingToday = practitioner.WorkingDays.some(
+        (day) => day.day === todayDayName
+      );
+
+      if (isWorkingToday) {
+        console.log("WOEKING TODAY");
+        await AttendanceService.create(new Date(), createdPractitioner.id);
+      }
       return res.status(201).json({
         status: true,
         message: "Practitioner Created Successfully",
@@ -329,6 +343,16 @@ const PractitionerController = {
         newPractitioner
       );
 
+      const todayDayName = moment().format("dddd") as DayName;
+
+      const isWorkingToday = practitioner.WorkingDays.some(
+        (day) => day.day === todayDayName
+      );
+
+      if (isWorkingToday) {
+        console.log("WOEKING TODAY");
+        await AttendanceService.create(new Date(), updatedPractitioner.id);
+      }
       // return success
       return res.status(201).json({
         status: true,

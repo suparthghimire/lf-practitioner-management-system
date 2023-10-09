@@ -55,28 +55,6 @@ const AuthController = {
 
       // check if 2fa
 
-      if (user.UserTwoFA && user.UserTwoFA.verified) {
-        console.log("2fa verified");
-        if (!loginData.token)
-          throw new ZodError([
-            {
-              code: "custom",
-              message: "Invalid 2FA token",
-              path: ["token"],
-            },
-          ]);
-        // check if 2fa is verified. If not, this throws error
-        await TwoFaService.verify({
-          email: loginData.email,
-          password: loginData.password,
-          secret: user.UserTwoFA.secret,
-          token: loginData.token,
-          type: "user",
-        });
-      } else {
-        console.log("2fa not enabled");
-      }
-
       // Create Payload for JWT Token
       const tokenPayload: JWTPayload = {
         id: user.id,
@@ -134,6 +112,45 @@ const AuthController = {
       return res.status(status || 500).json({
         status: false,
         message: message || "SignIn Failed",
+        data: data == null ? undefined : data,
+      });
+    }
+  },
+  verify2Fa: async (req: Request, res: Response) => {
+    try {
+      const body = req.body;
+
+      if (!body.token)
+        throw new ZodError([
+          {
+            code: "custom",
+            message: "Invalid 2FA token",
+            path: ["token"],
+          },
+        ]);
+
+      const { userId } = req.body;
+
+      const user = await UserService.getUserByID(userId);
+
+      if (!user.UserTwoFA) throw new CustomError("2FA not enabled", 400);
+
+      // check if 2fa is verified. If not, this throws error
+      await TwoFaService.verify({
+        email: user.email,
+        password: user.password,
+        secret: user.UserTwoFA.secret,
+        token: body.token,
+        type: "user",
+      });
+    } catch (error) {
+      console.error(error);
+      // Handle Error
+      const { message, data, status } = ErrorService.handleError(error, "User");
+      // return failuer
+      return res.status(status || 500).json({
+        status: false,
+        message: message || "Token Validation",
         data: data == null ? undefined : data,
       });
     }
