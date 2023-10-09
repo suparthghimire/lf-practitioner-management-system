@@ -6,6 +6,7 @@ services:
     build: ./server
     ports:
       - "7000:4000"
+    command: yarn prisma migrate dev --name init
     restart: on-failure
   sup_client:
     env_file:
